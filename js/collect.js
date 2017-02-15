@@ -114,10 +114,6 @@ function initMap() {
 
 }
 
-function check() {
-    debugger;
-}
-
 function initListener() {
     /* INTERNET */
     $(".speed li").click(function(e) {
