@@ -71,6 +71,18 @@ function initMap() {
                 markers[i].setOptions({ map: map, visible: true });
             }
 
+            // google.maps.event.addListener(markerCluster, 'mouseover', function(cluster) {
+            //     // your code here
+            //     console.log(cluster.markers_)
+            //     var contentString = "<div>" + cluster.markers_[0].activity +
+            //         "</div>"
+            //     var infoW = new google.maps.InfoWindow({
+            //         content: contentString
+            //     });
+            //     infoW.setPosition(cluster.getCenter().lat(), cluster.getCenter().lng());
+
+            // });
+
         },
         function(errorObject) {
             console.log("The read failed: " + errorObject.code);
@@ -112,67 +124,6 @@ function initMap() {
 
 
 
-}
-
-function check() {
-    debugger;
-}
-
-function initListener() {
-    /* INTERNET */
-    $(".speed li").click(function(e) {
-        $(this).siblings().removeClass("active");
-        $(this).addClass("active");
-    });
-
-    $(".consistency li").click(function(e) {
-        $(this).siblings().removeClass("active");
-        $(this).addClass("active");
-    });
-
-    /* Scroll to activity section */
-    $("#speedo-start").click(function() {
-        document.documentElement.addEventListener('DOMAttrModified', function(e) {
-            if (e.attrName === 'style' && e.target.id == "ready" && e.newValue == "display: block;") {
-                console.log("Test over. Download: " + $(".data.download").text() + ". Upload: " + $(".data.upload").text())
-
-                $("html, body").animate({
-                    scrollTop: $("#activitySection").position().top
-                }, 2000);
-            }
-        }, false);
-
-        document.documentElement.style.display = 'block';
-    })
-
-    /* ACTIVITY */
-    $(".activity").click(function(e) {
-        $(this).siblings().removeClass("select");
-        $(this).siblings().addClass("unselect");
-        $(this).removeClass("unselect");
-        $(this).addClass("select");
-
-        $("html, body").animate({
-            scrollTop: $("#submitSection").position().top
-        }, 2000);
-    })
-}
-
-
-/* Scroll to submit section*/
-// $("#submitSection").click(function() {
-
-// })
-
-function collectData() {
-    $("#preview").html(
-        "Speed: " + $(".speed .active").text() +
-        "<br>Consistency: " + $(".consistency .active").text() +
-        "<br> Download: " + $(".data.download").text() +
-        "<br> Upload: " + $(".data.upload").text() +
-        "<br> ping: " + $("#speedo-ping .data .time").text() + " ms" +
-        "<br> IP address: " + $(".ip-address").text() +
-        "<br> Activity: " + $(".activity.select img").attr("type"));
 }
 
 function doSubmit() {

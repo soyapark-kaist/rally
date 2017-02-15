@@ -8,17 +8,32 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="apple-mobile-web-app-capable" content="YES" />
 
     <title>Rally</title>
+
+    <link rel="stylesheet" href="css/kube.min.css" />
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap theme -->
     <link href="css/bootstrap-theme.min.css" rel="stylesheet">
 
+    <link href="css/speedtest.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/font-awesome.min.css" />
+    <link rel="stylesheet" href="css/custom.min.css" />
+    <link rel="shortcut icon" href="img/favicon.png" />
+    <link href="http://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">
+
     <!-- Custom styles for this template -->
     <link href="css/theme.css" rel="stylesheet">
-    
+    <link href="css/collect.css" rel="stylesheet">
     <style>
         #map {
             height: 400px;
@@ -34,27 +49,93 @@
 </head>
 
 <body>
-    <h3 style="margin-left:10px;">Rally contribution map</h3>
-    <h4 style="margin-left:10px;">There's an active support from all around the campus!</h4>
-    <div id="map"></div>
-    
-    <div class="container theme-showcase" role="main">
-        <div class="page-header">
-            <h1>On-going petition</h1>
-        </div>
-        <div class="alert alert-success" role="alert">
-            <strong>Reliable video conferencing</strong> Need reliable quality of connectivity for bussiness meeting. 
-        </div>
-<!--         <div class="alert alert-info" role="alert">
-            <strong>Heads up!</strong> This alert needs your attention, but it's not super important.
-        </div> -->
-        <div class="alert alert-warning" role="alert">
-            <strong>Why so slow at rainy day?</strong> Too much trouble about internet speed at rainy day.
-        </div>
-        <div class="alert alert-danger" role="alert">
-            <strong>Stable internet at dorm</strong> Couldn't do anything at dorm at night.
+    <!-- Introduction -->
+    <div class="intro">
+        <div class="container">
+            <div class="units-row">
+                <div class="unit-10">
+                    <img class="img-intro" src="img/support.png" alt="">
+                </div>
+                <div class="unit-90">
+                    <p class="p-intro">Rally! Make our community better again</p>
+                </div>
+            </div>
         </div>
     </div>
+
+    <!-- Content -->
+    <div class="content">
+        <div class="container">
+            <!-- Post -->
+            <div class="post">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="row placeholders">
+                            <div class="col-md-4 col-sm-4 placeholder">
+                                <a href="https://soyapark.github.io/rally/collect.html">
+                                    <span class="fa-lg">
+                                        <i class="fa fa-circle fa-stack-1x" style="font-size: 10em;"></i>
+                                        <i class="fa fa-paper-plane fa-stack-1x fa-inverse" style="font-size: 5em;"></i>
+                                    </span>
+                                    <!--<img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">-->
+                                    <h4 class="steps">1. Collect data</h4>
+                                    <span class="text-muted">인터넷 속도를 제보하세요! 제보한 자료들은 인터넷 속도 개선을 위한 탄원서를 쓰는데 큰 힘이 됩니다!</span>
+                                </a>
+                            </div>
+                            <div class="col-md-4 col-sm-4 placeholder">
+                                <a href="https://soyapark.github.io/rally/map.html">
+                                    <span class="fa-lg">
+                                    <i class="fa fa-circle fa-stack-1x" style="font-size: 10em;color: darkorange;"></i>
+                                    <i class="fa fa-bar-chart fa-stack-1x fa-inverse" style="font-size: 5em;"></i>
+                                </span>
+                                    <h4 class="steps" href="https://soyapark.github.io/rally/map.html">2. Visualization</h4>
+                                    <span class="text-muted">현재 교내에 제보된 인터넷 경험을 조회할 수 있습니다.</span>
+                                </a>
+                            </div>
+                            <div class="col-md-4 col-sm-4 placeholder">
+                                <a href="https://soyapark.github.io/rally/petition.html">
+                                    <span class="fa-lg ">
+                                    <i class="fa fa-circle fa-stack-1x " style="font-size: 10em; "></i>
+                                    <i class="fa fa-comments-o fa-stack-1x fa-inverse " style="font-size: 5em; "></i>
+                                </span>
+                                    <h4 class="steps " href="https://soyapark.github.io/rally/petition.html ">3. Petition</h4>
+                                    <span class="text-muted ">학교에 Rally의 자료를 바탕으로 불편한 인터넷에 대해 개선을 요구하세요!</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /post -->
+            <div class="post">
+                <div class="page-header">
+                    <h1 style="margin-left:10px;">Rally contribution map</h1>
+                </div>
+                <h4 style="margin-left:10px;">There's an active support from all around the campus!</h4>
+                <div id="map"></div>
+
+                <div class="container theme-showcase" role="main">
+                    <div class="page-header">
+                        <h1>On-going petition</h1>
+                    </div>
+                    <div class="alert alert-success" role="alert">
+                        <strong>Reliable video conferencing</strong> Need reliable quality of connectivity for bussiness meeting.
+                    </div>
+                    <!--         <div class="alert alert-info" role="alert">
+            <strong>Heads up!</strong> This alert needs your attention, but it's not super important.
+        </div> -->
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Why so slow at rainy day?</strong> Too much trouble about internet speed at rainy day.
+                    </div>
+                    <div class="alert alert-danger" role="alert">
+                        <strong>Stable internet at dorm</strong> Couldn't do anything at dorm at night.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
     <script>
         var map, center;
@@ -66,7 +147,7 @@
             };
 
             map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 15
+                zoom: 16
             });
 
             // var infoWindow = new google.maps.InfoWindow({
@@ -114,6 +195,7 @@
         playersRef.on("value", function(snapshot) {
             var users = snapshot.val();
             var locations = [];
+            var activities = [];
 
             for (var o in users) {
                 for (var report in users[o]) {
@@ -121,8 +203,9 @@
                         'lat': users[o][report].latitude,
                         'lng': users[o][report].longtitude
                     })
-
-                    // debugger;
+                    console.log(users[o][report].activity)
+                    activities.push(users[o][report].activity)
+                        // debugger;
                 }
             }
 
@@ -130,9 +213,14 @@
             var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
             var markers = locations.map(function(location, i) {
+                var image = {
+                    url: 'img/activity/' + activities[i] + '.png',
+                    scaledSize: new google.maps.Size(30, 30)
+                };
                 return new google.maps.Marker({
                     position: location,
-                    label: labels[i % labels.length]
+                    activity: activities[i],
+                    icon: image
                 });
             });
 
@@ -140,6 +228,15 @@
             var markerCluster = new MarkerClusterer(map, markers, {
                 imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
             });
+
+            markerCluster.clearMarkers();
+            // markerCluster.refresh();
+            for (var i = 0; i < markers.length; i++) {
+                markers[i].setOptions({
+                    map: map,
+                    visible: true
+                });
+            }
         }, function(errorObject) {
             console.log("The read failed: " + errorObject.code);
         });
