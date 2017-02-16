@@ -152,6 +152,30 @@ function initListener() {
             scrollTop: $("#submitSection").position().top
         }, 2000);
     })
+
+    $("#move-speed").click(function(e) {
+        $("html, body").animate({
+            scrollTop: $("#question-speed").position().top
+        }, 1500);
+    })
+
+    $("#move-consistency").click(function(e) {
+        $("html, body").animate({
+            scrollTop: $("#question-consistency").position().top
+        }, 1500);
+    })
+
+    $("#move-test").click(function(e) {
+        $("html, body").animate({
+            scrollTop: $("#speedtest").position().top
+        }, 1500);
+    })
+
+    $("#move-activity").click(function(e) {
+        $("html, body").animate({
+            scrollTop: $("#activitySection").position().top
+        }, 1500);
+    })
 }
 
 
@@ -172,8 +196,36 @@ function collectData() {
 }
 
 function doSubmit() {
-    initMap();
-    postData();
+    $(".form-alert").css("display", "none");
+
+    /* Check whether all the question are filled. */
+    var isValid = true;
+
+    if (!$(".speed .active").length) {
+        $("#form-speed").css("display", "block");
+        isValid = false;
+    }
+
+    if (!$(".consistency .active").length) {
+        $("#form-consistency").css("display", "block");
+        isValid = false;
+    }
+
+    if ($(".data.download").text() == "--") {
+        $("#form-test").css("display", "block");
+        isValid = false;
+    }
+
+    if (!$(".activity.select").length) {
+        $("#form-activity").css("display", "block");
+        isValid = false;
+    }
+
+    if (isValid) {
+        initMap();
+        postData();
+    }
+
 }
 
 function postData() {

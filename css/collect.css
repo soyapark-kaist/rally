@@ -3,6 +3,10 @@
     margin-top: 10px;
 }
 
+.form-alert {
+    display: none;
+}
+
 textarea {
     width: 70%;
 }
