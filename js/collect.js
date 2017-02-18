@@ -92,10 +92,16 @@ function initMap() {
             };
 
             playersRef.set({
-                "activity": $(".activity.select img ").attr("type"),
+                "activity": $(".activity.select img").attr("type"),
                 "ip_addr": $(".ip-address ").text(),
                 "latitude": position.coords.latitude,
-                "longtitude": position.coords.longitude
+                "longtitude": position.coords.longitude,
+                "download": $(".data.download").text(),
+                "upload": $(".data.upload").text(),
+                "ping": $("#speedo-ping .data .time").text(),
+                "speed": $(".speed .active").text(),
+                "consistency": $(".consistency .active").text(),
+                "time": new Date().toString()
             });
 
             // infoWindow.setPosition(pos);
