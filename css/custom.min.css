@@ -140,6 +140,12 @@ img.img-intro {
     margin-bottom: 80px
 }
 
+@media only screen and (min-width: 700px) {
+            .content {
+                padding-top: 100px;
+            }
+        }
+
 .content .post a {
     text-decoration: none
 }
