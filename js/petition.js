@@ -29,6 +29,7 @@ function initMap() {
     var playersRef = firebase.database().ref('/');
     // Attach an asynchronous callback to read the data at our posts reference
     playersRef.on("value", function(snapshot) {
+
             var users = snapshot.val();
             var locations = [];
             var activities = [];
@@ -61,15 +62,17 @@ function initMap() {
             });
 
             // Add a marker clusterer to manage the markers.
-            var markerCluster = new MarkerClusterer(map, markers, {
-                imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
-            });
+            // var markerCluster = new MarkerClusterer(map, markers, {
+            //     imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+            // });
 
-            markerCluster.clearMarkers();
-            // markerCluster.refresh();
+            // // markerCluster.clearMarkers();
+            // // // markerCluster.refresh();
             for (var i = 0; i < markers.length; i++) {
                 markers[i].setOptions({ map: map, visible: true });
             }
+
+
 
             // google.maps.event.addListener(markerCluster, 'mouseover', function(cluster) {
             //     // your code here
@@ -96,11 +99,17 @@ function initMap() {
                 lng: position.coords.longitude
             };
 
-
+            $('#map').locationpicker({
+                location: {
+                    latitude: center.lat,
+                    longitude: center.lng
+                },
+                radius: 300
+            }, map);
+            map.setZoom(16);
 
             // infoWindow.setPosition(pos);
             // infoWindow.setContent('Location found.');
-            map.setCenter(center);
         }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
         });
@@ -110,17 +119,26 @@ function initMap() {
     }
 
 
+    // debugger;
+    src = "js/locationpicker.jquery.js";
+    script = document.createElement('script');
+    script.onerror = function() {
+        // handling error when loading script
+        alert('Error to handle')
+    }
+    script.onload = function() {
+        console.log(src + ' loaded ')
+            // callback();
+
+    }
+    script.src = src;
+    document.getElementsByTagName('head')[0].appendChild(script);
 
 
 }
 
 function doSubmit() {
     initMap();
-    postData();
-}
-
-function postData() {
-
 }
 
 function makeid() {
