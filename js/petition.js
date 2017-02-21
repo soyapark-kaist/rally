@@ -135,6 +135,16 @@ function initMap() {
     document.getElementsByTagName('head')[0].appendChild(script);
 
 
+    $('#stepExample1').timepicker({
+        'step': 60,
+        'timeFormat': 'H:i'
+    });
+    $('#stepExample1').on('changeTime', function() {
+        debugger;
+        var dstTime = (parseInt($(this).val().split(":")[0]) + 3) % 24;
+        $('#stepExample2').attr("placeholder", dstTime.toString() + ":00");
+        //text($(this).val());
+    });
 }
 
 function doSubmit() {

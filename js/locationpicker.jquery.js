@@ -294,7 +294,6 @@
      * @returns {*}
      */
     $.fn.locationpicker = function(options, params) {
-        debugger;
         if (typeof options == 'string') { // Command provided
             var _targetDomElement = this.get(0);
             // Plug-in is not applied - nothing to do.
