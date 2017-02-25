@@ -1,125 +1,3 @@
-var map, center;
-
-function initMap() {
-    var kaist = {
-        lat: 36.3694,
-        lng: 127.3640
-    };
-
-    /* Initialize map */
-    map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 16
-    });
-
-    // var infoWindow = new google.maps.InfoWindow({
-    //     map: map
-    // });
-
-    /* Initialize Firebase */
-    var config = {
-        apiKey: "AIzaSyD9v41gd511lFHseGqCXwNyfpQyArNgZLQ",
-        authDomain: "hello-3239c.firebaseapp.com",
-        databaseURL: "https://hello-3239c.firebaseio.com",
-        storageBucket: "hello-3239c.appspot.com",
-        messagingSenderId: "785081542704"
-    };
-    firebase.initializeApp(config);
-    // var firebase = new Firebase('https://hello-3239c.firebaseio.com/');
-
-    var playersRef = firebase.database().ref('/');
-    // Attach an asynchronous callback to read the data at our posts reference
-    playersRef.on("value", function(snapshot) {
-            var users = snapshot.val();
-            var locations = [];
-            var activities = [];
-
-            for (var o in users) {
-                for (var report in users[o]) {
-                    locations.push({
-                        'lat': users[o][report].latitude,
-                        'lng': users[o][report].longtitude
-                    })
-                    console.log(users[o][report].activity)
-                    activities.push(users[o][report].activity)
-                        // debugger;
-                }
-            }
-
-            // Create an array of alphabetical characters used to label the markers.
-            var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-            var markers = locations.map(function(location, i) {
-                var image = {
-                    url: 'img/activity/' + activities[i] + '.png',
-                    scaledSize: new google.maps.Size(30, 30)
-                };
-                return new google.maps.Marker({
-                    position: location,
-                    activity: activities[i],
-                    icon: image
-                });
-            });
-
-            // Add a marker clusterer to manage the markers.
-            var markerCluster = new MarkerClusterer(map, markers, {
-                imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
-            });
-
-            markerCluster.clearMarkers();
-            // markerCluster.refresh();
-            for (var i = 0; i < markers.length; i++) {
-                markers[i].setOptions({ map: map, visible: true });
-            }
-
-        },
-        function(errorObject) {
-            console.log("The read failed: " + errorObject.code);
-        });
-
-    // Try HTML5 geolocation.
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            center = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            };
-
-            var playersRef = firebase.database().ref("users/" + makeid());
-            var id = makeid()
-            var data = {};
-            data[makeid()] = {
-
-            };
-
-            playersRef.set({
-                "activity": $(".activity.select img").attr("type"),
-                "ip_addr": $(".ip-address ").text(),
-                "latitude": position.coords.latitude,
-                "longtitude": position.coords.longitude,
-                "download": $(".data.download").text(),
-                "upload": $(".data.upload").text(),
-                "ping": $("#speedo-ping .data .time").text(),
-                "speed": $(".speed .active").text(),
-                "consistency": $(".consistency .active").text(),
-                "time": new Date().toString()
-            });
-
-            // infoWindow.setPosition(pos);
-            // infoWindow.setContent('Location found.');
-            map.setCenter(center);
-        }, function() {
-            handleLocationError(true, infoWindow, map.getCenter());
-        });
-    } else {
-        // Browser doesn't support Geolocation
-        handleLocationError(false, infoWindow, map.getCenter());
-    }
-
-
-
-
-}
-
 function initListener() {
     /* INTERNET */
     $(".speed li").click(function(e) {
@@ -192,8 +70,8 @@ function initListener() {
 
 function collectData() {
     $("#preview").html(
-        "Speed: " + $(".speed .active").text() +
-        "<br>Consistency: " + $(".consistency .active").text() +
+        "Speed: " + $("input[name='speed']:checked").attr("description") +
+        "<br>Consistency: " + $("input[name='consistency']:checked").attr("description") +
         "<br> Download: " + $(".data.download").text() +
         "<br> Upload: " + $(".data.upload").text() +
         "<br> ping: " + $("#speedo-ping .data .time").text() + " ms" +
@@ -207,16 +85,6 @@ function doSubmit() {
     /* Check whether all the question are filled. */
     var isValid = true;
 
-    if (!$(".speed .active").length) {
-        $("#form-speed").css("display", "block");
-        isValid = false;
-    }
-
-    if (!$(".consistency .active").length) {
-        $("#form-consistency").css("display", "block");
-        isValid = false;
-    }
-
     if ($(".data.download").text() == "--") {
         $("#form-test").css("display", "block");
         isValid = false;
@@ -228,22 +96,44 @@ function doSubmit() {
     }
 
     if (isValid) {
-        initMap();
-        postData();
+        displayMap();
+        postUsers();
     }
 
 }
 
-function postData() {
+function postUsers() {
+    // Try HTML5 geolocation.
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            center = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
 
-}
+            var playersRef = firebase.database().ref("users/" + generateID(5));
 
-function makeid() {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            playersRef.set({
+                "activity": $(".activity.select img").attr("type"),
+                "ip_addr": $(".ip-address ").text(),
+                "latitude": position.coords.latitude,
+                "longtitude": position.coords.longitude,
+                "download": $(".data.download").text(),
+                "upload": $(".data.upload").text(),
+                "ping": $("#speedo-ping .data .time").text(),
+                "speed": $("input[name='speed']:checked").val(),
+                "consistency": $("input[name='consistency']:checked").val(),
+                "time": new Date().toString()
+            });
 
-    for (var i = 0; i < 5; i++)
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    return text;
+            // infoWindow.setPosition(pos);
+            // infoWindow.setContent('Location found.');
+            map.setCenter(center);
+        }, function() {
+            handleLocationError(true, infoWindow, map.getCenter());
+        });
+    } else {
+        // Browser doesn't support Geolocation
+        handleLocationError(false, infoWindow, map.getCenter());
+    }
 }

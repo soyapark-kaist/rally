@@ -10,14 +10,13 @@
     <meta name="author" content="">
 
     <title>Rally</title>
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
     <script>
         window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')
     </script>
 
-    <script src="js/petition.js"></script>
+    <script type="text/javascript" src="js/rally.js"></script>
+    <script type="text/javascript" src="js/petition.js"></script>
 
     <script src="https://www.gstatic.com/firebasejs/3.6.7/firebase.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCByCLtjJ9BAR29-HXHHDBU8DWCyyuA_CE&callback=initMap">
@@ -42,7 +41,6 @@
 
     <link rel="stylesheet" href="css/font-awesome.min.css" />
     <link rel="stylesheet" href="css/custom.css" />
-    <link rel="shortcut icon" href="img/favicon.png" />
     <link href="http://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">
 
@@ -146,7 +144,7 @@
                     <h4>제목</h4>
                     <div class="form-group">
                         <label class="sr-only" for="exampleInputEmail3">Title</label>
-                        <input type="email" class="form-control" id="exampleInputEmail3" placeholder="Title">
+                        <input type="email" class="form-control" id="title" placeholder="Title">
                     </div>
                     <div class="alert alert-info" role="alert">
                         <strong>Keep it short and to the point</strong> Example: "Prepare for stable and perfect video conferencing meeting"
@@ -154,7 +152,7 @@
                 </form>
 
                 <h4>내용</h4>
-                <textarea class="form-control" rows="3" placeholder="Explain the problem you want to solve"></textarea>
+                <textarea class="form-control" rows="3" id="content" placeholder="Explain the problem you want to solve"></textarea>
                 <div class="alert alert-info" role="alert">
                     <strong>Describe the people involved and the problem they are facing</strong> Readers are most likely to take action when they understand who is affected.
                 </div>
@@ -166,21 +164,18 @@
                 <h4>시간 대</h4>
                 <h6>시간 범위를 선택해보세요.</h6>
                 <div class="input-group bootstrap-timepicker timepicker">
-                    <input id="stepExample1" type="text" class="form-control input-small" data-provide="timepicker" data-template="modal" data-minute-step="1" data-modal-backdrop="true">
+                    <input id="timeRange-start" type="text" class="form-control input-small" data-provide="timepicker" data-template="modal" data-minute-step="1" data-modal-backdrop="true">
                     <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
 
-                    <input id="stepExample2" type="text" class="form-control input-small" data-provide="timepicker" data-template="modal" data-minute-step="1" data-modal-backdrop="true" disabled>
+                    <input id="timeRange-end" type="text" class="form-control input-small" data-provide="timepicker" data-template="modal" data-minute-step="1" data-modal-backdrop="true" disabled>
                     <span class="input-group-addon">까지</span>
                 </div>
                 <div class="input-group bootstrap-timepicker timepicker">
-
-
                 </div>
-
-
-
             </div>
             <!-- /post -->
+
+            <button type="button" class="btn btn-success" onclick="submit()">제출</button>
 
             <!-- Post -->
             <!--<div class="post">-->
@@ -261,7 +256,7 @@
                 </div>
             </div>-->
             <p class="text-centered foot-cp">
-                <a href="#">handcrafted by @flamekaizar</a>
+                <a href="#">지원: 학부총학생회,정보통신팀</a>
             </p>
         </div>
     </footer>
