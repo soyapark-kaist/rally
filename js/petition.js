@@ -61,6 +61,8 @@ function submit() {
         "time-range": $('#timeRange-start').val(),
         "time-submission": new Date().toString()
     });
+
+    alert("탄원서가 정보통신팀에 제출되었습니다!");
 }
 
 function initTimeRangeWidget() {
