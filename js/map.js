@@ -1,4 +1,6 @@
 function initMap() {
+    createMap();
+    initDB();
     displayMap();
 
     centerMap();

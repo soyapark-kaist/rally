@@ -96,6 +96,8 @@ function doSubmit() {
     }
 
     if (isValid) {
+        createMap();
+        initDB();
         displayMap();
         postUsers();
     }
@@ -111,13 +113,16 @@ function postUsers() {
                 lng: position.coords.longitude
             };
 
+            // DEBUGGING purpose
+            // center = kaist;
+
             var playersRef = firebase.database().ref("users/" + generateID(5));
 
             playersRef.set({
                 "activity": $(".activity.select img").attr("type"),
                 "ip_addr": $(".ip-address ").text(),
-                "latitude": position.coords.latitude,
-                "longtitude": position.coords.longitude,
+                "latitude": center.lat,
+                "longitude": center.lng,
                 "download": $(".data.download").text(),
                 "upload": $(".data.upload").text(),
                 "ping": $("#speedo-ping .data .time").text(),

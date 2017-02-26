@@ -11,16 +11,13 @@
 
     <title>Rally</title>
     <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script>
-        window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')
-    </script>
 
     <script type="text/javascript" src="js/rally.js"></script>
     <script type="text/javascript" src="js/petition.js"></script>
 
+    <!-- Google API -->
     <script src="https://www.gstatic.com/firebasejs/3.6.7/firebase.js"></script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCByCLtjJ9BAR29-HXHHDBU8DWCyyuA_CE&callback=initMap">
-    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCByCLtjJ9BAR29-HXHHDBU8DWCyyuA_CE&callback=initMap"></script>
     <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
     </script>
     <script src="js/bootstrap.min.js"></script>
@@ -41,8 +38,6 @@
 
     <link rel="stylesheet" href="css/font-awesome.min.css" />
     <link rel="stylesheet" href="css/custom.css" />
-    <link href="http://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet" type="text/css">
-    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">
 
     <!-- Custom styles for this template -->
     <link href="css/speedtest.css" rel="stylesheet">
@@ -175,8 +170,15 @@
             </div>
             <!-- /post -->
 
-            <button type="button" class="btn btn-success" onclick="submit()">제출</button>
-
+            <button onclick="preview()" class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                            미리보기
+                            </button>
+            <div class="collapse" id="collapseExample">
+                <div class="well" id="preview">
+                    est
+                </div>
+            </div>
+            <button id="submitSection" class="btn btn-default" type="submit" onclick="submit()">제출</button>
             <!-- Post -->
             <!--<div class="post">-->
             <!-- Heading -->

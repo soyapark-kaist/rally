@@ -4,21 +4,14 @@ var kaist = {
 };
 var map, center;
 
-/* Display map.
-1. Init firebase
-2. Fetch data points from DB
-3. Push markers on the map
- */
-function displayMap() {
+function createMap() {
     /* Initialize map */
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 16
     });
+}
 
-    // var infoWindow = new google.maps.InfoWindow({
-    //     map: map
-    // });
-
+function initDB() {
     /* Initialize Firebase */
     var config = {
         apiKey: "AIzaSyD9v41gd511lFHseGqCXwNyfpQyArNgZLQ",
@@ -28,8 +21,10 @@ function displayMap() {
         messagingSenderId: "785081542704"
     };
     firebase.initializeApp(config);
-    // var firebase = new Firebase('https://hello-3239c.firebaseio.com/');
+}
 
+/* Fetch data points from DB & Push markers on the map. */
+function displayMap() {
     var playersRef = firebase.database().ref('users/');
     // Attach an asynchronous callback to read the data at our posts reference
     playersRef.on("value", function(snapshot) {
@@ -41,7 +36,7 @@ function displayMap() {
             for (var o in users) {
                 locations.push({
                     'lat': users[o].latitude,
-                    'lng': users[o].longtitude
+                    'lng': users[o].longitude
                 })
                 console.log(users[o])
                 console.log(users[o].activity)

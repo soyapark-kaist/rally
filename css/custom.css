@@ -7,10 +7,6 @@ body {
     margin-bottom: 50px
 }
 
-a {
-    font-family: "Open Sans", sans-serif
-}
-
 .container {
     margin: auto;
     max-width: 662px;
@@ -47,7 +43,6 @@ a {
 
 .logo,
 .top-nav a.logo {
-    font-family: 'Open Sans', sans-serif;
     font-weight: 700;
     font-size: 27px;
     color: #000;
@@ -64,7 +59,6 @@ a {
 }
 
 .top-nav .item-nav li a {
-    font-family: Lato, sans-serif;
     font-size: 15px;
     font-weight: 500;
     color: #A4A4A4
@@ -79,7 +73,6 @@ a {
 
 p.p-intro {
     color: #E85F37;
-    font-family: "Open Sans", sans-serif;
     font-size: 13px;
     letter-spacing: 2px;
     font-weight: 700;
@@ -152,7 +145,6 @@ img.img-intro {
 
 .content .post h1 {
     color: #000;
-    font-family: Lato, sans-serif;
     font-size: 22px;
     font-weight: 400;
     position: relative
@@ -169,7 +161,6 @@ img.img-intro {
 
 .content .post p {
     color: #535353;
-    font-family: "Open Sans", sans-serif;
     font-size: 15px;
     font-weight: 400
 }
@@ -226,7 +217,6 @@ a.read-more:hover {
     position: relative;
     margin-top: 60px;
     color: #535353;
-    font-family: "Open Sans", sans-serif;
     font-size: 12px;
     font-weight: 700;
     text-transform: uppercase
@@ -252,7 +242,6 @@ a.read-more:hover {
 footer .btn {
     color: #FFF;
     font-size: 13px;
-    font-family: "Open Sans";
     font-weight: 700;
     letter-spacing: 2px
 }
@@ -277,7 +266,6 @@ footer .social li a:hover {
 
 .foot-cp a {
     color: #A5A5A5;
-    font-family: Lato, sans-serif;
     font-size: 15px;
     font-weight: 400;
     text-transform: uppercase;

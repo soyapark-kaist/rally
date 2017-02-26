@@ -1,9 +1,27 @@
 function initMap() {
-    displayMap();
+    createMap();
 
-    displayLocationPicker();
+    // displayMap();
+    initLocationPicker();
 
     initTimeRangeWidget();
+}
+
+function initLocationPicker() {
+    /* Add location picker plug-in. */
+    src = "js/locationpicker.jquery.js";
+    script = document.createElement('script');
+    script.onerror = function() {
+        // handling error when loading script
+        alert('Error to handle')
+    }
+    script.onload = function() {
+        console.log(src + ' loaded ')
+
+        displayLocationPicker();
+    }
+    script.src = src;
+    document.getElementsByTagName('head')[0].appendChild(script);
 }
 
 function displayLocationPicker() {
@@ -33,34 +51,63 @@ function displayLocationPicker() {
         // Browser doesn't support Geolocation
         handleLocationError(false, infoWindow, map.getCenter());
     }
+}
 
-    /* Add location picker plug-in. */
-    src = "js/locationpicker.jquery.js";
-    script = document.createElement('script');
-    script.onerror = function() {
-        // handling error when loading script
-        alert('Error to handle')
-    }
-    script.onload = function() {
-        console.log(src + ' loaded ')
-            // callback();
+function selectSignature() {
+    var playersRef = firebase.database().ref('users/');
+    // Attach an asynchronous callback to read the data at our posts reference
+    playersRef.on("value", function(snapshot) {
+            var users = snapshot.val();
+            var datas = [];
 
-    }
-    script.src = src;
-    document.getElementsByTagName('head')[0].appendChild(script);
+            for (var o in users) {
+                var lat = users[o].latitude,
+                    lng = users[o].longitude;
+
+                if ((Math.abs($('#map').locationpicker("location").latitude - lat) <= 0.001) && (Math.abs($('#map').locationpicker("location").longitude - lng) <= 0.001)) {
+                    // then include the signature
+                    datas.push(users[o]);
+                }
+
+                console.log(users[o])
+                console.log(users[o].activity)
+            }
+
+            console.log(datas);
+        },
+        function(errorObject) {
+            console.log("The read failed: " + errorObject.code);
+        });
+    // 0.001
+
+
+
+}
+
+function preview() {
+    $("#preview").html(
+        "title: " + $("#title").val() +
+        "<br>content: " + $("#content").val() +
+        "<br>latitude: " + $('#map').locationpicker("location").latitude +
+        "<br>longitude: " + $('#map').locationpicker("location").longitude +
+        "<br>time-range: " + $('#timeRange-start').val());
 }
 
 function submit() {
+    initDB();
+
     var playersRef = firebase.database().ref("petition/" + generateID(8));
 
     playersRef.set({
         "title": $("#title").val(),
         "content": $("#content").val(),
-        "latitude": center.lat,
-        "longtitude": center.lng,
+        "latitude": $('#map').locationpicker("location").latitude,
+        "longitude": $('#map').locationpicker("location").longitude,
         "time-range": $('#timeRange-start').val(),
         "time-submission": new Date().toString()
     });
+
+    selectSignature();
 
     alert("탄원서가 정보통신팀에 제출되었습니다!");
 }
