@@ -1,106 +1,107 @@
-function initListener() {
-    /* INTERNET */
-    $(".speed li").click(function(e) {
-        $(this).siblings().removeClass("active");
-        $(this).addClass("active");
+var kaist = {
+    lat: 36.3694,
+    lng: 127.3640
+};
+var map, center;
+var infoWindow;
+
+function createMap() {
+    /* Initialize map */
+    map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 16
     });
 
-    $(".consistency li").click(function(e) {
-        $(this).siblings().removeClass("active");
-        $(this).addClass("active");
-    });
+    infoWindow = new google.maps.InfoWindow({ map: map });
+}
 
-    /* Scroll to activity section */
-    $("#speedo-start").click(function() {
-        document.documentElement.addEventListener('DOMAttrModified', function(e) {
-            if (e.attrName === 'style' && e.target.id == "ready" && e.newValue == "display: block;") {
-                console.log("Test over. Download: " + $(".data.download").text() + ". Upload: " + $(".data.upload").text())
+function initDB() {
+    /* Initialize Firebase */
+    var config = {
+        apiKey: "AIzaSyD9v41gd511lFHseGqCXwNyfpQyArNgZLQ",
+        authDomain: "hello-3239c.firebaseapp.com",
+        databaseURL: "https://hello-3239c.firebaseio.com",
+        storageBucket: "hello-3239c.appspot.com",
+        messagingSenderId: "785081542704"
+    };
+    firebase.initializeApp(config);
+}
 
-                $("html, body").animate({
-                    scrollTop: $("#activitySection").position().top
-                }, 2000);
+/* Fetch data points from DB & Push markers on the map. */
+function displayMap() {
+    var playersRef = firebase.database().ref('users/');
+    // Attach an asynchronous callback to read the data at our posts reference
+    playersRef.on("value", function(snapshot) {
+
+            var users = snapshot.val();
+            var locations = [];
+            var activities = [];
+
+            for (var o in users) {
+                locations.push({
+                    'lat': users[o].latitude,
+                    'lng': users[o].longitude
+                })
+                console.log(users[o])
+                console.log(users[o].activity)
+                activities.push(users[o].activity)
+                    // debugger;
             }
-        }, false);
 
-        document.documentElement.style.display = 'block';
-    })
+            // Create an array of alphabetical characters used to label the markers.
+            var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-    /* ACTIVITY */
-    $(".activity").click(function(e) {
-        $(this).siblings().removeClass("select");
-        $(this).siblings().addClass("unselect");
-        $(this).removeClass("unselect");
-        $(this).addClass("select");
+            var markers = locations.map(function(location, i) {
+                var image = {
+                    url: 'img/activity/' + activities[i] + '.png',
+                    scaledSize: new google.maps.Size(30, 30)
+                };
+                return new google.maps.Marker({
+                    position: location,
+                    activity: activities[i],
+                    icon: image
+                });
+            });
 
-        $("html, body").animate({
-            scrollTop: $("#submitSection").position().top
-        }, 2000);
-    })
+            // Add a marker clusterer to manage the markers.
+            // var markerCluster = new MarkerClusterer(map, markers, {
+            //     imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+            // });
 
-    $("#move-speed").click(function(e) {
-        $("html, body").animate({
-            scrollTop: $("#question-speed").position().top
-        }, 1500);
-    })
-
-    $("#move-consistency").click(function(e) {
-        $("html, body").animate({
-            scrollTop: $("#question-consistency").position().top
-        }, 1500);
-    })
-
-    $("#move-test").click(function(e) {
-        $("html, body").animate({
-            scrollTop: $("#speedtest").position().top
-        }, 1500);
-    })
-
-    $("#move-activity").click(function(e) {
-        $("html, body").animate({
-            scrollTop: $("#activitySection").position().top
-        }, 1500);
-    })
+            // // markerCluster.clearMarkers();
+            // // // markerCluster.refresh();
+            for (var i = 0; i < markers.length; i++) {
+                markers[i].setOptions({ map: map, visible: true });
+            }
+        },
+        function(errorObject) {
+            console.log("The read failed: " + errorObject.code);
+        });
 }
 
+function new google.maps.Map(document.getElementById('map')(browserHasGeolocation, infoWindow, pos) {
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(browserHasGeolocation ?
+            '브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.' :
+            'Error: Your browser doesn\'t support geolocation.');
+    }
 
-/* Scroll to submit section*/
-// $("#submitSection").click(function() {
+    function generateID(length) {
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-// })
+        for (var i = 0; i < length; i++)
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
 
-function collectData() {
-    $("#preview").html(
-        "Speed: " + $("input[name='speed']:checked").attr("description") +
-        "<br>Consistency: " + $("input[name='consistency']:checked").attr("description") +
-        "<br> Download: " + $(".data.download").text() +
-        "<br> Upload: " + $(".data.upload").text() +
-        "<br> ping: " + $("#speedo-ping .data .time").text() + " ms" +
-        "<br> IP address: " + $(".ip-address").text() +
-        "<br> Activity: " + $(".activity.select img").attr("type"));
+        return text;
+    }
 }
 
-function doSubmit() {
-    $(".form-alert").css("display", "none");
-
-    /* Check whether all the question are filled. */
-    var isValid = true;
-
-    if ($(".data.download").text() == "--") {
-        $("#form-test").css("display", "block");
-        isValid = false;
-    }
-
-    if (!$(".activity.select").length) {
-        $("#form-activity").css("display", "block");
-        isValid = false;
-    }
-
-    if (isValid) {
-        createMap();
-        initDB();
-        displayMap();
-        postUsers();
-    }
+if (isValid) {
+    createMap();
+    initDB();
+    displayMap();
+    postUsers();
+}
 
 }
 

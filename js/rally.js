@@ -3,12 +3,15 @@ var kaist = {
     lng: 127.3640
 };
 var map, center;
+var infoWindow;
 
 function createMap() {
     /* Initialize map */
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 16
     });
+
+    infoWindow = new google.maps.InfoWindow({ map: map });
 }
 
 function initDB() {
@@ -73,6 +76,14 @@ function displayMap() {
         function(errorObject) {
             console.log("The read failed: " + errorObject.code);
         });
+}
+
+function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+    infoWindow.setPosition(pos);
+    infoWindow.setContent(browserHasGeolocation ?
+        '브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.' :
+        '브라우저의 위치정보 수집이 불가합니다. 다른 브라우저에서 다시 시도해주세요.'
+    );
 }
 
 function generateID(length) {
