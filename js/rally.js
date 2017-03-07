@@ -10,12 +10,9 @@ function createMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 16
     });
-
-    infoWindow = new google.maps.InfoWindow({ map: map });
 }
-
+/* Initialize Firebase. */
 function initDB() {
-    /* Initialize Firebase */
     var config = {
         apiKey: "AIzaSyD9v41gd511lFHseGqCXwNyfpQyArNgZLQ",
         authDomain: "hello-3239c.firebaseapp.com",
@@ -78,7 +75,9 @@ function displayMap() {
         });
 }
 
+/* Error Handler when current location is not detectable. */
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+    infoWindow = new google.maps.InfoWindow({ map: map });
     infoWindow.setPosition(pos);
     infoWindow.setContent(browserHasGeolocation ?
         '브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.' :
@@ -86,12 +85,18 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
     );
 }
 
-function generateID(length) {
+/* Randomly generate unique ID. */
+function generateID(inLength) {
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-    for (var i = 0; i < length; i++)
+    for (var i = 0; i < inLength; i++)
         text += possible.charAt(Math.floor(Math.random() * possible.length));
 
     return text;
+}
+
+/* Get difference between two dates. */
+function calculateDiffDate(inDate1, inDate2) {
+    return Math.ceil(Math.abs(inDate1.getTime() - inDate2.getTime()) / (1000 * 3600 * 24));
 }
