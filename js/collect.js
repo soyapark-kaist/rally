@@ -120,7 +120,6 @@ function postUsers() {
             var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + generateID(5));
             // users/2017-3-6
 
-
             playersRef.set({
                 "activity": $(".activity.select img").attr("type"),
                 "ip_addr": $(".ip-address ").text(),

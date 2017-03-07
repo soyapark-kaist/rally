@@ -34,14 +34,23 @@ function displayMap() {
             var activities = [];
 
             for (var o in users) {
-                locations.push({
-                    'lat': users[o].latitude,
-                    'lng': users[o].longitude
-                })
-                console.log(users[o])
-                console.log(users[o].activity)
-                activities.push(users[o].activity)
-                    // debugger;
+                var year = o.split("-")[0],
+                    month = o.split("-")[1],
+                    day = parseInt(o.split("-")[2]) + 1;
+
+                if (calculateDiffDate(new Date(year, month - 1, day), new Date()) < 15) {
+                    for (var u in users[o]) {
+                        // debugger;
+                        locations.push({
+                            'lat': users[o][u].latitude,
+                            'lng': users[o][u].longitude
+                        })
+
+                        activities.push(users[o][u].activity);
+                        // console.log("here");
+                    }
+
+                }
             }
 
             // Create an array of alphabetical characters used to label the markers.

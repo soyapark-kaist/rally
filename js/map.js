@@ -15,6 +15,9 @@ function centerMap() {
                 lng: position.coords.longitude
             };
 
+            // DEBUGGING purpose
+            // center = kaist;
+
             map.setCenter(center);
         }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
