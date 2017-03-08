@@ -96,7 +96,8 @@ function preview() {
 function submit() {
     initDB();
 
-    var playersRef = firebase.database().ref("petition/" + generateID(8));
+    var petitionID = generateID(8);
+    var playersRef = firebase.database().ref("petition/" + petitionID);
 
     playersRef.set({
         "title": $("#title").val(),
@@ -107,11 +108,24 @@ function submit() {
         "time-line": {
             "submit": new Date().toString()
         }
+    }, function(error) {
+        // Callback comes here
+        if (error) {
+            console.log(error);
+        } else {
+            var params = { id: petitionID };
+            var p = jQuery.param(params);
+
+            var newUrl = window.location.href.split("rally/")[0] + "rally/timeline.html?" + p;
+            window.location.replace(newUrl);
+        }
+
     });
 
     selectSignature();
 
-    alert("탄원서가 정보통신팀에 제출되었습니다!");
+
+    // alert("탄원서가 정보통신팀에 제출되었습니다!");
 }
 
 function initTimeRangeWidget() {

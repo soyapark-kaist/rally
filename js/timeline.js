@@ -2,6 +2,7 @@
 var openDate = 1;
 var maploaded = false;
 var petitionloaded = false;
+var petitionID;
 
 function initPetition() {
     initDB();
@@ -99,14 +100,28 @@ function fetchPetiton() {
             var users = snapshot.val();
             var petitions = [];
 
+
+
+            var params = window.location.search.substring(1).split("&");
+            for (var p in params) {
+                if (params[p].split("=")[0] == "id")
+                    petitionID = params[p].split("=")[1];
+            }
+
+            if (!users[petitionID]) {
+                alert("존재하지 않은 탄원서입니다!")
+                return;
+            }
+
             // DEBUGGING purpose
-            var petitionID = "GP9Qmglg";
+            // petitionID = "GP9Qmglg";
 
             displayPetition({
                 'title': users[petitionID].title,
                 'content': users[petitionID].content,
                 'time-range': users[petitionID]["time-range"]
             });
+
 
             center = {
                 lat: users[petitionID].latitude,
@@ -127,7 +142,7 @@ function fetchPetiton() {
 }
 
 function displayPetition(inResponse) {
-    $("#title").text(inResponse['title'] + $("#title").text());
+    $("#title").text(inResponse['title'] + " (case #: " + petitionID + ")");
     $('#content').text(inResponse['content']);
 }
 
