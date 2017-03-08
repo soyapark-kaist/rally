@@ -11,21 +11,52 @@
 
     <title>Rally</title>
     <script type="text/javascript" src="js/jquery.min.js"></script>
-
-    <script type="text/javascript" src="js/rally.js"></script>
-    <script type="text/javascript" src="js/petition.js"></script>
-
     <!-- Google API -->
     <script src="https://www.gstatic.com/firebasejs/3.6.7/firebase.js"></script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCByCLtjJ9BAR29-HXHHDBU8DWCyyuA_CE&callback=initMap"></script>
     <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
     </script>
+
     <script src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/jquery.timepicker.min.js"></script>
     <script type="text/javascript" src="js/bootstrap-datepicker.js"></script>
 
     <script src="js/kube.min.js"></script>
     <link rel="stylesheet" href="css/kube.min.css" />
+
+    <!-- Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js', {
+                    scope: '.'
+                })
+                .then(function(registration) {
+                    console.log('Service Worker Registered');
+                });
+
+            navigator.serviceWorker.ready.then(function(registration) {
+                console.log('Service Worker Ready');
+            });
+        }
+
+        (function(i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function() {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-59325548-2', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+    <script type="text/javascript" src="js/rally.js"></script>
+    <script type="text/javascript" src="js/petition.js"></script>
+
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -265,7 +296,7 @@
 
     <!-- /container -->
 
-
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCByCLtjJ9BAR29-HXHHDBU8DWCyyuA_CE&callback=initMap"></script>
 
 </body>
 

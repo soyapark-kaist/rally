@@ -23,12 +23,14 @@ self.addEventListener('install', e => {
     e.waitUntil(
         caches.open('airhorner').then(cache => {
             return cache.addAll([
+                    '512Mb.zip',
                     'collect.html',
+                    'map.html',
+                    'petition.html'
                     // '/index.html?homescreen=1',
                     // '/?homescreen=1',
                     // '/styles/main.css',
                     // '/scripts/main.min.js',
-                    '512Mb.zip'
                 ])
                 .then(() => self.skipWaiting());
         })
