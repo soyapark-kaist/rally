@@ -98,7 +98,7 @@ function doSubmit() {
     if (isValid) {
         createMap();
         initDB();
-        displayMap();
+        fetchMap();
         postUsers();
     }
 

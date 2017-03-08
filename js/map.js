@@ -1,7 +1,7 @@
 function initMap() {
     createMap();
     initDB();
-    displayMap();
+    fetchMap();
 
     centerMap();
 }

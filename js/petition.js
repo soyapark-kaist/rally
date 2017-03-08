@@ -104,7 +104,9 @@ function submit() {
         "latitude": $('#map').locationpicker("location").latitude,
         "longitude": $('#map').locationpicker("location").longitude,
         "time-range": $('#timeRange-start').val(),
-        "time-submission": new Date().toString()
+        "time-line": {
+            "submit": new Date().toString()
+        }
     });
 
     selectSignature();

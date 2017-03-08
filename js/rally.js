@@ -4,9 +4,10 @@ var kaist = {
 };
 var map, center;
 var infoWindow;
+var viewDate = 15; // Set how many dates for 
 
+/* Initialize map. */
 function createMap() {
-    /* Initialize map */
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 16
     });
@@ -24,7 +25,7 @@ function initDB() {
 }
 
 /* Fetch data points from DB & Push markers on the map. */
-function displayMap() {
+function fetchMap() {
     var playersRef = firebase.database().ref('users/');
     // Attach an asynchronous callback to read the data at our posts reference
     playersRef.on("value", function(snapshot) {
@@ -38,7 +39,7 @@ function displayMap() {
                     month = o.split("-")[1],
                     day = parseInt(o.split("-")[2]) + 1;
 
-                if (calculateDiffDate(new Date(year, month - 1, day), new Date()) < 15) {
+                if (calculateDiffDate(new Date(year, month - 1, day), new Date()) < viewDate) {
                     for (var u in users[o]) {
                         // debugger;
                         locations.push({
