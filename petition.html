@@ -22,6 +22,7 @@
 
     <script src="js/kube.min.js"></script>
     <link rel="stylesheet" href="css/kube.min.css" />
+    <script src="js/d3.min.js"></script>
 
     <!-- Service Worker -->
     <script>
@@ -56,7 +57,7 @@
 
     <script type="text/javascript" src="js/rally.js"></script>
     <script type="text/javascript" src="js/petition.js"></script>
-
+    <script type="text/javascript" src="js/donutChart.js"></script>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -73,35 +74,13 @@
     <!-- Custom styles for this template -->
     <link href="css/speedtest.css" rel="stylesheet">
     <link href="css/theme.css" rel="stylesheet">
+    <link href="css/petition.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-    <style>
-        .alert-info {
-            width: 100%;
-            margin-top: 10px;
-        }
-        
-        textarea {
-            width: 70%;
-        }
-        
-        .steps {
-            margin-top: 100px;
-        }
-        
-        #map {
-            height: 400px;
-            width: 100%;
-        }
-        
-        .timepicker {
-            width: 200px;
-        }
-    </style>
 </head>
 
 <body>
@@ -166,6 +145,31 @@
                     <h1>새 탄원서 시작하기</h1>
                 </div>
 
+                <h4>시간 대</h4>
+                <h6>시간 범위를 선택해보세요.</h6>
+                <div class="input-group bootstrap-timepicker timepicker">
+                    <input id="timeRange-start" type="text" class="form-control input-small" data-provide="timepicker" data-template="modal" data-minute-step="1" data-modal-backdrop="true">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+
+                    <input id="timeRange-end" type="text" class="form-control input-small" data-provide="timepicker" data-template="modal" data-minute-step="1" data-modal-backdrop="true" disabled>
+                    <span class="input-group-addon">까지</span>
+                </div>
+                <div class="input-group bootstrap-timepicker timepicker">
+                </div>
+
+                <h4>지역</h4>
+                <h6>마커를 움직여 청원하려는 지역을 선택해보세요.</h6>
+                <div id="map"></div>
+
+                <div style="text-align:center;margin-top:20px;">
+                    <button id="viewSignature" onclick="selectSignature()" type="button" class="btn btn-success btn-lg disabled" data-loading-text="Loading...">선택된 서명보기</button>
+                </div>
+
+                <div id="stat">
+                    <p id="number"></p>
+                    <div id="application"></div>
+                </div>
+
                 <form class="form-inline">
                     <h4>제목</h4>
                     <div class="form-group">
@@ -182,35 +186,21 @@
                 <div class="alert alert-info" role="alert">
                     <strong>Describe the people involved and the problem they are facing</strong> Readers are most likely to take action when they understand who is affected.
                 </div>
-
-                <h4>지역</h4>
-                <h6>마커를 움직여 청원하려는 지역을 선택해보세요.</h6>
-                <div id="map"></div>
-
-                <h4>시간 대</h4>
-                <h6>시간 범위를 선택해보세요.</h6>
-                <div class="input-group bootstrap-timepicker timepicker">
-                    <input id="timeRange-start" type="text" class="form-control input-small" data-provide="timepicker" data-template="modal" data-minute-step="1" data-modal-backdrop="true">
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-
-                    <input id="timeRange-end" type="text" class="form-control input-small" data-provide="timepicker" data-template="modal" data-minute-step="1" data-modal-backdrop="true" disabled>
-                    <span class="input-group-addon">까지</span>
-                </div>
-                <div class="input-group bootstrap-timepicker timepicker">
-                </div>
             </div>
             <!-- /post -->
 
-            <button onclick="preview()" class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            <div id="finalStage">
+                <button onclick="preview()" class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                             미리보기
                             </button>
-            <div class="collapse" id="collapseExample">
-                <div class="well" id="preview">
-                    est
+                <div class="collapse" id="collapseExample">
+                    <div class="well" id="preview">
+                        est
+                    </div>
                 </div>
+                <button id="submitSection" class="btn btn-default" type="submit" onclick="submit()">제출</button>
             </div>
-            <button id="submitSection" class="btn btn-default" type="submit" onclick="submit()">제출</button>
-            <!-- Post -->
+
             <!--<div class="post">-->
             <!-- Heading -->
             <!--<a href="#">
@@ -275,19 +265,19 @@
 
     <footer>
         <div class="container">
-            <!--<div class="units-row">
-                <div class="unit-50">
+            <div class="units-row">
+                <!--<div class="unit-50">
                     <button class="btn btn-black"><i class="fa fa-arrow-left"></i> PREVIOUS</button>
-                </div>
+                </div>-->
                 <div class="unit-50">
                     <ul class="social list-flat right">
-                        <li><a href="mailto:afnizarhilmi@gmail.com"><i class="fa fa-send"></i></a></li>
-                        <li><a href="http://twitter.com/flamekaizar"><i class="fa fa-twitter"></i></a></li>
+                        <li><a href="mailto:kixlab.rally@gmail.com"><i class="fa fa-send"></i></a></li>
+                        <!--<li><a href="http://twitter.com/flamekaizar"><i class="fa fa-twitter"></i></a></li>
                         <li><a href="http://dribbble.com/flamekaizar"><i class="fa fa-dribbble"></i></a></li>
-                        <li><a href="http://behance.com/flamekaizar"><i class="fa fa-behance"></i></a></li>
+                        <li><a href="http://behance.com/flamekaizar"><i class="fa fa-behance"></i></a></li>-->
                     </ul>
                 </div>
-            </div>-->
+            </div>
             <p class="text-centered foot-cp">
                 <a href="#">지원: 학부총학생회,정보통신팀</a>
             </p>

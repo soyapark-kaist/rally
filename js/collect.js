@@ -76,6 +76,8 @@ function collectData() {
         "<br> Upload: " + $(".data.upload").text() +
         "<br> ping: " + $("#speedo-ping .data .time").text() + " ms" +
         "<br> IP address: " + $(".ip-address").text() +
+        "<br> OS: " + $(".operation-system").text() +
+        "<br> web: " + $(".browser-name").text() +
         "<br> Activity: " + $(".activity.select img").attr("type"));
 }
 
@@ -130,6 +132,8 @@ function postUsers() {
                 "ping": $("#speedo-ping .data .time").text(),
                 "speed": $("input[name='speed']:checked").val(),
                 "consistency": $("input[name='consistency']:checked").val(),
+                "os": $(".operation-system").text(),
+                "web": $(".browser-name").text(),
                 "time": new Date().toString()
             });
 

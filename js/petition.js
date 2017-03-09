@@ -1,3 +1,5 @@
+var dbLoaded = false;
+
 function initMap() {
     createMap();
 
@@ -22,6 +24,8 @@ function initLocationPicker() {
     }
     script.src = src;
     document.getElementsByTagName('head')[0].appendChild(script);
+
+
 }
 
 function displayLocationPicker() {
@@ -53,37 +57,6 @@ function displayLocationPicker() {
     }
 }
 
-function selectSignature() {
-    var playersRef = firebase.database().ref('users/');
-    // Attach an asynchronous callback to read the data at our posts reference
-    playersRef.on("value", function(snapshot) {
-            var users = snapshot.val();
-            var datas = [];
-
-            for (var o in users) {
-                var lat = users[o].latitude,
-                    lng = users[o].longitude;
-
-                if ((Math.abs($('#map').locationpicker("location").latitude - lat) <= 0.001) && (Math.abs($('#map').locationpicker("location").longitude - lng) <= 0.001)) {
-                    // then include the signature
-                    datas.push(users[o]);
-                }
-
-                console.log(users[o])
-                console.log(users[o].activity)
-            }
-
-            console.log(datas);
-        },
-        function(errorObject) {
-            console.log("The read failed: " + errorObject.code);
-        });
-    // 0.001
-
-
-
-}
-
 function preview() {
     $("#preview").html(
         "title: " + $("#title").val() +
@@ -94,8 +67,6 @@ function preview() {
 }
 
 function submit() {
-    initDB();
-
     var petitionID = generateID(8);
     var playersRef = firebase.database().ref("petition/" + petitionID);
 
@@ -109,23 +80,83 @@ function submit() {
             "submit": new Date().toString()
         }
     }, function(error) {
-        // Callback comes here
         if (error) {
             console.log(error);
         } else {
-            var params = { id: petitionID };
-            var p = jQuery.param(params);
-
-            var newUrl = window.location.href.split("rally/")[0] + "rally/timeline.html?" + p;
-            window.location.replace(newUrl);
+            // when post to DB is successful 
+            routeToTimeline(petitionID);
         }
 
     });
 
     selectSignature();
+}
 
+function selectSignature() {
+    if (!dbLoaded) {
+        initDB();
+        dbLoaded = true;
+    }
 
-    // alert("탄원서가 정보통신팀에 제출되었습니다!");
+    var $btn = $('#viewSignature').button('loading');
+
+    var playersRef = firebase.database().ref('users/');
+    // Attach an asynchronous callback to read the data at our posts reference
+    playersRef.on("value", function(snapshot) {
+            var users = snapshot.val();
+            var datas = {};
+
+            for (var o in users) {
+                for (var u in users[o]) {
+                    var hour = new Date(users[o][u].time);
+                    hour = hour.getHours();
+
+                    var hour_range = $('#timeRange-start').val().split(":")[0];
+                    if (!(hour_range <= hour && hour < hour_range + 3)) {
+                        continue;
+                    }
+
+                    var lat = users[o][u].latitude,
+                        lng = users[o][u].longitude;
+
+                    if ((Math.abs($('#map').locationpicker("location").latitude - lat) <= 0.0014) && (Math.abs($('#map').locationpicker("location").longitude - lng) <= 0.0014)) {
+                        // then include the signature
+                        var act = users[o][u].activity;
+                        if (datas[act])
+                            datas[act] += 1;
+                        else
+                            datas[act] = 1;
+                    }
+
+                }
+            }
+
+            console.log(datas);
+            var m = [],
+                cnt = 0;
+            for (var d in datas) {
+                m.push({ "label": d, "population": datas[d] });
+                cnt += datas[d];
+            }
+            $("#number").text("총 " + cnt + "개");
+            drawChart("#application", m);
+
+            $btn.button('reset');
+            $("#stat").css("display", "block");
+            $("#finalStage").css("visibility", "visible");
+        },
+        function(errorObject) {
+            alert("The read failed: " + errorObject.code);
+            $btn.button('reset');
+        });
+}
+
+function routeToTimeline(inPetitionID) {
+    var params = { id: inPetitionID };
+    var p = jQuery.param(params);
+
+    var newUrl = window.location.href.split("rally/")[0] + "rally/timeline.html?" + p;
+    window.location.replace(newUrl);
 }
 
 function initTimeRangeWidget() {
@@ -134,7 +165,14 @@ function initTimeRangeWidget() {
         'step': 60,
         'timeFormat': 'H:i'
     });
+
+    // In case, time is selected before reload.
+    if ($(this).val() != "")
+        $("#viewSignature").removeClass("disabled");
+
     $('#timeRange-start').on('changeTime', function() {
+        if ($(this).val() != "")
+            $("#viewSignature").removeClass("disabled");
         var dstTime = (parseInt($(this).val().split(":")[0]) + 3) % 24;
         $('#timeRange-end').attr("placeholder", dstTime.toString() + ":00");
         //text($(this).val());
