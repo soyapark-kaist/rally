@@ -167,7 +167,7 @@ function initTimeRangeWidget() {
     });
 
     // In case, time is selected before reload.
-    if ($(this).val() != "")
+    if ($('#timeRange-start').val() != "")
         $("#viewSignature").removeClass("disabled");
 
     $('#timeRange-start').on('changeTime', function() {
