@@ -1,6 +1,6 @@
 var kaist = {
-    lat: 36.3694,
-    lng: 127.3640
+    lat: 36.371,
+    lng: 127.3624
 };
 var map, center;
 var infoWindow;
@@ -9,7 +9,7 @@ var viewDate = 15; // Set how many dates for
 /* Initialize map. */
 function createMap() {
     map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 16
+        zoom: 15
     });
 }
 /* Initialize Firebase. */
