@@ -173,13 +173,7 @@ function selectSignature() {
     return false;
 }
 
-function routeToTimeline(inPetitionID) {
-    var params = { id: inPetitionID };
-    var p = jQuery.param(params);
 
-    var newUrl = window.location.href.split("rally/")[0] + "rally/timeline.html?" + p;
-    window.location.replace(newUrl);
-}
 
 function initTimeRangeWidget() {
     /* Add time range plug-in. */

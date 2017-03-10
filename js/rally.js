@@ -111,6 +111,14 @@ function calculateDiffDate(inDate1, inDate2) {
     return Math.ceil(Math.abs(inDate1.getTime() - inDate2.getTime()) / (1000 * 3600 * 24));
 }
 
+function routeToTimeline(inPetitionID) {
+    var params = { id: inPetitionID };
+    var p = jQuery.param(params);
+
+    var newUrl = window.location.href.split("rally/")[0] + "rally/timeline.html?" + p;
+    window.location.replace(newUrl);
+}
+
 // function calcTime(city, offset) {
 //     // create Date object for current location
 //     var d = new Date();

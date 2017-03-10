@@ -6,7 +6,20 @@ var petitionID, hour_range;
 
 function initPetition() {
     initDB();
-    fetchPetiton();
+
+    var receiving = false;
+    var params = window.location.search.substring(1).split("&");
+    for (var p in params) {
+        if (params[p].split("=")[0] == "id")
+            petitionID = params[p].split("=")[1];
+
+        if (params[p].split("=")[0] == "r3v") {
+            receiving = true;
+        }
+
+    }
+
+    fetchPetiton(receiving);
     // initTimeline();
 }
 
@@ -45,10 +58,12 @@ function initTimeline(inTimeline) {
 
     if (inTimeline["receive"]) {
         receivedDate = new Date(inTimeline["receive"]);
-        var tomorrow = new Date(+receivedDate);
-        tomorrow.setMinutes(receivedDate.getMinutes() + 1);
 
-        rows.push({ id: 'receive', content: "탄원서 제출/서명 모집 중", start: receivedDate, end: tomorrow, group: 'school', className: 'positive' });
+        var tomorrow = new Date(+receivedDate);
+        tomorrow.setMinutes(receivedDate.getMinutes() + 120);
+        receivedDate.setMinutes(receivedDate.getMinutes() - 120);
+
+        rows.push({ id: 'receive', content: "수신", start: receivedDate, end: tomorrow, group: 'school', className: 'negative' });
 
         cnt += 1;
     }
@@ -87,6 +102,8 @@ function initTimeline(inTimeline) {
                 selectSignature();
             }
             $("#petition").slideDown();
+        } else {
+            $("#petition").css("display", "none");
         }
     });
 
@@ -94,22 +111,38 @@ function initTimeline(inTimeline) {
 }
 
 /* Fetch petitions. */
-function fetchPetiton() {
+function fetchPetiton(inReceiving) {
     var playersRef = firebase.database().ref('petition/');
     // Attach an asynchronous callback to read the data at our posts reference
     playersRef.on("value", function(snapshot) {
             var users = snapshot.val();
             var petitions = [];
 
-
-            var params = window.location.search.substring(1).split("&");
-            for (var p in params) {
-                if (params[p].split("=")[0] == "id")
-                    petitionID = params[p].split("=")[1];
-            }
-
             if (!users[petitionID]) {
                 alert("존재하지 않은 탄원서입니다!")
+                return;
+            }
+
+
+            if (inReceiving) {
+                var pRef = firebase.database().ref("petition/" + petitionID);
+
+                pRef.update({
+                    "time-line": {
+                        "submit": users[petitionID]["time-line"]["submit"],
+                        "receive": new Date().toString()
+                    }
+                }, function(error) {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        // when post to DB is successful 
+                        routeToTimeline(petitionID);
+                    }
+
+                });
+
+                //reload
                 return;
             }
 
