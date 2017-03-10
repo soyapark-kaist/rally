@@ -1,6 +1,6 @@
 function drawChart(inSelector, inData) {
     $("#application svg").remove();
-    var width = 300,
+    var width = 360,
         height = 300,
         radius = Math.min(width, height) / 2;
 
