@@ -1,0 +1,241 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>어드민 페이지</title>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <style>
+        iframe {
+            width: 100%;
+            border: 0;
+            min-height: 80%;
+            height: 600px;
+            display: flex;
+        }
+    </style>
+
+    <script src="https://www.gstatic.com/firebasejs/3.6.7/firebase.js"></script>
+</head>
+
+<body onload="initDB()">
+    <div class="container">
+        <h1>탄원서 목록</h1>
+
+        <!--<a href="#compose-modal" data-toggle="modal" id="compose-button" class="btn btn-primary pull-right hidden">Compose</a>-->
+
+        <button id="authorize-button" class="btn btn-primary hidden">Authorize</button>
+
+        <table class="table table-striped table-inbox hidden">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Date/Time</th>
+                    <th>Progress</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div class="modal fade" id="compose-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+                    <h4 class="modal-title">Compose</h4>
+                </div>
+                <form onsubmit="return sendEmail();">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input type="email" class="form-control" id="compose-to" placeholder="To" required />
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="compose-subject" placeholder="Subject" required />
+                        </div>
+
+                        <div class="form-group">
+                            <textarea class="form-control" id="compose-message" placeholder="Message" rows="10" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" id="send-button" class="btn btn-primary">Send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+        var clientId = '785081542704-6gbo1ku7lhdok50pai52n28adlfgpjva.apps.googleusercontent.com';
+        var apiKey = 'AIzaSyD9v41gd511lFHseGqCXwNyfpQyArNgZLQ';
+        var scopes =
+            'https://www.googleapis.com/auth/gmail.readonly ' +
+            'https://www.googleapis.com/auth/gmail.send';
+
+        function initDB() {
+            var config = {
+                apiKey: "AIzaSyD9v41gd511lFHseGqCXwNyfpQyArNgZLQ",
+                authDomain: "hello-3239c.firebaseapp.com",
+                databaseURL: "https://hello-3239c.firebaseio.com",
+                storageBucket: "hello-3239c.appspot.com",
+                messagingSenderId: "785081542704"
+            };
+            firebase.initializeApp(config);
+
+            var playersRef = firebase.database().ref("petition/");
+
+            // Attach an asynchronous callback to read the data at our posts reference
+            playersRef.on("value", function(snapshot) {
+                    var users = snapshot.val();
+                    var datas = {},
+                        download = [],
+                        upload = [];
+
+                    for (var o in users) {
+                        var submitDate = new Date(users[o]["time-line"]["submit"]);
+                        var passed = new Date() > submitDate.setDate(submitDate.getDate() + 1);
+
+                        appendRow(users[o].title, users[o]["time-line"]["submit"], passed ? '<button ' + 'id=' + o +
+                            ' onclick="sendEmail(this)">완료, 메일 보내기</button>' : 'In progress');
+
+                    }
+                },
+                function(errorObject) {
+                    alert("The read failed: " + errorObject.code);
+                });
+        }
+
+        function appendRow(inTitle, inDate, inProgress) {
+            $('.table-inbox tbody').append(
+                '<tr>\
+            <td>' + inTitle + '</td>\
+            <td>' + inDate + '</td>\
+            <td>' + inProgress + '</td>\
+          </tr>'
+            );
+        }
+
+        function handleClientLoad() {
+            gapi.client.setApiKey(apiKey);
+            window.setTimeout(checkAuth, 1);
+        }
+
+        function checkAuth() {
+            gapi.auth.authorize({
+                client_id: clientId,
+                scope: scopes,
+                immediate: true
+            }, handleAuthResult);
+        }
+
+        function handleAuthClick() {
+            gapi.auth.authorize({
+                client_id: clientId,
+                scope: scopes,
+                immediate: false
+            }, handleAuthResult);
+            return false;
+        }
+
+        function handleAuthResult(authResult) {
+            if (authResult && !authResult.error) {
+                loadGmailApi();
+                $('#authorize-button').remove();
+                $('.table-inbox').removeClass("hidden");
+                $('#compose-button').removeClass("hidden");
+            } else {
+                $('#authorize-button').removeClass("hidden");
+                $('#authorize-button').on('click', function() {
+                    handleAuthClick();
+                });
+            }
+        }
+
+        function loadGmailApi() {
+            gapi.client.load('gmail', 'v1', null);
+        }
+
+        function sendEmail(inID) {
+            $('#send-button').addClass('disabled');
+
+            sendMessage({
+                    'To': 'noreply.kixlab.rally@gmail.com',
+                    'Subject': '[no-reply]Rally: new petition has arrived.'
+                },
+                'Rally에서 새 탄원이 도착했습니다. https://kixlab.org/rally/timeline.html?id=' + inID.id,
+                notifySend
+            );
+
+            return false;
+        }
+
+        function notifySend() {
+            alert("정보통신팀에 메일 전송!")
+        }
+
+        function sendMessage(headers_obj, message, callback) {
+            var email = '';
+
+            for (var header in headers_obj)
+                email += header += ": " + headers_obj[header] + "\r\n";
+
+            email += "\r\n" + message;
+
+            var sendRequest = gapi.client.gmail.users.messages.send({
+                'userId': 'me',
+                'resource': {
+                    'raw': window.btoa(unescape(encodeURIComponent(email))).replace(/\+/g, '-').replace(/\//g, '_')
+                }
+            });
+
+            return sendRequest.execute(callback);
+        }
+
+        function getHeader(headers, index) {
+            var header = '';
+            $.each(headers, function() {
+                if (this.name.toLowerCase() === index.toLowerCase()) {
+                    header = this.value;
+                }
+            });
+            return header;
+        }
+
+        function getBody(message) {
+            var encodedBody = '';
+            if (typeof message.parts === 'undefined') {
+                encodedBody = message.body.data;
+            } else {
+                encodedBody = getHTMLPart(message.parts);
+            }
+            encodedBody = encodedBody.replace(/-/g, '+').replace(/_/g, '/').replace(/\s/g, '');
+            return decodeURIComponent(escape(window.atob(encodedBody)));
+        }
+
+        function getHTMLPart(arr) {
+            for (var x = 0; x <= arr.length; x++) {
+                if (typeof arr[x].parts === 'undefined') {
+                    if (arr[x].mimeType === 'text/html') {
+                        return arr[x].body.data;
+                    }
+                } else {
+                    return getHTMLPart(arr[x].parts);
+                }
+            }
+            return '';
+        }
+    </script>
+    <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+</body>
+
+</html>
