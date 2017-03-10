@@ -29,32 +29,14 @@ function initLocationPicker() {
 }
 
 function displayLocationPicker() {
-    // Try HTML5 geolocation.
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            center = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            };
-
-            $('#map').locationpicker({
-                location: {
-                    latitude: center.lat,
-                    longitude: center.lng
-                },
-                radius: 200
-            }, map);
-            map.setZoom(16);
-
-            // infoWindow.setPosition(pos);
-            // infoWindow.setContent('Location found.');
-        }, function() {
-            handleLocationError(true, infoWindow, map.getCenter());
-        });
-    } else {
-        // Browser doesn't support Geolocation
-        handleLocationError(false, infoWindow, map.getCenter());
-    }
+    $('#map').locationpicker({
+        location: {
+            latitude: kaist.lat,
+            longitude: kaist.lng
+        },
+        radius: 200
+    }, map);
+    map.setZoom(16);
 }
 
 function preview() {
