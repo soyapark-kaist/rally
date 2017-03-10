@@ -70,8 +70,6 @@ function submit() {
         }
 
     });
-
-    selectSignature();
 }
 
 function selectSignature() {
@@ -86,7 +84,9 @@ function selectSignature() {
     // Attach an asynchronous callback to read the data at our posts reference
     playersRef.on("value", function(snapshot) {
             var users = snapshot.val();
-            var datas = {};
+            var datas = {},
+                download = [],
+                upload = [];
 
             for (var o in users) {
                 for (var u in users[o]) {
@@ -101,31 +101,48 @@ function selectSignature() {
                     var lat = users[o][u].latitude,
                         lng = users[o][u].longitude;
 
-                    if ((Math.abs($('#map').locationpicker("location").latitude - lat) <= 0.0014) && (Math.abs($('#map').locationpicker("location").longitude - lng) <= 0.0014)) {
+                    if ((Math.abs($('#map').locationpicker("location").latitude - lat) <= 0.0016) && (Math.abs($('#map').locationpicker("location").longitude - lng) <= 0.0016)) {
                         // then include the signature
                         var act = users[o][u].activity;
                         if (datas[act])
                             datas[act] += 1;
                         else
                             datas[act] = 1;
+
+                        download.push(parseFloat(users[o][u].download));
+                        upload.push(parseFloat(users[o][u].upload));
                     }
 
                 }
             }
 
-            console.log(datas);
-            var m = [],
-                cnt = 0;
-            for (var d in datas) {
-                m.push({ "label": d, "population": datas[d] });
-                cnt += datas[d];
-            }
-            $("#number").text("총 " + cnt + "개");
-            drawChart("#application", m);
+            if (download.length > 0) {
+                /* Data preparation for application pie chart. */
+                var m = [],
+                    cnt = 0;
+                for (var d in datas) {
+                    m.push({ "label": d, "population": datas[d] });
+                    cnt += datas[d];
+                }
 
-            $btn.button('reset');
-            $("#stat").css("display", "block");
+                drawChart("#application", m);
+
+                var sum = download.reduce(function(a, b) { return a + b; });
+                var downAvg = sum / download.length;
+
+                var sum = upload.reduce(function(a, b) { return a + b; });
+                var upAvg = sum / upload.length;
+
+                $("#number").text("총 " + cnt + "개");
+                $("#bandwidth").text("평균 download / upload : " + downAvg + " / " + upAvg + "Mbps");
+                $("#stat").css("display", "block");
+            } else {
+                $("#number").text("해당 범위에 아직 서명이 존재하지 않습니다. 친구들에게 홍보해 더 많은 싸인을 모아보세요!");
+                $("#stat").css("display", "none");
+            }
+
             $("#finalStage").css("visibility", "visible");
+            $btn.button('reset');
         },
         function(errorObject) {
             alert("The read failed: " + errorObject.code);
@@ -150,11 +167,11 @@ function initTimeRangeWidget() {
 
     // In case, time is selected before reload.
     if ($('#timeRange-start').val() != "")
-        $("#viewSignature").removeClass("disabled");
+        $("#viewSignature").prop('disabled', false);
 
     $('#timeRange-start').on('changeTime', function() {
         if ($(this).val() != "")
-            $("#viewSignature").removeClass("disabled");
+            $("#viewSignature").prop('disabled', false);
         var dstTime = (parseInt($(this).val().split(":")[0]) + 3) % 24;
         $('#timeRange-end').attr("placeholder", dstTime.toString() + ":00");
         //text($(this).val());
