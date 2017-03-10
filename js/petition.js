@@ -1,17 +1,7 @@
 var dbLoaded = false;
 
 function initListener() {
-    $("#move-title").click(function(e) {
-        $("html, body").animate({
-            scrollTop: $("#question-title").position().top
-        }, 1500);
-    })
 
-    $("#move-content").click(function(e) {
-        $("html, body").animate({
-            scrollTop: $("#question-content").position().top
-        }, 1500);
-    })
 }
 
 function initMap() {
@@ -62,7 +52,7 @@ function preview() {
         "<br>time-range: " + $('#timeRange-start').val());
 }
 
-function submit() {
+function postPetition() {
     var petitionID = generateID(8);
     var playersRef = firebase.database().ref("petition/" + petitionID);
 
@@ -79,7 +69,7 @@ function submit() {
         isValid = false;
     }
 
-    if (!isValid) return;
+    if (!isValid) return false;
 
     playersRef.set({
         "title": $("#title").val(),
@@ -99,6 +89,8 @@ function submit() {
         }
 
     });
+
+    return false;
 }
 
 function selectSignature() {
@@ -177,6 +169,8 @@ function selectSignature() {
             alert("The read failed: " + errorObject.code);
             $btn.button('reset');
         });
+
+    return false;
 }
 
 function routeToTimeline(inPetitionID) {

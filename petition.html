@@ -58,12 +58,14 @@
     <script type="text/javascript" src="js/petition.js"></script>
     <script type="text/javascript" src="js/donutChart.js"></script>
 
+
+    <link rel="stylesheet" href="css/kube.min.css" />
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap theme -->
     <link href="css/bootstrap-theme.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/kube.min.css" />
+
     <link rel="stylesheet" type="text/css" href="css/jquery.timepicker.css" />
 
     <link rel="stylesheet" type="text/css" href="css/bootstrap-datepicker.css" />
@@ -145,82 +147,72 @@
                     <h1>새 탄원서 시작하기</h1>
                 </div>
 
-                <h4>시간 대</h4>
-                <h6>시간 범위를 선택해보세요.</h6>
-                <div class="input-group bootstrap-timepicker timepicker">
-                    <input id="timeRange-start" type="text" class="form-control input-small" data-provide="timepicker" data-template="modal" data-minute-step="1" data-modal-backdrop="true">
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                <form action="" onsubmit="return selectSignature();">
+                    <h4>시간 대</h4>
+                    <h6>시간 범위를 선택해보세요.</h6>
+                    <div class="input-group bootstrap-timepicker timepicker">
+                        <input id="timeRange-start" type="text" class="form-control input-small" data-provide="timepicker" data-template="modal" data-minute-step="1" data-modal-backdrop="true" required>
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
 
-                    <input id="timeRange-end" type="text" class="form-control input-small" data-provide="timepicker" data-template="modal" data-minute-step="1" data-modal-backdrop="true" disabled>
-                    <span class="input-group-addon">까지</span>
-                </div>
-                <div class="input-group bootstrap-timepicker timepicker">
-                </div>
+                        <input id="timeRange-end" type="text" class="form-control input-small" data-provide="timepicker" data-template="modal" data-minute-step="1" data-modal-backdrop="true" disabled>
+                        <span class="input-group-addon">까지</span>
+                    </div>
+                    <div class="input-group bootstrap-timepicker timepicker">
+                    </div>
 
-                <h4>지역</h4>
-                <h6>마커를 움직여 청원하려는 지역을 선택해보세요.</h6>
-                <div id="map"></div>
+                    <h4>지역</h4>
+                    <h6>마커를 움직여 청원하려는 지역을 선택해보세요.</h6>
+                    <div id="map"></div>
 
-                <div style="text-align:center;margin-top:20px;">
-                    <button id="viewSignature" onclick="selectSignature()" type="button" class="btn btn-success btn-lg" data-loading-text="Loading..." disabled>선택된 서명보기</button>
-                </div>
+                    <div style="text-align:center;margin-top:20px;">
+                        <button type="submit" id="viewSignature" class="btn btn-success btn-lg" data-loading-text="Loading...">선택된 서명보기</button>
+                    </div>
 
-                <p id="number"></p>
-                <div id="stat">
-                    <p id="bandwidth"></p>
-                    <div id="application"></div>
-                </div>
+                    <p id="number"></p>
+                    <div id="stat">
+                        <p id="bandwidth"></p>
+                        <div id="application"></div>
+                    </div>
 
-                <form class="form-inline">
-                    <h4 id="question-id">제목</h4>
+                </form>
+
+                <form action="" onsubmit="return postPetition();">
                     <div class="form-group">
                         <label class="sr-only" for="exampleInputEmail3">Title</label>
-                        <input class="form-control" id="title" placeholder="Title">
+                        <input type="text" class="form-control" id="title" placeholder="Title" required />
                     </div>
                     <div class="alert alert-info" role="alert">
                         <strong>Keep it short and to the point</strong> Example: "Prepare for stable and perfect video conferencing meeting"
                     </div>
-                </form>
 
-                <h4 id="question-content">내용</h4>
-                <textarea class="form-control" rows="3" id="content" placeholder="Explain the problem you want to solve"></textarea>
-                <div class="alert alert-info" role="alert">
-                    <strong>Describe the people involved and the problem they are facing</strong> Readers are most likely to take action when they understand who is affected.
-                </div>
-            </div>
-            <!-- /post -->
+                    <textarea class="form-control" rows="3" id="content" placeholder="Explain the problem you want to solve" required></textarea>
+                    <div class="alert alert-info" role="alert">
+                        <strong>Describe the people involved and the problem they are facing</strong> Readers are most likely to take action when they understand who is affected.
+                    </div>
 
-            <!-- Post -->
-            <div class="post">
-                <div class="in-content">
-                    <div class="row">
-                        <div id="finalStage">
-                            <button onclick="preview()" class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    <div id="finalStage">
+                        <button onclick="preview()" class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                             미리보기
                             </button>
-                            <div class="collapse" id="collapseExample">
-                                <div class="well" id="preview">
-                                    est
-                                </div>
+                        <div class="collapse" id="collapseExample">
+                            <div class="well" id="preview">
+                                est
                             </div>
-                            <button id="submitSection" class="btn btn-default" type="submit" onclick="submit()">제출</button>
                         </div>
-
-                        <div class="form-alert alert alert-warning" id="form-title" role="alert">
-                            <strong>"제목"을 입력해 주세요.</strong>
-                            <!--<a id="move-title">이동하기</a>-->
-                        </div>
-                        <div class="form-alert alert alert-warning" id="form-content" role="alert">
-                            <strong>"내용"을 입력해 주세요.</strong>
-                            <!--<a id="move-content">이동하기</a>-->
-                        </div>
-
+                        <button type="submit" id="submitSection" class="btn btn-default">제출</button>
                     </div>
-                </div>
+
+                    <div class="form-alert alert alert-warning" id="form-title" role="alert">
+                        <strong>"제목"을 입력해 주세요.</strong>
+                        <!--<a id="move-title">이동하기</a>-->
+                    </div>
+                    <div class="form-alert alert alert-warning" id="form-content" role="alert">
+                        <strong>"내용"을 입력해 주세요.</strong>
+                        <!--<a id="move-content">이동하기</a>-->
+                    </div>
+                </form>
             </div>
             <!-- /post -->
-
-
 
             <!--<div class="post">-->
             <!-- Heading -->
@@ -289,7 +281,7 @@
             <div class="units-row">
                 <!--<div class="unit-50">
                     <button class="btn btn-black"><i class="fa fa-arrow-left"></i> PREVIOUS</button>
-                </div>-->
+                    </div>-->
                 <div class="unit-50">
                     <ul class="social list-flat right">
                         <li><a href="mailto:kixlab.rally@gmail.com"><i class="fa fa-send"></i></a></li>
