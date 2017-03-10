@@ -1,5 +1,19 @@
 var dbLoaded = false;
 
+function initListener() {
+    $("#move-title").click(function(e) {
+        $("html, body").animate({
+            scrollTop: $("#question-title").position().top
+        }, 1500);
+    })
+
+    $("#move-content").click(function(e) {
+        $("html, body").animate({
+            scrollTop: $("#question-content").position().top
+        }, 1500);
+    })
+}
+
 function initMap() {
     createMap();
 
@@ -51,6 +65,21 @@ function preview() {
 function submit() {
     var petitionID = generateID(8);
     var playersRef = firebase.database().ref("petition/" + petitionID);
+
+    /* Check whether all the question are filled. */
+    var isValid = true;
+
+    if ($("#title").val() == "") {
+        $("#form-title").css("display", "block");
+        isValid = false;
+    }
+
+    if ($("#content").val() == "") {
+        $("#form-content").css("display", "block");
+        isValid = false;
+    }
+
+    if (!isValid) return;
 
     playersRef.set({
         "title": $("#title").val(),
