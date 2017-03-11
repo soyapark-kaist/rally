@@ -1,4 +1,5 @@
 var dbLoaded = false;
+var isSafari = detectBrowser();
 
 function initListener() {
 
@@ -57,19 +58,25 @@ function postPetition() {
     var playersRef = firebase.database().ref("petition/" + petitionID);
 
     /* Check whether all the question are filled. */
-    var isValid = true;
+    if (isSafari) {
+        if ($("#title").val() == '') {
+            // alert("시간 대를 선택해주세요.");
 
-    if ($("#title").val() == "") {
-        $("#form-title").css("display", "block");
-        isValid = false;
+            $("#title").focus();
+            $("#form-title").css("display", "block");
+            // e.preventDefault();
+            return false;
+        }
+
+        if ($("#content").val() == '') {
+            // alert("시간 대를 선택해주세요.");
+
+            $("#content").focus();
+            $("#form-content").css("display", "block");
+            // e.preventDefault();
+            return false;
+        }
     }
-
-    if ($("#content").val() == "") {
-        $("#form-content").css("display", "block");
-        isValid = false;
-    }
-
-    if (!isValid) return false;
 
     playersRef.set({
         "title": $("#title").val(),
@@ -97,6 +104,17 @@ function selectSignature() {
     if (!dbLoaded) {
         initDB();
         dbLoaded = true;
+    }
+
+    if (isSafari) {
+        if ($("#timeRange-start").val() == '') {
+            alert("시간 대를 선택해주세요.");
+
+            $("#timeRange-start").focus();
+
+            // e.preventDefault();
+            return false;
+        }
     }
 
     var $btn = $('#viewSignature').button('loading');

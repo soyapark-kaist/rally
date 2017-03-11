@@ -1,29 +1,33 @@
-        .alert-info {
-            width: 100%;
-            margin-top: 10px;
-        }
-        
-        .form-alert {
-            display: none;
-        }
-        
-        textarea {
-            width: 70%;
-        }
-        
-        .activity:hover {
-            opacity: 0.5
-        }
-        
-        .unselect {
-            opacity: 0.1
-        }
-        
-        .select {
-            opacity: 1
-        }
-        
-        #map {
-            height: 400px;
-            width: 100%;
-        }
+.alert-info {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.form-alert {
+    display: none;
+}
+
+textarea {
+    width: 70%;
+}
+
+.activity:hover {
+    opacity: 0.5
+}
+
+.unselect {
+    opacity: 0.1
+}
+
+.select {
+    opacity: 1
+}
+
+#map {
+    height: 400px;
+    width: 100%;
+}
+
+#finalStage {
+    float: right;
+}
