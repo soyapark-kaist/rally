@@ -26,4 +26,5 @@ textarea {
 
 #finalStage {
     visibility: hidden;
+    float: right;
 }

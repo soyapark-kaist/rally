@@ -119,6 +119,12 @@ function routeToTimeline(inPetitionID) {
     window.location.replace(newUrl);
 }
 
+function detectBrowser() {
+    var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+    return isSafari;
+}
+
 // function calcTime(city, offset) {
 //     // create Date object for current location
 //     var d = new Date();
