@@ -174,11 +174,12 @@
                 </div>
             </div>-->
             <!-- /post -->
+            <div class="page-header">
+                <h1>데이터 서명 기여하기</h1>
+            </div>
 
             <div class="post">
-                <div class="page-header">
-                    <h1>인터넷 속도 측정</h1>
-                </div>
+                <h1>인터넷 속도 측정</h1>
             </div>
         </div>
 
@@ -304,7 +305,7 @@
 
                 <!-- Post -->
                 <div class="post">
-                    <div id="activitySection" class="page-header">
+                    <div id="activitySection">
                         <h1>현재 인터넷으로 하고 있는 활동은?</h1>
                     </div>
                     <div class="in-content">
@@ -351,16 +352,19 @@
                 <div class="post">
 
                     <div class="in-content">
-                        <div class="row" style="float: right;">
-                            <button onclick="collectData()" class="btn btn-default" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        <div class="row">
+                            <div id="finalStage">
+                                <button onclick="collectData()" class="btn btn-default" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                             미리보기
                             </button>
+                                <button id="submitSection" class="btn btn-primary" type="submit" onclick="doSubmit()">제출</button>
+                            </div>
+
                             <div class="collapse" id="collapseExample">
                                 <div class="well" id="preview">
                                     est
                                 </div>
                             </div>
-                            <button id="submitSection" class="btn btn-primary" type="submit" onclick="doSubmit()">제출</button>
                             <div style="color: gray"><i class="fa fa-map-marker" aria-hidden="true"></i> 위치정보 수집</div>
                             <div class="form-alert alert alert-warning" id="form-speed" role="alert">
                                 <strong>"인터넷 속도의 빠르기"를 선택해 주세요.</strong> <a id="move-speed">이동하기</a>

@@ -103,12 +103,12 @@
     <!-- Content -->
     <div class="content">
         <div class="container">
-            <!-- Post -->
-            <div class="post">
-                <div class="page-header">
-                    <h1>새 탄원서 시작하기</h1>
-                </div>
+            <div class="page-header">
+                <h1>새 탄원서 시작하기</h1>
+            </div>
 
+            <!-- Post -->
+            <div class="post" style="margin-top: 0px">
                 <form action="" onsubmit="return selectSignature();">
                     <h4>시간 대</h4>
                     <h6>시간 범위를 선택해보세요.</h6>
@@ -156,14 +156,15 @@
                         <button onclick="preview()" class="btn btn-default" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                             미리보기
                             </button>
-                        <div class="collapse" id="collapseExample">
-                            <div class="well" id="preview">
-                                est
-                            </div>
-                        </div>
+
                         <button type="submit" id="submitSection" class="btn btn-primary">제출</button>
                     </div>
 
+                    <div class="collapse" id="collapseExample">
+                        <div class="well" id="preview">
+                            est
+                        </div>
+                    </div>
                     <div class="form-alert alert alert-warning" id="form-title" role="alert">
                         <strong>"제목"을 입력해 주세요.</strong>
                         <!--<a id="move-title">이동하기</a>-->
