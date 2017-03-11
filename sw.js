@@ -25,7 +25,7 @@ self.addEventListener('install', e => {
             return cache.addAll([
                     '512Mb.zip',
                     'collect.html',
-                    'map.html',
+                    'vis.html',
                     'petition.html'
                     // '/index.html?homescreen=1',
                     // '/?homescreen=1',

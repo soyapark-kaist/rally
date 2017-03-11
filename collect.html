@@ -48,12 +48,14 @@
     </script>
 
     <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap.min.js"></script>
 
     <!-- Google API -->
     <script src="https://www.gstatic.com/firebasejs/3.6.7/firebase.js"></script>
     <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
     </script>
+
+    <script src="js/bootstrap.min.js"></script>
+
 
     <!-- Service Worker -->
     <script>
@@ -175,7 +177,7 @@
             </div>-->
             <!-- /post -->
             <div class="page-header">
-                <h1>데이터 서명 기여하기</h1>
+                <h1>데이터 서명하기</h1>
             </div>
 
             <div class="post">
@@ -288,7 +290,7 @@
             <div class="container">
                 <div style="margin-top:0px;" class="post">
                     <div class="in-content">
-                        <div class="row">
+                        <div id="internet-question" class="row">
                             <h4 id="question-speed">인터넷 속도의 빠르기</h4>
                             <input type="radio" name="speed" value="1" description="즉각적이다" checked> 즉각적이다<br>
                             <input type="radio" name="speed" value="2" description="클릭마다 지체가 있긴 하지만 쓸만하다"> 클릭마다 지체가 있긴 하지만 쓸만하다<br>
@@ -353,12 +355,11 @@
 
                     <div class="in-content">
                         <div class="row">
-                            <div id="finalStage">
+                            <form id="finalStage" action="" onsubmit="return postSignature();">
                                 <button onclick="collectData()" class="btn btn-default" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                            미리보기
-                            </button>
-                                <button id="submitSection" class="btn btn-primary" type="submit" onclick="doSubmit()">제출</button>
-                            </div>
+                            미리보기</button>
+                                <button type="submit" id="submitSection" class="btn btn-primary" data-loading-text="Loading...">제출</button>
+                            </form>
 
                             <div class="collapse" id="collapseExample">
                                 <div class="well" id="preview">

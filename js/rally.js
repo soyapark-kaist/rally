@@ -119,6 +119,14 @@ function routeToTimeline(inPetitionID) {
     window.location.replace(newUrl);
 }
 
+function routeToVis(inUserID) {
+    var params = { sig: inUserID };
+    var p = jQuery.param(params);
+
+    var newUrl = window.location.href.split("rally/")[0] + "rally/vis.html?" + p;
+    window.location.replace(newUrl);
+}
+
 function detectBrowser() {
     var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
