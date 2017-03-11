@@ -1,15 +1,5 @@
 function initListener() {
     /* INTERNET */
-    $(".speed li").click(function(e) {
-        $(this).siblings().removeClass("active");
-        $(this).addClass("active");
-    });
-
-    $(".consistency li").click(function(e) {
-        $(this).siblings().removeClass("active");
-        $(this).addClass("active");
-    });
-
     /* Scroll to activity section */
     $("#speedo-start").click(function() {
         document.documentElement.addEventListener('DOMAttrModified', function(e) {
@@ -17,7 +7,7 @@ function initListener() {
                 console.log("Test over. Download: " + $(".data.download").text() + ". Upload: " + $(".data.upload").text())
 
                 $("html, body").animate({
-                    scrollTop: $("#activitySection").position().top
+                    scrollTop: $("#question-speed").position().top
                 }, 2000);
             }
         }, false);
