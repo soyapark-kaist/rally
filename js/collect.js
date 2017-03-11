@@ -141,11 +141,13 @@ function postUsers() {
             });
         }, function() {
             console.log("Error geolocation");
+            alert('브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.');
             // handleLocationError(true, infoWindow, map.getCenter());
         });
     } else {
         // Browser doesn't support Geolocation
         console.log("Error geolocation; brower doesn't support");
+        alert('브라우저의 위치정보 수집이 불가합니다. 다른 브라우저에서 다시 시도해주세요.');
         // handleLocationError(false, infoWindow, map.getCenter());
     }
 
