@@ -7,6 +7,10 @@ body {
     margin-bottom: 50px
 }
 
+.icon-bar {
+    background-color: #ff6c40;
+}
+
 .container {
     margin: auto;
     max-width: 662px;
