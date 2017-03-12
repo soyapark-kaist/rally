@@ -80,19 +80,24 @@
 </head>
 
 <body onload="initVis()">
-    <!-- Introduction -->
-    <div class="intro">
-        <div class="container">
-            <div class="units-row">
-                <div class="unit-10">
-                    <img class="img-intro" src="img/support.png" alt="">
-                </div>
-                <div class="unit-90">
-                    <p class="p-intro">Rally! Make our community better again</p>
-                </div>
-            </div>
+    <!-- nav bar -->
+    <header class="navbar navbar-static-top bs-docs-nav" role="banner" style="margin-bottom: 0px;">
+        <div class="navbar-header">
+            <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".rally-navbar-collapse"></button>
+
+            <a href="./index.html" class="navbar-brand" style="padding:10px;">
+                <img alt="Rally" src="img/rally_brand.png" style="height: 100%;" />
+            </a>
         </div>
-    </div>
+        <nav class="collapse navbar-collapse rally-navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="./collect.html">데이터 서명하기</a></li>
+                <!--<li><a href="#">Visualization</a></li>-->
+                <li><a href="./petition.html">민원내기</a></li>
+            </ul>
+        </nav>
+    </header>
+    <!--/nav bar-->
 
     <!-- Content -->
     <div class="content">
