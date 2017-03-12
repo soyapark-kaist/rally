@@ -101,6 +101,9 @@
                         download = [],
                         upload = [];
 
+                    /* before append, remove previously added rows. */
+                    $('.table-inbox tbody').empty()
+
                     for (var o in users) {
                         var submitDate = new Date(users[o]["time-line"]["submit"]);
                         var passed = new Date() > submitDate.setDate(submitDate.getDate() + 1);

@@ -28,8 +28,7 @@ function initDB() {
 function fetchMap() {
     var playersRef = firebase.database().ref('users/');
     // Attach an asynchronous callback to read the data at our posts reference
-    playersRef.on("value", function(snapshot) {
-
+    playersRef.once("value").then(function(snapshot) {
             var users = snapshot.val();
             var locations = [];
             var activities = [];
