@@ -112,7 +112,7 @@ function calculateDiffDate(inDate1, inDate2) {
 }
 
 function routeToTimeline(inPetitionID, isAdmin) {
-    var params = isAdmin ? { adn: true } : { id: inPetitionID };
+    var params = isAdmin ? { adn: true, id: inPetitionID } : { id: inPetitionID };
     var p = jQuery.param(params);
 
     var newUrl = window.location.href.split("rally/")[0] + "rally/timeline.html?" + p;
