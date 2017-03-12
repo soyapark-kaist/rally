@@ -7,6 +7,10 @@ body {
     margin-bottom: 50px
 }
 
+.icon-bar {
+    background-color: #ff6c40;
+}
+
 .container {
     margin: auto;
     max-width: 662px;
@@ -119,8 +123,8 @@ p.p-intro:before {
 img.img-intro {
     border-radius: 100px;
     width: 47px;
-    background-color: #EF3A3A;
-    border: 1px solid #DC5227;
+    background-color: white;
+    border: 1.3px solid #ff6c40;
     -moz-box-shadow: inset .5px .9px 5px rgba(0, 0, 0, .05);
     -webkit-box-shadow: inset .5px .9px 5px rgba(0, 0, 0, .05);
     box-shadow: inset .5px .9px 5px rgba(0, 0, 0, .05);

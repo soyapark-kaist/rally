@@ -25,8 +25,9 @@ self.addEventListener('install', e => {
             return cache.addAll([
                     '512Mb.zip',
                     'collect.html',
-                    'vis.html',
-                    'petition.html'
+                    'visual.html',
+                    'petition.html',
+                    'js/rally.js'
                     // '/index.html?homescreen=1',
                     // '/?homescreen=1',
                     // '/styles/main.css',
@@ -36,7 +37,7 @@ self.addEventListener('install', e => {
         })
     )
 });
-//
+
 self.addEventListener('activate', event => {
     event.waitUntil(self.clients.claim());
 });
