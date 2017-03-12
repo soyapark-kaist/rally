@@ -8,7 +8,7 @@ function initVis() {
     }
 
     var playersRef = firebase.database().ref('users/');
-    playersRef.on("value", function(snapshot) {
+    playersRef.once("value").then(function(snapshot) {
         var users = snapshot.val();
         var isExist = false;
 
@@ -32,36 +32,33 @@ function initVis() {
 function fetchPetiton(inUser) {
     var playersRef = firebase.database().ref('petition/');
     // Attach an asynchronous callback to read the data at our posts reference
-    playersRef.on("value", function(snapshot) {
-            var users = snapshot.val();
-            var petitions = [];
+    playersRef.once("value").then(function(snapshot) {
+        var petitions = snapshot.val();
+        var petitions = [];
 
-            for (var o in users) {
-                var hour = new Date(inUser.time);
-                hour = hour.getHours();
+        for (var o in petitions) {
+            var hour = new Date(inUser.time);
+            hour = hour.getHours();
 
-                var hour_range = parseInt($('#timeRange-start').val().split(":")[0]);
-                if (!(hour_range <= hour && hour < hour_range + 3)) {
-                    continue;
-                }
-
-                var lat = users[o].latitude,
-                    lng = users[o].longitude;
-
-                if ((Math.abs(inUser.latitude - lat) <= 0.0016) && (Math.abs(inUser.longitude - lng) <= 0.0016)) {
-                    // then include the petition
-                    petitions.push({
-                        'id': o,
-                        'title': users[o].title,
-                        'content': users[o].content,
-                        'time-range': users[o]["time-range"]
-                    });
-                }
+            var hour_range = parseInt(petitions[o]["time-range"].split(":")[0]);
+            if (!(hour_range <= hour && hour < hour_range + 3)) {
+                continue;
             }
-        },
-        function(errorObject) {
-            console.log("The read failed: " + errorObject.code);
-        });
+
+            var lat = petitions[o].latitude,
+                lng = petitions[o].longitude;
+
+            if ((Math.abs(inUser.latitude - lat) <= 0.0016) && (Math.abs(inUser.longitude - lng) <= 0.0016)) {
+                // then include the petition
+                petitions.push({
+                    'id': o,
+                    'title': petitions[o].title,
+                    'content': petitions[o].content,
+                    'time-range': petitions[o]["time-range"]
+                });
+            }
+        }
+    });
 }
 
 
