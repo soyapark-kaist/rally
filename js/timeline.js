@@ -1,25 +1,26 @@
 // How many date is allowed before sending to 정보통신팀
 var openDate = 1;
-var maploaded = false;
-var petitionloaded = false;
-var petitionID, hour_range;
+var maploaded = false,
+    petitionloaded = false;
+var petition, petitionID, hour_range;
+var isAdmin = false;
 
 function initPetition() {
     initDB();
 
-    var receiving = false;
     var params = window.location.search.substring(1).split("&");
     for (var p in params) {
         if (params[p].split("=")[0] == "id")
             petitionID = params[p].split("=")[1];
 
         if (params[p].split("=")[0] == "r3v") {
-            receiving = true;
+            isAdmin = true; //the user is admin. 
+            $("#adminOnly").css("display", "block");
         }
 
     }
 
-    fetchPetiton(receiving);
+    fetchPetiton(isAdmin);
     // initTimeline();
 }
 
@@ -54,6 +55,8 @@ function initTimeline(inTimeline) {
         tomorrow.setDate(submitDate.getDate() + openDate);
 
         rows.push({ id: 'submit', content: "탄원서 제출/서명 모집 중", start: submitDate, end: tomorrow, group: 'presenter', className: 'positive' });
+
+        cnt += 1;
     }
 
     if (inTimeline["receive"]) {
@@ -64,6 +67,19 @@ function initTimeline(inTimeline) {
         receivedDate.setMinutes(receivedDate.getMinutes() - 120);
 
         rows.push({ id: 'receive', content: "수신", start: receivedDate, end: tomorrow, group: 'school', className: 'negative' });
+
+        cnt += 1;
+    }
+
+    if (inTimeline["respond"]) {
+        $("#adminOnly").css("display", "none");
+        receivedDate = new Date(inTimeline["respond"]);
+
+        var tomorrow = new Date(+receivedDate);
+        tomorrow.setMinutes(receivedDate.getMinutes() + 120);
+        receivedDate.setMinutes(receivedDate.getMinutes() - 120);
+
+        rows.push({ id: 'respond', content: "답변", start: receivedDate, end: tomorrow, group: 'school', className: 'negative' });
 
         cnt += 1;
     }
@@ -92,6 +108,8 @@ function initTimeline(inTimeline) {
     var timeline = new vis.Timeline(container, items, groups, options);
 
     timeline.on('click', function(inEvent) {
+        $("#petition").css("display", "none");
+        $("#receive").css("display", "none");
         if (inEvent["item"] == "submit") {
             if (!maploaded) {
                 maploaded = true;
@@ -101,9 +119,13 @@ function initTimeline(inTimeline) {
                 centerMap(center);
                 selectSignature();
             }
+
             $("#petition").slideDown();
+
+        } else if (inEvent["item"] == "receive") {
+            $("#receive").slideDown();
         } else {
-            $("#petition").css("display", "none");
+
         }
     });
 
@@ -123,10 +145,9 @@ function fetchPetiton(inReceiving) {
                 return;
             }
 
-
-            if (inReceiving) {
+            // if receive is not yet operated, then update the time-line.
+            if (inReceiving && !users[petitionID]["time-line"]["receive"]) {
                 var pRef = firebase.database().ref("petition/" + petitionID);
-
                 pRef.update({
                     "time-line": {
                         "submit": users[petitionID]["time-line"]["submit"],
@@ -137,40 +158,38 @@ function fetchPetiton(inReceiving) {
                         console.log(error);
                     } else {
                         // when post to DB is successful 
-                        routeToTimeline(petitionID);
+                        storePetitionInfo(users[petitionID]);
                     }
-
                 });
-
-                //reload
-                return;
-            }
-
-            // DEBUGGING purpose
-            // petitionID = "GP9Qmglg";
-
-            displayPetition({
-                'title': users[petitionID].title,
-                'content': users[petitionID].content,
-                'time-range': users[petitionID]["time-range"]
-            });
-
-
-            center = {
-                lat: users[petitionID].latitude,
-                lng: users[petitionID].longitude
-            };
-            hour_range = parseInt(users[petitionID]["time-range"].split(":")[0]);
-
-            if (!petitionloaded) {
-                petitionloaded = true;
-                initTimeline(users[petitionID]["time-line"]);
-            }
+            } else
+                storePetitionInfo(users[petitionID]);
 
         },
         function(errorObject) {
             console.log("The read failed: " + errorObject.code);
         });
+}
+
+function storePetitionInfo(inPetition) {
+    petition = inPetition;
+
+    displayPetition({
+        'title': inPetition.title,
+        'content': inPetition.content,
+        'time-range': inPetition["time-range"]
+    });
+
+
+    center = {
+        lat: inPetition.latitude,
+        lng: inPetition.longitude
+    };
+    hour_range = parseInt(inPetition["time-range"].split(":")[0]);
+
+    if (!petitionloaded) {
+        petitionloaded = true;
+        initTimeline(inPetition["time-line"]);
+    }
 }
 
 function displayPetition(inResponse) {
@@ -249,4 +268,25 @@ function selectSignature() {
         function(errorObject) {
             alert("The read failed: " + errorObject.code);
         });
+}
+
+function postRespond() {
+    var pRef = firebase.database().ref("petition/" + petitionID);
+    pRef.update({
+        "time-line": {
+            "submit": petition["time-line"]["submit"],
+            "receive": petition["time-line"]["receive"],
+            "respond": new Date().toString(),
+            "respond-msg": $('#compose-message').val()
+        }
+    }, function(error) {
+        if (error) {
+            console.log(error);
+        } else {
+            // when post to DB is successful
+            window.location.replace(window.location.href);
+        }
+    });
+
+    return false;
 }
