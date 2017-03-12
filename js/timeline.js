@@ -3,7 +3,8 @@ var openDate = 1;
 var maploaded = false,
     petitionloaded = false;
 var petition, petitionID, hour_range;
-var isAdmin = false;
+var isReceiving = false,
+    isAdmin = false;
 
 function initPetition() {
     initDB();
@@ -14,13 +15,17 @@ function initPetition() {
             petitionID = params[p].split("=")[1];
 
         if (params[p].split("=")[0] == "r3v") {
+            isReceiving = true;
+        }
+
+        if (params[p].split("=")[0] == "adn") {
             isAdmin = true; //the user is admin. 
             $("#adminOnly").css("display", "block");
         }
 
     }
 
-    fetchPetiton(isAdmin);
+    fetchPetiton(isReceiving);
     // initTimeline();
 }
 
@@ -110,6 +115,8 @@ function initTimeline(inTimeline) {
     timeline.on('click', function(inEvent) {
         $("#petition").css("display", "none");
         $("#receive").css("display", "none");
+        $("#respond").css("display", "none");
+
         if (inEvent["item"] == "submit") {
             if (!maploaded) {
                 maploaded = true;
@@ -124,6 +131,8 @@ function initTimeline(inTimeline) {
 
         } else if (inEvent["item"] == "receive") {
             $("#receive").slideDown();
+        } else if (inEvent["item"] == "respond") {
+            $("#respond").slideDown();
         } else {
 
         }
@@ -157,8 +166,9 @@ function fetchPetiton(inReceiving) {
                     if (error) {
                         console.log(error);
                     } else {
+
                         // when post to DB is successful 
-                        storePetitionInfo(users[petitionID]);
+                        routeToTimeline(petitionID, isAdmin);
                     }
                 });
             } else
@@ -179,6 +189,9 @@ function storePetitionInfo(inPetition) {
         'time-range': inPetition["time-range"]
     });
 
+    if (inPetition["time-line"]["respond"])
+        displayRespond(inPetition["time-line"]["respond-msg"]);
+
 
     center = {
         lat: inPetition.latitude,
@@ -195,6 +208,10 @@ function storePetitionInfo(inPetition) {
 function displayPetition(inResponse) {
     $("#title").text(inResponse['title'] + " (case #: " + petitionID + ")");
     $('#content').text(inResponse['content']);
+}
+
+function displayRespond(inResponse) {
+    $('#respond p').text(inResponse);
 }
 
 function centerMap(inCenter) {

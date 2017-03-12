@@ -1,7 +1,7 @@
 function drawChart(inSelector, inData) {
     $("#application svg").remove();
     var width = 360,
-        height = 300,
+        height = 250,
         radius = Math.min(width, height) / 2;
 
     var color = d3.scale.ordinal()
