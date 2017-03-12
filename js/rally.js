@@ -123,7 +123,7 @@ function routeToVis(inUserID) {
     var params = { sig: inUserID };
     var p = jQuery.param(params);
 
-    var newUrl = window.location.href.split("rally/")[0] + "rally/vis.html?" + p;
+    var newUrl = window.location.href.split("rally/")[0] + "rally/visual.html?" + p;
     window.location.replace(newUrl);
 }
 
