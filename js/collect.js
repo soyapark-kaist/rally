@@ -1,15 +1,5 @@
 function initListener() {
     /* INTERNET */
-    $(".speed li").click(function(e) {
-        $(this).siblings().removeClass("active");
-        $(this).addClass("active");
-    });
-
-    $(".consistency li").click(function(e) {
-        $(this).siblings().removeClass("active");
-        $(this).addClass("active");
-    });
-
     /* Scroll to activity section */
     $("#speedo-start").click(function() {
         document.documentElement.addEventListener('DOMAttrModified', function(e) {
@@ -17,7 +7,7 @@ function initListener() {
                 console.log("Test over. Download: " + $(".data.download").text() + ". Upload: " + $(".data.upload").text())
 
                 $("html, body").animate({
-                    scrollTop: $("#activitySection").position().top
+                    scrollTop: $("#internet-question").position().top
                 }, 2000);
             }
         }, false);
@@ -81,7 +71,7 @@ function collectData() {
         "<br> Activity: " + $(".activity.select img").attr("type"));
 }
 
-function doSubmit() {
+function postSignature() {
     $(".form-alert").css("display", "none");
 
     /* Check whether all the question are filled. */
@@ -98,15 +88,19 @@ function doSubmit() {
     }
 
     if (isValid) {
-        createMap();
+        // createMap();
         initDB();
-        fetchMap();
+        // fetchMap();
         postUsers();
     }
 
+    return false;
 }
 
 function postUsers() {
+    $('#submitSection').html("<i class='fa fa-circle-o-notch fa-spin'></i> Loading...");
+    $('#submitSection').addClass('disabled');
+
     // Try HTML5 geolocation.
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
@@ -119,7 +113,8 @@ function postUsers() {
             // center = kaist;
 
             // var playersRef = firebase.database().ref("users/" + generateID(5));
-            var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + generateID(5));
+            var userID = generateID(5);
+            var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + userID);
             // users/2017-3-6
 
             playersRef.set({
@@ -135,16 +130,25 @@ function postUsers() {
                 "os": $(".operation-system").text(),
                 "web": $(".browser-name").text(),
                 "time": new Date().toString()
-            });
+            }, function(error) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    // when post to DB is successful 
+                    routeToVis(userID);
+                }
 
-            // infoWindow.setPosition(pos);
-            // infoWindow.setContent('Location found.');
-            map.setCenter(center);
+            });
         }, function() {
-            handleLocationError(true, infoWindow, map.getCenter());
+            console.log("Error geolocation");
+            alert('브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.');
+            // handleLocationError(true, infoWindow, map.getCenter());
         });
     } else {
         // Browser doesn't support Geolocation
-        handleLocationError(false, infoWindow, map.getCenter());
+        console.log("Error geolocation; brower doesn't support");
+        alert('브라우저의 위치정보 수집이 불가합니다. 다른 브라우저에서 다시 시도해주세요.');
+        // handleLocationError(false, infoWindow, map.getCenter());
     }
+
 }

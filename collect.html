@@ -48,12 +48,14 @@
     </script>
 
     <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap.min.js"></script>
 
     <!-- Google API -->
     <script src="https://www.gstatic.com/firebasejs/3.6.7/firebase.js"></script>
     <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
     </script>
+
+    <script src="js/bootstrap.min.js"></script>
+
 
     <!-- Service Worker -->
     <script>
@@ -116,9 +118,28 @@
 </head>
 
 <body onload="initListener()">
-    <a href="t.txt"></a>
+    <!-- nav bar -->
+    <header class="navbar navbar-static-top bs-docs-nav" role="banner" style="margin-bottom: 0px;">
+        <div class="navbar-header">
+            <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".rally-navbar-collapse"></button>
+
+            <a href="./index.html" class="navbar-brand" style="padding:10px;">
+                <img alt="Rally" src="img/rally_brand.png" style="height: 100%;" />
+            </a>
+        </div>
+        <nav class="collapse navbar-collapse rally-navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="./collect.html">데이터 서명하기</a></li>
+                <!--<li><a href="#">Visualization</a></li>-->
+                <li><a href="./petition.html">민원내기</a></li>
+            </ul>
+        </nav>
+    </header>
+    <!--/nav bar-->
+
+
     <!-- Introduction -->
-    <div class="intro">
+    <!--<div class="intro">
         <div class="container">
             <div class="units-row">
                 <div class="unit-10">
@@ -129,13 +150,13 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>-->
 
     <!-- Content -->
     <div class="content">
         <div class="container">
             <!-- Post -->
-            <div class="post">
+            <!--<div class="post">
                 <div class="container-fluid">
                     <div class="row">
                         <div class="row placeholders">
@@ -172,29 +193,15 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>-->
             <!-- /post -->
-
+            <div class="page-header">
+                <h1>데이터 서명하기</h1>
+            </div>
 
             <div class="post">
-                <div class="page-header">
-                    <h1>인터넷 속도 측정</h1>
-                </div>
-                <div class="in-content">
-                    <div class="row">
-                        <h4 id="question-speed">인터넷 속도의 빠르기</h4>
-                        <input type="radio" name="speed" value="1" description="즉각적이다" checked> 즉각적이다<br>
-                        <input type="radio" name="speed" value="2" description="클릭마다 지체가 있긴 하지만 쓸만하다"> 클릭마다 지체가 있긴 하지만 쓸만하다<br>
-                        <input type="radio" name="speed" value="3" description="새로고침을 하게 된다"> 새로고침을 하게 된다<br>
-
-                        <h4 id="question-consistency" style="margin-top: 30px;">인터넷 속도의 일정함</h4>
-                        <input type="radio" name="consistency" value="1" description="일정한 속도를 유지한다" checked> 일정한 속도를 유지한다<br>
-                        <input type="radio" name="consistency" value="2" description="속도가 일정치 않아서 신경쓰이긴 하지만 쓸만하다"> 속도가 일정치 않아서 신경쓰이긴 하지만 쓸만하다<br>
-                        <input type="radio" name="consistency" value="3" description="종잡을 수 없다"> 종잡을 수 없다<br>
-                    </div>
-                </div>
+                <h1>인터넷 속도 측정</h1>
             </div>
-            <!-- /post -->
         </div>
 
         <section id="speedtest" class="speedtest section myspeed" style="overflow: hidden;">
@@ -223,7 +230,7 @@
                                                                     <div id="tool-metrics"></div>
                                                                 </div>
                                                                 <div class="text text-center">
-                                                                    <img class="img-responsive img-logo" src="img/KIXLAB.png">
+                                                                    <!--<img class="img-responsive img-logo" src="img/KIXLAB.png">-->
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -300,35 +307,60 @@
         <!-- Content -->
         <div class="content">
             <div class="container">
+                <div style="margin-top:0px;" class="post">
+                    <div class="in-content">
+                        <div id="internet-question" class="row">
+                            <h4 id="question-speed">인터넷 속도의 빠르기</h4>
+                            <input type="radio" name="speed" value="1" description="즉각적이다" checked> 즉각적이다<br>
+                            <input type="radio" name="speed" value="2" description="클릭마다 지체가 있긴 하지만 쓸만하다"> 클릭마다 지체가 있긴 하지만 쓸만하다<br>
+                            <input type="radio" name="speed" value="3" description="새로고침을 하게 된다"> 새로고침을 하게 된다<br>
+
+                            <h4 id="question-consistency" style="margin-top: 30px;">인터넷 속도의 일정함</h4>
+                            <input type="radio" name="consistency" value="1" description="일정한 속도를 유지한다" checked> 일정한 속도를 유지한다<br>
+                            <input type="radio" name="consistency" value="2" description="속도가 일정치 않아서 신경쓰이긴 하지만 쓸만하다"> 속도가 일정치 않아서 신경쓰이긴 하지만 쓸만하다<br>
+                            <input type="radio" name="consistency" value="3" description="종잡을 수 없다"> 종잡을 수 없다<br>
+                        </div>
+                    </div>
+                </div>
+                <!-- /post -->
+
                 <!-- Post -->
                 <div class="post">
-                    <div id="activitySection" class="page-header">
+                    <div id="activitySection">
                         <h1>현재 인터넷으로 하고 있는 활동은?</h1>
                     </div>
                     <div class="in-content">
                         <div class="row">
                             <div id="kaist" class="activity col-md-4 col-sm-4">
+                                <p>카이스트 포탈, klms 등</p>
                                 <img data-toggle="tooltip" data-placement="left" title="카이스트 포탈, KDS 등등" type="kaist" src="img/activity/kaist.png" style="padding-top: 20px;">
                             </div>
                             <div id="web" class="activity col-md-4 col-sm-4">
+                                <p>웹 브라우징</p>
                                 <img data-toggle="tooltip" data-placement="left" title="웹 브라우징" type="web" src="img/activity/web.png" alt="">
                             </div>
                             <div id="conferencing" class="activity col-md-4 col-sm-4">
+                                <p>웹 컨퍼런싱(skype, hangout)</p>
                                 <img data-toggle="tooltip" data-placement="left" title="컨퍼런싱" type="conferencing" src="img/activity/conferencing.png" alt="">
                             </div>
                             <div id="twitter" class="activity col-md-4 col-sm-4">
+                                <p>트위터</p>
                                 <img data-toggle="tooltip" data-placement="left" title="트위터" type="twitter" src="img/activity/twitter.png" alt="">
                             </div>
                             <div id="facebook" class="activity col-md-4 col-sm-4">
+                                <p>페이스북</p>
                                 <img data-toggle="tooltip" data-placement="left" title="페이스북" type="facebook" src="img/activity/facebook.png" alt="">
                             </div>
                             <div id="file" class="activity col-md-4 col-sm-4">
+                                <p>파일 업로드/다운로드</p>
                                 <img data-toggle="tooltip" data-placement="left" title="파일 업로드/다운로드" type="file" src="img/activity/file.png" alt="">
                             </div>
                             <div id="music" class="activity col-md-4 col-sm-4">
+                                <p>뮤직 스트리밍</p>
                                 <img data-toggle="tooltip" data-placement="left" title="뮤직 스트리밍" width="90" type="music" src="img/activity/music.png" alt="">
                             </div>
                             <div id="video" class="activity col-md-4 col-sm-4">
+                                <p>비디오 스트리밍</p>
                                 <img data-toggle="tooltip" data-placement="left" title="비디오 스트리밍" type="video" src="img/activity/video.png" alt="">
                             </div>
                         </div>
@@ -342,15 +374,17 @@
 
                     <div class="in-content">
                         <div class="row">
-                            <button onclick="collectData()" class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                            미리보기
-                            </button>
+                            <form id="finalStage" action="" onsubmit="return postSignature();">
+                                <button onclick="collectData()" class="btn btn-default" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                            미리보기</button>
+                                <button type="submit" id="submitSection" class="btn btn-primary" data-loading-text="Loading...">제출</button>
+                            </form>
+
                             <div class="collapse" id="collapseExample">
                                 <div class="well" id="preview">
                                     est
                                 </div>
                             </div>
-                            <button id="submitSection" class="btn btn-default" type="submit" onclick="doSubmit()">제출</button>
                             <div style="color: gray"><i class="fa fa-map-marker" aria-hidden="true"></i> 위치정보 수집</div>
                             <div class="form-alert alert alert-warning" id="form-speed" role="alert">
                                 <strong>"인터넷 속도의 빠르기"를 선택해 주세요.</strong> <a id="move-speed">이동하기</a>
