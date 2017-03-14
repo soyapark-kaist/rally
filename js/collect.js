@@ -140,6 +140,7 @@ function postUsers() {
 
             });
         }, function() {
+            $('#submitSection').text('disabled');
             console.log("Error geolocation");
             alert('브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.');
             // handleLocationError(true, infoWindow, map.getCenter());
