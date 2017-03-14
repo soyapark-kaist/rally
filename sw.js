@@ -27,6 +27,7 @@ self.addEventListener('install', e => {
                     'collect.html',
                     'visual.html',
                     'petition.html',
+                    'timeline.html',
                     'js/rally.js'
                     // '/index.html?homescreen=1',
                     // '/?homescreen=1',
