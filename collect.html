@@ -44,6 +44,14 @@
             );
             document.getElementsByTagName("head")[0].appendChild(msViewportStyle);
         }
+
+        if ("geolocation" in navigator) {
+            /* geolocation is available */
+            alert("ok")
+        } else {
+            /* geolocation IS NOT available */
+            alert("no")
+        }
         //]]>
     </script>
 

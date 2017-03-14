@@ -101,8 +101,10 @@ function postUsers() {
     $('#submitSection').html("<i class='fa fa-circle-o-notch fa-spin'></i> Loading...");
     $('#submitSection').addClass('disabled');
 
+
+
     // Try HTML5 geolocation.
-    if (navigator.geolocation) {
+    if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(function(position) {
             center = {
                 lat: position.coords.latitude,
