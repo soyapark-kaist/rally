@@ -7,6 +7,7 @@ var isReceiving = false,
     isAdmin = false;
 
 function initPetition() {
+    toggleLoading("#timeline");
     initDB();
 
     var params = window.location.search.substring(1).split("&");
@@ -138,7 +139,7 @@ function initTimeline(inTimeline) {
         }
     });
 
-
+    toggleLoading("#timeline");
 }
 
 /* Fetch petitions. */

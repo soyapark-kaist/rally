@@ -132,6 +132,10 @@ function detectBrowser() {
     return isSafari;
 }
 
+function toggleLoading(inSelector) {
+    $(inSelector).toggleClass("loader");
+}
+
 // function calcTime(city, offset) {
 //     // create Date object for current location
 //     var d = new Date();
