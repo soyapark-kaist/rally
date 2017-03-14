@@ -2,7 +2,7 @@ var dbLoaded = false;
 var isSafari = detectBrowser();
 
 function initListener() {
-
+    toggleLoading("#loading");
 }
 
 function initMap() {
@@ -12,6 +12,8 @@ function initMap() {
     initLocationPicker();
 
     initTimeRangeWidget();
+
+    toggleLoading("#loading");
 }
 
 function initLocationPicker() {
