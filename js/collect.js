@@ -71,7 +71,7 @@ function turnOnConnection() {
     $(".internet-connection").css("display", "block");
     $("#info-area").css("visibility", "visible");
     $("#info-area").css("margin-top", "-300px");
-    $("#speedtest").css("margin-bottom", "-400px");
+    $("#speedtest").css("margin-bottom", "-350px");
 
     $("#addAP").on("click", function() {
         if ($("#apRead").val() == "")
@@ -176,6 +176,8 @@ function postUsers() {
 
     // Try HTML5 geolocation.
     if ("geolocation" in navigator) {
+        // var location_timeout = setTimeout("alert('브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.');", 10000);
+
         navigator.geolocation.getCurrentPosition(function(position) {
                 center = {
                     lat: position.coords.latitude,
@@ -238,6 +240,7 @@ function postUsers() {
 
             },
             function() { //error callback
+                // clearTimeout(location_timeout);
                 $('#submitSection').text('disabled');
                 console.log("Error geolocation");
                 alert('브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.');
