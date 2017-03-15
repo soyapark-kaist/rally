@@ -176,7 +176,7 @@ function postUsers() {
 
     // Try HTML5 geolocation.
     if ("geolocation" in navigator) {
-        var location_timeout = setTimeout("alert('브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.');", 10000);
+        // var location_timeout = setTimeout("alert('브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.');", 10000);
 
         navigator.geolocation.getCurrentPosition(function(position) {
                 center = {
@@ -240,7 +240,7 @@ function postUsers() {
 
             },
             function() { //error callback
-                clearTimeout(location_timeout);
+                // clearTimeout(location_timeout);
                 $('#submitSection').text('disabled');
                 console.log("Error geolocation");
                 alert('브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.');
