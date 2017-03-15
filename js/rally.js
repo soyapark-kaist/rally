@@ -25,7 +25,7 @@ function initDB() {
 }
 
 /* Fetch data points from DB & Push markers on the map. */
-function fetchMap() {
+function fetchMap(inUserID) {
     var playersRef = firebase.database().ref('users/');
     // Attach an asynchronous callback to read the data at our posts reference
     playersRef.once("value").then(function(snapshot) {
@@ -46,8 +46,16 @@ function fetchMap() {
                             'lng': users[o][u].longitude
                         })
 
-                        activities.push(users[o][u].activity);
+                        activities.push(u.includes("conn") ? "conn" : users[o][u].activity);
                         // console.log("here");
+                        if (inUserID == u) {
+                            infoWindow = new google.maps.InfoWindow({ content: "내 서명", map: map });
+                            infoWindow.setPosition({
+                                'lat': users[o][u].latitude,
+                                'lng': users[o][u].longitude
+                            });
+                        }
+
                     }
 
                 }
