@@ -176,8 +176,7 @@ function postUsers() {
 
     // Try HTML5 geolocation.
     if ("geolocation" in navigator) {
-        setTimeout(function() {
-            navigator.geolocation.getCurrentPosition(function(position) {
+        navigator.geolocation.getCurrentPosition(function(position) {
                 center = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude
@@ -237,13 +236,16 @@ function postUsers() {
                     });
                 }
 
-            }, function() {
+            },
+            function() { //error callback
                 $('#submitSection').text('disabled');
                 console.log("Error geolocation");
                 alert('브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.');
                 // handleLocationError(true, infoWindow, map.getCenter());
+            }, {
+                timeout: 10000
             });
-        }, 0);
+
 
     } else {
         // Browser doesn't support Geolocation
