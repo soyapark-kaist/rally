@@ -60,7 +60,7 @@ function initTimeline(inTimeline) {
         var tomorrow = new Date(+submitDate);
         tomorrow.setDate(submitDate.getDate() + openDate);
 
-        rows.push({ id: 'submit', content: "탄원서 제출/서명 모집 중", start: submitDate, end: tomorrow, group: 'presenter', className: 'positive' });
+        rows.push({ id: 'submit', content: "민원 제출/서명 모집 중", start: submitDate, end: tomorrow, group: 'presenter', className: 'positive' });
 
         cnt += 1;
     }

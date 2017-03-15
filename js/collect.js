@@ -71,6 +71,7 @@ function turnOnConnection() {
     $(".internet-connection").css("display", "block");
     $("#info-area").css("visibility", "visible");
     $("#info-area").css("margin-top", "-300px");
+    $("#speedtest").css("margin-bottom", "-400px");
 
     $("#addAP").on("click", function() {
         if ($("#apRead").val() == "")
@@ -176,71 +177,76 @@ function postUsers() {
     // Try HTML5 geolocation.
     if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(function(position) {
-            center = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            };
+                center = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
 
-            // DEBUGGING purpose
-            // center = kaist;
-            var userID = generateID(5);
+                // DEBUGGING purpose
+                // center = kaist;
+                var userID = generateID(5);
 
-            if (isSlow) {
-                var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + userID);
-                // users/2017-3-6
+                if (isSlow) {
+                    var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + userID);
+                    // users/2017-3-6
 
-                playersRef.set({
-                    "activity": $(".activity.select img").attr("type"),
-                    "ip_addr": $(".ip-address ").text(),
-                    "latitude": center.lat,
-                    "longitude": center.lng,
-                    "download": $(".data.download").text(),
-                    "upload": $(".data.upload").text(),
-                    "ping": $("#speedo-ping .data .time").text(),
-                    "speed": $("input[name='speed']:checked").val(),
-                    "consistency": $("input[name='consistency']:checked").val(),
-                    "os": $(".operation-system").text(),
-                    "web": $(".browser-name").text(),
-                    "time": new Date().toString()
-                }, function(error) {
-                    if (error) {
-                        console.log(error);
-                    } else {
-                        // when post to DB is successful 
-                        routeToVis(userID);
-                    }
+                    playersRef.set({
+                        "activity": $(".activity.select img").attr("type"),
+                        "ip_addr": $(".ip-address ").text(),
+                        "latitude": center.lat,
+                        "longitude": center.lng,
+                        "download": $(".data.download").text(),
+                        "upload": $(".data.upload").text(),
+                        "ping": $("#speedo-ping .data .time").text(),
+                        "speed": $("input[name='speed']:checked").val(),
+                        "consistency": $("input[name='consistency']:checked").val(),
+                        "os": $(".operation-system").text(),
+                        "web": $(".browser-name").text(),
+                        "time": new Date().toString()
+                    }, function(error) {
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            // when post to DB is successful 
+                            routeToVis(userID);
+                        }
 
-                });
-            } else {
-                var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/conn" + userID);
-                // users/2017-3-6
+                    });
+                } else {
+                    var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/conn" + userID);
+                    // users/2017-3-6
 
-                playersRef.set({
-                    "room": $("#roomNumber").val(),
-                    "wi-fi": getListWifi(),
-                    "ip_addr": $(".ip-address ").text(),
-                    "latitude": center.lat,
-                    "longitude": center.lng,
-                    "os": $(".operation-system").text(),
-                    "web": $(".browser-name").text(),
-                    "time": new Date().toString()
-                }, function(error) {
-                    if (error) {
-                        console.log(error);
-                    } else {
-                        // when post to DB is successful 
-                        routeToVis("conn" + userID);
-                    }
+                    playersRef.set({
+                        "room": $("#roomNumber").val(),
+                        "wi-fi": getListWifi(),
+                        "ip_addr": $(".ip-address ").text(),
+                        "latitude": center.lat,
+                        "longitude": center.lng,
+                        "os": $(".operation-system").text(),
+                        "web": $(".browser-name").text(),
+                        "time": new Date().toString()
+                    }, function(error) {
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            // when post to DB is successful 
+                            routeToVis("conn" + userID);
+                        }
 
-                });
-            }
+                    });
+                }
 
-        }, function() {
-            $('#submitSection').text('disabled');
-            console.log("Error geolocation");
-            alert('브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.');
-            // handleLocationError(true, infoWindow, map.getCenter());
-        });
+            },
+            function() { //error callback
+                $('#submitSection').text('disabled');
+                console.log("Error geolocation");
+                alert('브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.');
+                // handleLocationError(true, infoWindow, map.getCenter());
+            }, {
+                timeout: 10000
+            });
+
+
     } else {
         // Browser doesn't support Geolocation
         console.log("Error geolocation; brower doesn't support");
