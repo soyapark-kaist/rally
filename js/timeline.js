@@ -122,7 +122,7 @@ function initTimeline(inTimeline) {
             if (!maploaded) {
                 maploaded = true;
                 createMap();
-                fetchMap();
+                fetchMap(null);
 
                 centerMap(center);
                 selectSignature();

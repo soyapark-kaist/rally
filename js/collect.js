@@ -1,3 +1,5 @@
+var isSlow = "waiting";
+
 function initListener() {
     /* INTERNET */
     /* Scroll to activity section */
@@ -52,46 +54,116 @@ function initListener() {
     })
 }
 
+function turnOnSlow() {
+    if (isSlow != "waiting") return;
+    isSlow = true;
+    turnOffIssue();
 
-/* Scroll to submit section*/
-// $("#submitSection").click(function() {
+    $(".internet-slow>div.container").css("display", "block");
+    $("#speedtest").css("visibility", "visible");
+}
 
-// })
+function turnOnConnection() {
+    if (isSlow != "waiting") return;
+    isSlow = false;
+    turnOffIssue();
+
+    $(".internet-connection").css("display", "block");
+    $("#info-area").css("visibility", "visible");
+    $("#info-area").css("margin-top", "-300px");
+
+    $("#addAP").on("click", function() {
+        if ($("#apRead").val() == "")
+            return;
+        $("#apList").append("<p>" + $("#apRead").val() + '<button onclick="removeAP(this)" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></p>');
+        $("#apRead").val("");
+    });
+}
+
+function turnOffIssue() {
+    $(".issue-question p").addClass("disabled");
+    $("#finalStage").css("display", "block");
+}
+
+function removeAP(e) {
+    e.parentElement.remove()
+}
+
+function getListWifi() {
+    var wifi = [];
+
+    $("#apList p").each(function(index) {
+        wifi.push($(this).html().split("<butto")[0]);
+    });
+
+    return wifi;
+}
 
 function collectData() {
-    $("#preview").html(
-        "Speed: " + $("input[name='speed']:checked").attr("description") +
-        "<br>Consistency: " + $("input[name='consistency']:checked").attr("description") +
-        "<br> Download: " + $(".data.download").text() +
-        "<br> Upload: " + $(".data.upload").text() +
-        "<br> ping: " + $("#speedo-ping .data .time").text() + " ms" +
-        "<br> IP address: " + $(".ip-address").text() +
-        "<br> OS: " + $(".operation-system").text() +
-        "<br> web: " + $(".browser-name").text() +
-        "<br> Activity: " + $(".activity.select img").attr("type"));
+    if (isSlow)
+        $("#preview").html(
+            "Speed: " + $("input[name='speed']:checked").attr("description") +
+            "<br>Consistency: " + $("input[name='consistency']:checked").attr("description") +
+            "<br> Download: " + $(".data.download").text() +
+            "<br> Upload: " + $(".data.upload").text() +
+            "<br> ping: " + $("#speedo-ping .data .time").text() + " ms" +
+            "<br> IP address: " + $(".ip-address").text() +
+            "<br> OS: " + $(".operation-system").text() +
+            "<br> web: " + $(".browser-name").text() +
+            "<br> Activity: " + $(".activity.select img").attr("type"));
+
+    else {
+        $("#preview").html(
+            "기숙사 방 번호: " + $("#roomNumber").val() +
+            "<br> Wi-Fi: " + getListWifi() +
+            "<br> IP address: " + $(".ip-address").text() +
+            "<br> OS: " + $(".operation-system").text() +
+            "<br> web: " + $(".browser-name").text());
+    }
 }
 
 function postSignature() {
     $(".form-alert").css("display", "none");
+    if (isSlow) {
+        /* Check whether all the question are filled. */
+        var isValid = true;
 
-    /* Check whether all the question are filled. */
-    var isValid = true;
+        if ($(".data.download").text() == "--") {
+            $("#form-test").css("display", "block");
+            isValid = false;
+        }
 
-    if ($(".data.download").text() == "--") {
-        $("#form-test").css("display", "block");
-        isValid = false;
-    }
+        if (!$(".activity.select").length) {
+            $("#form-activity").css("display", "block");
+            isValid = false;
+        }
 
-    if (!$(".activity.select").length) {
-        $("#form-activity").css("display", "block");
-        isValid = false;
-    }
+        if (isValid) {
+            // createMap();
+            initDB();
+            // fetchMap();
+            postUsers();
+        }
+    } else {
+        /* Check whether all the question are filled. */
+        var isValid = true;
 
-    if (isValid) {
-        // createMap();
-        initDB();
-        // fetchMap();
-        postUsers();
+        if ($("#roomNumber").val() == "") {
+            $("#form-roomNumber").css("display", "block");
+            isValid = false;
+        }
+
+        if (getListWifi().length == 0) {
+            $("#form-wifi").css("display", "block");
+            isValid = false;
+        }
+
+        if (isValid) {
+            // createMap();
+            initDB();
+            // fetchMap();
+            postUsers();
+        }
     }
 
     return false;
@@ -102,7 +174,7 @@ function postUsers() {
     $('#submitSection').addClass('disabled');
 
     // Try HTML5 geolocation.
-    if (navigator.geolocation) {
+    if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(function(position) {
             center = {
                 lat: position.coords.latitude,
@@ -111,35 +183,60 @@ function postUsers() {
 
             // DEBUGGING purpose
             // center = kaist;
-
-            // var playersRef = firebase.database().ref("users/" + generateID(5));
             var userID = generateID(5);
-            var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + userID);
-            // users/2017-3-6
 
-            playersRef.set({
-                "activity": $(".activity.select img").attr("type"),
-                "ip_addr": $(".ip-address ").text(),
-                "latitude": center.lat,
-                "longitude": center.lng,
-                "download": $(".data.download").text(),
-                "upload": $(".data.upload").text(),
-                "ping": $("#speedo-ping .data .time").text(),
-                "speed": $("input[name='speed']:checked").val(),
-                "consistency": $("input[name='consistency']:checked").val(),
-                "os": $(".operation-system").text(),
-                "web": $(".browser-name").text(),
-                "time": new Date().toString()
-            }, function(error) {
-                if (error) {
-                    console.log(error);
-                } else {
-                    // when post to DB is successful 
-                    routeToVis(userID);
-                }
+            if (isSlow) {
+                var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + userID);
+                // users/2017-3-6
 
-            });
+                playersRef.set({
+                    "activity": $(".activity.select img").attr("type"),
+                    "ip_addr": $(".ip-address ").text(),
+                    "latitude": center.lat,
+                    "longitude": center.lng,
+                    "download": $(".data.download").text(),
+                    "upload": $(".data.upload").text(),
+                    "ping": $("#speedo-ping .data .time").text(),
+                    "speed": $("input[name='speed']:checked").val(),
+                    "consistency": $("input[name='consistency']:checked").val(),
+                    "os": $(".operation-system").text(),
+                    "web": $(".browser-name").text(),
+                    "time": new Date().toString()
+                }, function(error) {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        // when post to DB is successful 
+                        routeToVis(userID);
+                    }
+
+                });
+            } else {
+                var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/conn" + userID);
+                // users/2017-3-6
+
+                playersRef.set({
+                    "room": $("#roomNumber").val(),
+                    "wi-fi": getListWifi(),
+                    "ip_addr": $(".ip-address ").text(),
+                    "latitude": center.lat,
+                    "longitude": center.lng,
+                    "os": $(".operation-system").text(),
+                    "web": $(".browser-name").text(),
+                    "time": new Date().toString()
+                }, function(error) {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        // when post to DB is successful 
+                        routeToVis("conn" + userID);
+                    }
+
+                });
+            }
+
         }, function() {
+            $('#submitSection').text('disabled');
             console.log("Error geolocation");
             alert('브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.');
             // handleLocationError(true, infoWindow, map.getCenter());

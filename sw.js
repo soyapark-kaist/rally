@@ -1,6 +1,5 @@
 /*
  *
- *  Air Horner
  *  Copyright 2015 Google Inc. All rights reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,35 +18,35 @@
 
 // Version 0.57
 
-self.addEventListener('install', e => {
-    e.waitUntil(
-        caches.open('airhorner').then(cache => {
-            return cache.addAll([
-                    '512Mb.zip',
-                    'collect.html',
-                    'visual.html',
-                    'petition.html',
-                    'timeline.html',
-                    'js/rally.js'
-                    // '/index.html?homescreen=1',
-                    // '/?homescreen=1',
-                    // '/styles/main.css',
-                    // '/scripts/main.min.js',
-                ])
-                .then(() => self.skipWaiting());
-        })
-    )
-});
+// self.addEventListener('install', e => {
+//     e.waitUntil(
+//         caches.open('airhorner').then(cache => {
+//             return cache.addAll([
+//                     '512Mb.zip',
+//                     'collect.html',
+//                     'visual.html',
+//                     'petition.html',
+//                     'timeline.html',
+//                     'js/rally.js'
+//                     // '/index.html?homescreen=1',
+//                     // '/?homescreen=1',
+//                     // '/styles/main.css',
+//                     // '/scripts/main.min.js',
+//                 ])
+//                 .then(() => self.skipWaiting());
+//         })
+//     )
+// });
 
-self.addEventListener('activate', event => {
-    event.waitUntil(self.clients.claim());
-});
+// self.addEventListener('activate', event => {
+//     event.waitUntil(self.clients.claim());
+// });
 
-self.addEventListener('fetch', event => {
-    // console.log(event.request.url);
-    event.respondWith(
-        caches.match(event.request).then(response => {
-            return response || fetch(event.request);
-        })
-    );
-});
+// self.addEventListener('fetch', event => {
+//     // console.log(event.request.url);
+//     event.respondWith(
+//         caches.match(event.request).then(response => {
+//             return response || fetch(event.request);
+//         })
+//     );
+// });

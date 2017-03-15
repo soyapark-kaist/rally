@@ -1,4 +1,5 @@
 var userID;
+var pos;
 
 function initVis() {
     var params = window.location.search.substring(1).split("&");
@@ -15,6 +16,10 @@ function initVis() {
         for (var o in users) {
             if (users[o][userID]) {
                 isExist = true;
+                pos = {
+                    lat: users[o][userID].latitude,
+                    lng: users[o][userID].longitude
+                };
                 break;
             }
         }
@@ -26,6 +31,15 @@ function initVis() {
 
         fetchPetiton(users[o][userID]);
     });
+}
+
+function getUserID() {
+    var params = window.location.search.substring(1).split("&");
+    for (var p in params) {
+        if (params[p].split("=")[0] == "sig")
+            userID = params[p].split("=")[1];
+    }
+    return userID;
 }
 
 /* Fetch petitions. */
@@ -65,9 +79,11 @@ function fetchPetiton(inUser) {
 function initMap() {
     createMap();
     initDB();
-    fetchMap();
+    fetchMap(getUserID());
 
     centerMap();
+
+
 }
 
 function centerMap() {

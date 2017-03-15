@@ -31,3 +31,51 @@ textarea {
 #finalStage {
     float: right;
 }
+
+.issue-type p {
+    border: 3px solid orange;
+    background: white;
+    margin: 5px;
+    border-radius: 5px !important;
+}
+
+.internet-connection,
+.internet-slow>div.container {
+    display: none;
+}
+
+#speedtest {
+    visibility: hidden;
+}
+
+#apList {
+    clear: both;
+    list-style: none;
+    padding-left: 0;
+    width: 100%;
+}
+
+#apList p {
+    margin-top: 5px;
+    background-color: #fff;
+    border: 1px solid #d8d8d8;
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    word-wrap: break-word;
+    min-height: 42px;
+    border-radius: 10px;
+}
+
+.element {
+    border: 2px solid #cfd8dc;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    padding: 6px 0;
+}
+
+#finalStage {
+    display: none;
+}
