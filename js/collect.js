@@ -71,7 +71,7 @@ function turnOnConnection() {
     $(".internet-connection").css("display", "block");
     $("#info-area").css("visibility", "visible");
     $("#info-area").css("margin-top", "-300px");
-    $("#speedtest").css("margin-bottom", "-400px");
+    $("#speedtest").css("margin-bottom", "-350px");
 
     $("#addAP").on("click", function() {
         if ($("#apRead").val() == "")
