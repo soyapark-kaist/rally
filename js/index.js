@@ -1,21 +1,17 @@
 var clientId = '785081542704-6gbo1ku7lhdok50pai52n28adlfgpjva.apps.googleusercontent.com';
 var apiKey = 'AIzaSyD9v41gd511lFHseGqCXwNyfpQyArNgZLQ';
-var scopes =
-    'https://www.googleapis.com/auth/gmail.readonly ' +
-    'https://www.googleapis.com/auth/gmail.send';
 
-function initDB() {
+function initMap() {
     toggleLoading("#loading");
-    var config = {
-        apiKey: "AIzaSyD9v41gd511lFHseGqCXwNyfpQyArNgZLQ",
-        authDomain: "hello-3239c.firebaseapp.com",
-        databaseURL: "https://hello-3239c.firebaseio.com",
-        storageBucket: "hello-3239c.appspot.com",
-        messagingSenderId: "785081542704"
-    };
-    firebase.initializeApp(config);
+    createMap();
+    initDB();
+    fetchMap(null);
+
+    map.setCenter(kaist);
+
 
     var playersRef = firebase.database().ref("petition/");
+    infoWindow = new google.maps.InfoWindow({ map: map });
 
     // Attach an asynchronous callback to read the data at our posts reference
     playersRef.on("value", function(snapshot) {
@@ -34,6 +30,27 @@ function initDB() {
                 var progress = "";
 
                 appendRow(o, users[o].title, users[o]["time-line"]["submit"].split(" GMT")[0], passed ? '정보통신팀에 전송' : '서명 모집 중');
+
+                // Add the circle for the petition to the map.
+                var cityCircle = new google.maps.Circle({
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: '#FF0000',
+                    fillOpacity: 0.35,
+                    map: map,
+                    center: { lat: users[o].latitude, lng: users[o].longitude },
+                    radius: 70,
+                    petitionID: o,
+                    title: users[o].title
+                });
+
+                cityCircle.addListener('click', function(e) {
+                    infoWindow.setContent(this.title + " <a class='btn' href='./timeline.html?id=" + this.petitionID + "'>자세히 보기</a>");
+                    infoWindow.setPosition(this.getCenter())
+                });
+
+
             }
 
             toggleLoading("#loading");

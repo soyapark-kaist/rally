@@ -41,7 +41,7 @@ function displayLocationPicker() {
             latitude: kaist.lat,
             longitude: kaist.lng
         },
-        radius: 200
+        radius: 70
     }, map);
     map.setZoom(16);
 }
@@ -142,7 +142,7 @@ function selectSignature() {
                     var lat = users[o][u].latitude,
                         lng = users[o][u].longitude;
 
-                    if ((Math.abs($('#map').locationpicker("location").latitude - lat) <= 0.0016) && (Math.abs($('#map').locationpicker("location").longitude - lng) <= 0.0016)) {
+                    if ((Math.abs($('#map').locationpicker("location").latitude - lat) <= 0.00056) && (Math.abs($('#map').locationpicker("location").longitude - lng) <= 0.00056)) {
                         // then include the signature
                         var act = users[o][u].activity;
                         if (datas[act])
