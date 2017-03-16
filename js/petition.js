@@ -157,6 +157,14 @@ function selectSignature() {
         dbLoaded = true;
     }
 
+    if (!$(".issue-type .disabled").length) {
+        alert("인터넷 문제를 선택해주세요.");
+
+        $(".issue-type button").focus();
+
+        return false;
+    }
+
     if (isSafari) {
         if ($("#timeRange-start").val() == '') {
             alert("시간 대를 선택해주세요.");
