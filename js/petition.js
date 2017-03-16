@@ -4,6 +4,7 @@ var isSlow; // the petition is about slow ineteret or disconnection?
 var SLOW_TOTAL = 3,
     CONN_TOTAL = 5;
 var users;
+var cnt = 0; // # of signature filtered
 
 // Data storing for drawing charts.
 var APPLICATIONS = [],
@@ -20,13 +21,10 @@ function initListener() {
         $("#stat .col-sm-8").css("display", "none");
         if ($(this).text() == "인터넷 활동") {
             drawChart("#application", APPLICATIONS);
-            $("#application").css("display", "block");
         } else if ($(this).text() == "속도 만족도") {
             drawChart("#speed", SPEED);
-            $("#speed").css("display", "block");
         } else {
             drawChart("#consistency", CONSISTENCY);
-            $("#consistency").css("display", "block");
         }
 
     });
@@ -233,10 +231,9 @@ function filterSignature() {
     }
 
     if (download.length > 0) {
-        APPLICATIONS = [], SPEED = [], CONSISTENCY = [];
+        cnt = 0, APPLICATIONS = [], SPEED = [], CONSISTENCY = [];
 
         /* Data preparation for application pie chart. */
-        var cnt = 0;
         for (var d in apps) {
             APPLICATIONS.push({ "label": d, "population": apps[d] });
             cnt += apps[d];
@@ -271,5 +268,17 @@ function filterSignature() {
         $("#stat").css("display", "none");
     }
 
+    setProgressbar();
     $("#finalStage").css("visibility", "visible");
+}
+
+function setProgressbar() {
+    // aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"
+    if (isSlow) {
+        $(".progress-bar").css("width", (cnt / SLOW_TOTAL * 100) + "%").attr("aria-valuenow", cnt);
+        $(".progress-bar").attr("aria-valuemax", SLOW_TOTAL);
+    } else {
+        $(".progress-bar").css("width", (cnt / CONN_TOTAL * 100) + "%").attr("aria-valuenow", cnt);
+        $(".progress-bar").attr("aria-valuemax", CONN_TOTAL);
+    }
 }

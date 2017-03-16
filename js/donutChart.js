@@ -1,5 +1,7 @@
 function drawChart(inSelector, inData) {
     $(inSelector + " svg").remove();
+    $(inSelector).css("display", "block");
+
     var width = 360,
         height = 250,
         radius = Math.min(width, height) / 2;
