@@ -1,5 +1,6 @@
 var dbLoaded = false;
 var isSafari = detectBrowser();
+var isSlow; // the petition is about slow ineteret or disconnection?
 
 function initListener() {
     toggleLoading("#loading");
@@ -31,8 +32,6 @@ function initLocationPicker() {
     }
     script.src = src;
     document.getElementsByTagName('head')[0].appendChild(script);
-
-
 }
 
 function displayLocationPicker() {
@@ -44,6 +43,32 @@ function displayLocationPicker() {
         radius: 70
     }, map);
     map.setZoom(16);
+}
+
+function pickIssueType() {
+    $(".issue-question button").prop('disabled', true)
+        .addClass("disabled");
+    return false;
+}
+
+function initTimeRangeWidget() {
+    /* Add time range plug-in. */
+    $('#timeRange-start').timepicker({
+        'step': 60,
+        'timeFormat': 'H:i'
+    });
+
+    // In case, time is selected before reload.
+    if ($('#timeRange-start').val() != "")
+        $("#viewSignature").prop('disabled', false);
+
+    $('#timeRange-start').on('changeTime', function() {
+        if ($(this).val() != "")
+            $("#viewSignature").prop('disabled', false);
+        var dstTime = (parseInt($(this).val().split(":")[0]) + 3) % 24;
+        $('#timeRange-end').attr("placeholder", dstTime.toString() + ":00");
+        //text($(this).val());
+    });
 }
 
 function preview() {
@@ -191,26 +216,4 @@ function selectSignature() {
         });
 
     return false;
-}
-
-
-
-function initTimeRangeWidget() {
-    /* Add time range plug-in. */
-    $('#timeRange-start').timepicker({
-        'step': 60,
-        'timeFormat': 'H:i'
-    });
-
-    // In case, time is selected before reload.
-    if ($('#timeRange-start').val() != "")
-        $("#viewSignature").prop('disabled', false);
-
-    $('#timeRange-start').on('changeTime', function() {
-        if ($(this).val() != "")
-            $("#viewSignature").prop('disabled', false);
-        var dstTime = (parseInt($(this).val().split(":")[0]) + 3) % 24;
-        $('#timeRange-end').attr("placeholder", dstTime.toString() + ":00");
-        //text($(this).val());
-    });
 }

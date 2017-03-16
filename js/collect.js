@@ -82,7 +82,6 @@ function turnOnConnection() {
 }
 
 function turnOffIssue() {
-    $(".issue-question p").addClass("disabled");
     $("#finalStage").css("display", "block");
 }
 
