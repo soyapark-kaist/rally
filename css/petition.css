@@ -43,3 +43,9 @@ textarea {
 .issue-type button:hover {
     background: #ff6c40;
 }
+
+#stat {
+    display: none;
+    width: 100%;
+    height: 400px;
+}

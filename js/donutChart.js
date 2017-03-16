@@ -1,5 +1,5 @@
 function drawChart(inSelector, inData) {
-    $("#application svg").remove();
+    $(inSelector + " svg").remove();
     var width = 360,
         height = 250,
         radius = Math.min(width, height) / 2;
@@ -25,7 +25,6 @@ function drawChart(inSelector, inData) {
     addData(inData);
 
     function addData(data) {
-
         var g = svg.selectAll(".arc")
             .data(pie(data))
             .enter().append("g")
@@ -38,7 +37,7 @@ function drawChart(inSelector, inData) {
         g.append("text")
             .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
             .attr("dy", ".35em")
-            .text(function(d) { return d.data.label; });
+            .text(function(d) { if (d.data.population == 0) return; return d.data.label; });
     }
 
     // d3.csv("data.csv", type, );

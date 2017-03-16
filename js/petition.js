@@ -2,8 +2,31 @@ var dbLoaded = false;
 var isSafari = detectBrowser();
 var isSlow; // the petition is about slow ineteret or disconnection?
 
+// Data storing for drawing charts.
+var APPLICATIONS = [],
+    SPEED = [],
+    CONSISTENCY = [];
+
 function initListener() {
     toggleLoading("#loading");
+
+    $("#stat a").on("click", function() {
+        $("#stat a").removeClass("active");
+        $(this).addClass("active");
+
+        $("#stat .col-sm-8").css("display", "none");
+        if ($(this).text() == "인터넷 활동") {
+            drawChart("#application", APPLICATIONS);
+            $("#application").css("display", "block");
+        } else if ($(this).text() == "속도 만족도") {
+            drawChart("#speed", SPEED);
+            $("#speed").css("display", "block");
+        } else {
+            drawChart("#consistency", CONSISTENCY);
+            $("#consistency").css("display", "block");
+        }
+
+    });
 }
 
 function initMap() {
@@ -150,7 +173,9 @@ function selectSignature() {
     // Attach an asynchronous callback to read the data at our posts reference
     playersRef.on("value", function(snapshot) {
             var users = snapshot.val();
-            var datas = {},
+            var apps = {},
+                speed = [0, 0, 0],
+                cons = [0, 0, 0],
                 download = [],
                 upload = [];
 
@@ -170,10 +195,13 @@ function selectSignature() {
                     if ((Math.abs($('#map').locationpicker("location").latitude - lat) <= 0.00056) && (Math.abs($('#map').locationpicker("location").longitude - lng) <= 0.00056)) {
                         // then include the signature
                         var act = users[o][u].activity;
-                        if (datas[act])
-                            datas[act] += 1;
+                        if (apps[act])
+                            apps[act] += 1;
                         else
-                            datas[act] = 1;
+                            apps[act] = 1;
+
+                        speed[parseInt(users[o][u].speed) - 1]++;
+                        cons[parseInt(users[o][u].consistency) - 1]++;
 
                         download.push(parseFloat(users[o][u].download));
                         upload.push(parseFloat(users[o][u].upload));
@@ -184,14 +212,21 @@ function selectSignature() {
 
             if (download.length > 0) {
                 /* Data preparation for application pie chart. */
-                var m = [],
-                    cnt = 0;
-                for (var d in datas) {
-                    m.push({ "label": d, "population": datas[d] });
-                    cnt += datas[d];
+                var cnt = 0;
+                for (var d in apps) {
+                    APPLICATIONS.push({ "label": d, "population": apps[d] });
+                    cnt += apps[d];
                 }
 
-                drawChart("#application", m);
+                SPEED.push({ "label": "즉각적이다", "population": speed[0] });
+                SPEED.push({ "label": "클릭마다 지체가 있긴 하지만 쓸만하다", "population": speed[1] });
+                SPEED.push({ "label": "새로고침을 하게 된다", "population": speed[2] });
+
+                CONSISTENCY.push({ "label": "일정한 속도를 유지한다", "population": cons[0] });
+                CONSISTENCY.push({ "label": "속도가 일정치 않아서 신경쓰이긴 하지만 쓸만하다", "population": cons[1] });
+                CONSISTENCY.push({ "label": "종잡을 수 없다", "population": cons[2] });
+
+                drawChart("#application", APPLICATIONS);
 
                 var sum = download.reduce(function(a, b) { return a + b; });
                 var downAvg = sum / download.length;
@@ -202,6 +237,8 @@ function selectSignature() {
                 $("#number").text("총 " + cnt + "개");
                 $("#bandwidth").text("평균 download / upload : " + downAvg + " / " + upAvg + "Mbps");
                 $("#stat").css("display", "block");
+                $("#speed").css("display", "none");
+                $("#consistency").css("display", "none");
             } else {
                 $("#number").text("해당 범위에 아직 서명이 존재하지 않습니다. 친구들에게 홍보해 더 많은 싸인을 모아보세요!");
                 $("#stat").css("display", "none");
