@@ -1,6 +1,9 @@
 var dbLoaded = false;
 var isSafari = detectBrowser();
 var isSlow; // the petition is about slow ineteret or disconnection?
+var SLOW_TOTAL = 3,
+    CONN_TOTAL = 5;
+var users;
 
 // Data storing for drawing charts.
 var APPLICATIONS = [],
@@ -169,88 +172,104 @@ function selectSignature() {
 
     var $btn = $('#viewSignature').button('loading');
 
-    var playersRef = firebase.database().ref('users/');
-    // Attach an asynchronous callback to read the data at our posts reference
-    playersRef.on("value", function(snapshot) {
-            var users = snapshot.val();
-            var apps = {},
-                speed = [0, 0, 0],
-                cons = [0, 0, 0],
-                download = [],
-                upload = [];
+    if (!users) {
+        var playersRef = firebase.database().ref('users/');
+        // Attach an asynchronous callback to read the data at our posts reference
+        playersRef.once("value").then(function(snapshot) {
+                users = snapshot.val();
+                filterSignature();
 
-            for (var o in users) {
-                for (var u in users[o]) {
-                    var hour = new Date(users[o][u].time);
-                    hour = hour.getHours();
-
-                    var hour_range = $('#timeRange-start').val().split(":")[0];
-                    if (!(hour_range <= hour && hour < hour_range + 3)) {
-                        continue;
-                    }
-
-                    var lat = users[o][u].latitude,
-                        lng = users[o][u].longitude;
-
-                    if ((Math.abs($('#map').locationpicker("location").latitude - lat) <= 0.00056) && (Math.abs($('#map').locationpicker("location").longitude - lng) <= 0.00056)) {
-                        // then include the signature
-                        var act = users[o][u].activity;
-                        if (apps[act])
-                            apps[act] += 1;
-                        else
-                            apps[act] = 1;
-
-                        speed[parseInt(users[o][u].speed) - 1]++;
-                        cons[parseInt(users[o][u].consistency) - 1]++;
-
-                        download.push(parseFloat(users[o][u].download));
-                        upload.push(parseFloat(users[o][u].upload));
-                    }
-
-                }
-            }
-
-            if (download.length > 0) {
-                /* Data preparation for application pie chart. */
-                var cnt = 0;
-                for (var d in apps) {
-                    APPLICATIONS.push({ "label": d, "population": apps[d] });
-                    cnt += apps[d];
-                }
-
-                SPEED.push({ "label": "즉각적이다", "population": speed[0] });
-                SPEED.push({ "label": "클릭마다 지체가 있긴 하지만 쓸만하다", "population": speed[1] });
-                SPEED.push({ "label": "새로고침을 하게 된다", "population": speed[2] });
-
-                CONSISTENCY.push({ "label": "일정한 속도를 유지한다", "population": cons[0] });
-                CONSISTENCY.push({ "label": "속도가 일정치 않아서 신경쓰이긴 하지만 쓸만하다", "population": cons[1] });
-                CONSISTENCY.push({ "label": "종잡을 수 없다", "population": cons[2] });
-
-                drawChart("#application", APPLICATIONS);
-
-                var sum = download.reduce(function(a, b) { return a + b; });
-                var downAvg = sum / download.length;
-
-                var sum = upload.reduce(function(a, b) { return a + b; });
-                var upAvg = sum / upload.length;
-
-                $("#number").text("총 " + cnt + "개");
-                $("#bandwidth").text("평균 download / upload : " + downAvg + " / " + upAvg + "Mbps");
-                $("#stat").css("display", "block");
-                $("#speed").css("display", "none");
-                $("#consistency").css("display", "none");
-            } else {
-                $("#number").text("해당 범위에 아직 서명이 존재하지 않습니다. 친구들에게 홍보해 더 많은 싸인을 모아보세요!");
-                $("#stat").css("display", "none");
-            }
-
-            $("#finalStage").css("visibility", "visible");
-            $btn.button('reset');
-        },
-        function(errorObject) {
-            alert("The read failed: " + errorObject.code);
-            $btn.button('reset');
-        });
+                $btn.button('reset');
+            },
+            function(errorObject) {
+                alert("The read failed: " + errorObject.code);
+                $btn.button('reset');
+            });
+    } //If END, when DB is not yet fetched
+    else {
+        filterSignature();
+        $btn.button('reset');
+    } //else END, when DB is already fetched
 
     return false;
+}
+
+function filterSignature() {
+    var apps = {},
+        speed = [0, 0, 0],
+        cons = [0, 0, 0],
+        download = [],
+        upload = [];
+
+    for (var o in users) {
+        for (var u in users[o]) {
+            var hour = new Date(users[o][u].time);
+            hour = hour.getHours();
+
+            var hour_range = $('#timeRange-start').val().split(":")[0];
+            if (!(hour_range <= hour && hour < hour_range + 3)) {
+                continue;
+            }
+
+            var lat = users[o][u].latitude,
+                lng = users[o][u].longitude;
+
+            if ((Math.abs($('#map').locationpicker("location").latitude - lat) <= 0.00056) && (Math.abs($('#map').locationpicker("location").longitude - lng) <= 0.00056)) {
+                // then include the signature
+                var act = users[o][u].activity;
+                if (apps[act])
+                    apps[act] += 1;
+                else
+                    apps[act] = 1;
+
+                speed[parseInt(users[o][u].speed) - 1]++;
+                cons[parseInt(users[o][u].consistency) - 1]++;
+
+                download.push(parseFloat(users[o][u].download));
+                upload.push(parseFloat(users[o][u].upload));
+            }
+
+        }
+    }
+
+    if (download.length > 0) {
+        APPLICATIONS = [], SPEED = [], CONSISTENCY = [];
+
+        /* Data preparation for application pie chart. */
+        var cnt = 0;
+        for (var d in apps) {
+            APPLICATIONS.push({ "label": d, "population": apps[d] });
+            cnt += apps[d];
+        }
+
+        SPEED.push({ "label": "즉각적이다", "population": speed[0] });
+        SPEED.push({ "label": "클릭마다 지체가 있긴 하지만 쓸만하다", "population": speed[1] });
+        SPEED.push({ "label": "새로고침을 하게 된다", "population": speed[2] });
+
+        CONSISTENCY.push({ "label": "일정한 속도를 유지한다", "population": cons[0] });
+        CONSISTENCY.push({ "label": "속도가 일정치 않아서 신경쓰이긴 하지만 쓸만하다", "population": cons[1] });
+        CONSISTENCY.push({ "label": "종잡을 수 없다", "population": cons[2] });
+
+        // set active chart to first one.
+        $("#stat a").removeClass("active");
+        $("#stat a:first").addClass("active");
+        drawChart("#application", APPLICATIONS);
+
+        var sum = download.reduce(function(a, b) { return a + b; });
+        var downAvg = sum / download.length;
+
+        var sum = upload.reduce(function(a, b) { return a + b; });
+        var upAvg = sum / upload.length;
+
+        $("#number").text("총 " + cnt + "개");
+        $("#bandwidth").text("평균 download / upload : " + downAvg + " / " + upAvg + "Mbps");
+        $("#stat").css("display", "block");
+        $("#speed").css("display", "none");
+        $("#consistency").css("display", "none");
+    } else {
+        $("#number").text("해당 범위에 아직 서명이 존재하지 않습니다. 친구들에게 홍보해 더 많은 싸인을 모아보세요!");
+        $("#stat").css("display", "none");
+    }
+
+    $("#finalStage").css("visibility", "visible");
 }
