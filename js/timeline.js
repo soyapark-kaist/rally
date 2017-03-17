@@ -152,7 +152,6 @@ function fetchPetiton(inReceiving) {
     // Attach an asynchronous callback to read the data at our posts reference
     playersRef.once("value").then(function(snapshot) {
         var users = snapshot.val();
-        var petitions = [];
 
         if (!users[petitionID]) {
             alert("존재하지 않은 탄원서입니다!")
@@ -276,6 +275,7 @@ function selectSignature() {
             var sum = upload.reduce(function(a, b) { return a + b; });
             var upAvg = sum / upload.length;
 
+            createCircle(petitionID, { "lat": petition["latitude"], "lng": petition["longitude"] }, petition["title"]);
             $("#number").text("총 " + cnt + "개");
             $("#bandwidth").text("평균 download / upload : " + downAvg + " / " + upAvg + "Mbps");
             $("#leftQuorum").text(petition["quorum"] - cnt);

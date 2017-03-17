@@ -32,18 +32,7 @@ function initMap() {
                 appendRow(o, users[o].title, users[o]["time-line"]["submit"].split(" GMT")[0], passed ? '정보통신팀에 전송' : '서명 모집 중');
 
                 // Add the circle for the petition to the map.
-                var cityCircle = new google.maps.Circle({
-                    strokeColor: '#FF0000',
-                    strokeOpacity: 0.8,
-                    strokeWeight: 2,
-                    fillColor: '#FF0000',
-                    fillOpacity: 0.35,
-                    map: map,
-                    center: { lat: users[o].latitude, lng: users[o].longitude },
-                    radius: 70,
-                    petitionID: o,
-                    title: users[o].title
-                });
+                var cityCircle = createCircle(o, { lat: users[o].latitude, lng: users[o].longitude }, users[o].title);
 
                 cityCircle.addListener('click', function(e) {
                     infoWindow.setContent(this.title + " <a class='btn' href='./timeline.html?id=" + this.petitionID + "'>자세히 보기</a>");
