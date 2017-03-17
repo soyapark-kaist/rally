@@ -147,7 +147,8 @@ function postPetition() {
             "time-range": $('#timeRange-start').val(),
             "time-line": {
                 "submit": new Date().toString()
-            }
+            },
+            "quorum": isSlow ? SLOW_TOTAL : CONN_TOTAL
         }, function(error) {
             if (error) {
                 console.log(error);
@@ -169,6 +170,7 @@ function postPetition() {
         localStorage.setItem("longitude", $('#map').locationpicker("location").longitude);
         localStorage.setItem("time-range", $('#timeRange-start').val());
         localStorage.setItem("submit", new Date().toString());
+        localStorage.setItem("quorum", isSlow ? SLOW_TOTAL : CONN_TOTAL);
 
         window.location.replace("./login.html");
         return false;

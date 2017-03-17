@@ -114,6 +114,8 @@ function initTimeline(inTimeline) {
     var timeline = new vis.Timeline(container, items, groups, options);
 
     timeline.on('click', function(inEvent) {
+        toggleLoading(".loading");
+
         $("#petition").css("display", "none");
         $("#receive").css("display", "none");
         $("#respond").css("display", "none");
@@ -137,6 +139,8 @@ function initTimeline(inTimeline) {
         } else {
 
         }
+
+        toggleLoading(".loading");
     });
 
     toggleLoading("#timeline");
@@ -240,7 +244,7 @@ function selectSignature() {
                 var lat = users[o][u].latitude,
                     lng = users[o][u].longitude;
 
-                if ((Math.abs(pLat - lat) <= 0.0016) && (Math.abs(pLng - lng) <= 0.0016)) {
+                if ((Math.abs(pLat - lat) <= 0.00056) && (Math.abs(pLng - lng) <= 0.00056)) {
                     // then include the signature
                     var act = users[o][u].activity;
                     if (datas[act])
@@ -274,7 +278,8 @@ function selectSignature() {
 
             $("#number").text("총 " + cnt + "개");
             $("#bandwidth").text("평균 download / upload : " + downAvg + " / " + upAvg + "Mbps");
-            setProgressbar(cnt, 5);
+            $("#leftQuorum").text(petition["quorum"] - cnt);
+            setProgressbar(cnt, petition["quorum"]);
 
             $("#stat").css("display", "block");
         } else {
