@@ -32,13 +32,6 @@ textarea {
     float: right;
 }
 
-.issue-type p {
-    border: 3px solid orange;
-    background: white;
-    margin: 5px;
-    border-radius: 5px !important;
-}
-
 .internet-connection,
 .internet-slow>div.container {
     display: none;

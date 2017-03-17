@@ -112,7 +112,19 @@
     <div class="content">
         <div class="container">
             <div class="page-header">
-                <h1>새 탄원서 시작하기</h1>
+                <h1>새 민원 시작하기</h1>
+            </div>
+
+            <!-- Post -->
+            <div class="post issue-question">
+                <h4>다음 중 현재 겪고 있는 인터넷 문제를 선택해주세요.</h4>
+                <form onsubmit="return pickIssueType();">
+                    <div class="btn-group inline issue-type">
+                        <button type="submit" class="btn">인터넷 연결불능<br><span>와이파이에 연결조차 안될 때 선택해주세요</span></button>
+                        <button type="submit" class="btn">인터넷 느림<br><span>와이파이에 연결은 되지만 느릴 때 선택해주세요</span></button>
+                    </div>
+                </form>
+
             </div>
 
             <!-- Post -->
@@ -149,8 +161,16 @@
                                 <a class="list-group-item">일정성 만족도</a>
                             </div>
                             <div class="col-sm-8" id="application"></div>
+                            <div class="col-sm-8" id="speed"></div>
+                            <div class="col-sm-8" id="consistency"></div>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%">
+                                <!--40%-->
+                            </div>
                         </div>
                     </div>
+
 
                 </form>
 
