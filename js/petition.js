@@ -5,6 +5,7 @@ var SLOW_TOTAL = 3,
     CONN_TOTAL = 5;
 var users;
 var cnt = 0; // # of signature filtered
+var petitionID = generateID(8);
 
 // Data storing for drawing charts.
 var APPLICATIONS = [],
@@ -28,6 +29,8 @@ function initListener() {
         }
 
     });
+
+    initDB();
 }
 
 function initMap() {
@@ -105,9 +108,6 @@ function preview() {
 }
 
 function postPetition() {
-    var petitionID = generateID(8);
-    var playersRef = firebase.database().ref("petition/" + petitionID);
-
     /* Check whether all the question are filled. */
     if (isSafari) {
         if ($("#title").val() == '') {
@@ -129,34 +129,55 @@ function postPetition() {
         }
     }
 
-    playersRef.set({
-        "title": $("#title").val(),
-        "content": $("#content").val(),
-        "latitude": $('#map').locationpicker("location").latitude,
-        "longitude": $('#map').locationpicker("location").longitude,
-        "time-range": $('#timeRange-start').val(),
-        "time-line": {
-            "submit": new Date().toString()
-        }
-    }, function(error) {
-        if (error) {
-            console.log(error);
-        } else {
-            // when post to DB is successful 
-            routeToTimeline(petitionID);
-        }
+    //then save input to local storage
 
-    });
+    // Check whether the user is authenticated
+    var user = firebase.auth().currentUser;
+
+    // User is signed in.
+    if (user) {
+        //route to timeline.html
+        var playersRef = firebase.database().ref("petition/" + petitionID);
+
+        playersRef.set({
+            "title": $("#title").val(),
+            "content": $("#content").val(),
+            "latitude": $('#map').locationpicker("location").latitude,
+            "longitude": $('#map').locationpicker("location").longitude,
+            "time-range": $('#timeRange-start').val(),
+            "time-line": {
+                "submit": new Date().toString()
+            }
+        }, function(error) {
+            if (error) {
+                console.log(error);
+            } else {
+                // when post to DB is successful 
+                routeToTimeline(petitionID);
+            }
+
+        });
+    }
+    // No user is signed in.
+    else {
+        //then route to login page(login.html)
+        //route to login.html
+        localStorage.setItem("petitionID", petitionID);
+        localStorage.setItem("title", $("#title").val());
+        localStorage.setItem("content", $("#content").val());
+        localStorage.setItem("latitude", $('#map').locationpicker("location").latitude);
+        localStorage.setItem("longitude", $('#map').locationpicker("location").longitude);
+        localStorage.setItem("time-range", $('#timeRange-start').val());
+        localStorage.setItem("submit", new Date().toString());
+
+        window.location.replace("./login.html");
+        return false;
+    }
 
     return false;
 }
 
 function selectSignature() {
-    if (!dbLoaded) {
-        initDB();
-        dbLoaded = true;
-    }
-
     if (!$(".issue-type .disabled").length) {
         alert("인터넷 문제를 선택해주세요.");
 
