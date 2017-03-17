@@ -173,6 +173,16 @@ function createCircle(inID, inCenter, inTitle) {
     });
 }
 
+function filterHour(hour_from, hour_to, hour3) {
+    if (hour_from == hour_to) {
+        return hour_to == hour3;
+    } else if (hour_from < hour_to) {
+        return hour_from <= hour3 && hour3 < hour_to;
+    } else {
+        return hour3 >= hour_from || hour3 < hour_to;
+    }
+}
+
 // function calcTime(city, offset) {
 //     // create Date object for current location
 //     var d = new Date();

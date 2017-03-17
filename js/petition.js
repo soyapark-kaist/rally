@@ -232,11 +232,11 @@ function filterSignature() {
 
     for (var o in users) {
         for (var u in users[o]) {
-            var hour = new Date(users[o][u].time);
-            hour = hour.getHours();
+            var hour = new Date(users[o][u].time).getHours();
 
-            var hour_range = $('#timeRange-start').val().split(":")[0];
-            if (!(hour_range <= hour && hour < hour_range + 3)) {
+            var hour_range = parseInt($('#timeRange-start').val().split(":")[0]);
+
+            if (!filterHour(hour_range, (hour_range + 3) % 24, hour)) {
                 continue;
             }
 

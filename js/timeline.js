@@ -233,10 +233,9 @@ function selectSignature() {
 
         for (var o in users) {
             for (var u in users[o]) {
-                var hour = new Date(users[o][u].time);
-                hour = hour.getHours();
+                var hour = new Date(users[o][u].time).getHours();
 
-                if (!(hour_range <= hour && hour < hour_range + 3)) {
+                if (!filterHour(hour_range, (hour_range + 3) % 24, hour)) {
                     continue;
                 }
 
@@ -258,6 +257,8 @@ function selectSignature() {
             }
         }
 
+        createCircle(petitionID, { "lat": petition["latitude"], "lng": petition["longitude"] }, petition["title"]);
+
         if (download.length > 0) {
             /* Data preparation for application pie chart. */
             var m = [],
@@ -275,7 +276,6 @@ function selectSignature() {
             var sum = upload.reduce(function(a, b) { return a + b; });
             var upAvg = sum / upload.length;
 
-            createCircle(petitionID, { "lat": petition["latitude"], "lng": petition["longitude"] }, petition["title"]);
             $("#number").text("총 " + cnt + "개");
             $("#bandwidth").text("평균 download / upload : " + downAvg + " / " + upAvg + "Mbps");
             $("#leftQuorum").text(petition["quorum"] - cnt);
@@ -287,6 +287,44 @@ function selectSignature() {
             $("#stat").css("display", "none");
         }
     });
+}
+
+function checkEligibility() {
+    var hour = new Date().getHours();
+    if (!filterHour(hour_range, (hour_range + 3) % 24, hour)) {
+        alert("민원 시간대에 해당하지 않습니다! " + hour_range + ":00 ~ " + (hour_range + 3) % 24 + ":00");
+        return;
+    }
+
+    // Try HTML5 geolocation.
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+                current_loc = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+
+                if ((Math.abs(current_loc.lat - petition["latitude"]) <= 0.00056) && (Math.abs(current_loc.lng - petition["longitude"]) <= 0.00056)) {
+                    // then include the signature
+                    window.location.replace("./collect.html");
+
+                } else alert("현재 민원 장소에 있지 않으십니다!");
+            },
+            function() { //error callback
+                console.log("Error geolocation");
+                alert('브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.');
+                // handleLocationError(true, infoWindow, map.getCenter());
+            }, {
+                timeout: 10000
+            });
+
+
+    } else {
+        // Browser doesn't support Geolocation
+        console.log("Error geolocation; brower doesn't support");
+        alert('브라우저의 위치정보 수집이 불가합니다. 다른 브라우저에서 다시 시도해주세요.');
+        // handleLocationError(false, infoWindow, map.getCenter());
+    }
 }
 
 function postRespond() {
