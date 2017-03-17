@@ -297,17 +297,6 @@ function filterSignature() {
         $("#stat").css("display", "none");
     }
 
-    setProgressbar();
+    setProgressbar(cnt, isSlow ? SLOW_TOTAL : CONN_TOTAL);
     $("#finalStage").css("visibility", "visible");
-}
-
-function setProgressbar() {
-    // aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"
-    if (isSlow) {
-        $(".progress-bar").css("width", (cnt / SLOW_TOTAL * 100) + "%").attr("aria-valuenow", cnt);
-        $(".progress-bar").attr("aria-valuemax", SLOW_TOTAL);
-    } else {
-        $(".progress-bar").css("width", (cnt / CONN_TOTAL * 100) + "%").attr("aria-valuenow", cnt);
-        $(".progress-bar").attr("aria-valuemax", CONN_TOTAL);
-    }
 }

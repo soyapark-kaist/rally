@@ -152,6 +152,12 @@ function toggleLoading(inSelector) {
     $(inSelector).toggleClass("loader");
 }
 
+function setProgressbar(inNow, inMax) {
+    // aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"
+    $(".progress-bar").css("width", (inNow / inMax * 100) + "%").attr("aria-valuenow", inNow);
+    $(".progress-bar").attr("aria-valuemax", inMax);
+}
+
 // function calcTime(city, offset) {
 //     // create Date object for current location
 //     var d = new Date();

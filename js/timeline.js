@@ -274,6 +274,8 @@ function selectSignature() {
 
             $("#number").text("총 " + cnt + "개");
             $("#bandwidth").text("평균 download / upload : " + downAvg + " / " + upAvg + "Mbps");
+            setProgressbar(cnt, 5);
+
             $("#stat").css("display", "block");
         } else {
             $("#number").text("해당 범위에 아직 서명이 존재하지 않습니다. 친구들에게 홍보해 더 많은 싸인을 모아보세요!");
