@@ -1,5 +1,4 @@
-// How many date is allowed before sending to 정보통신팀
-var openDate = 1;
+var openDate = 1; // How many date is allowed before sending to 정보통신팀
 var maploaded = false,
     petitionloaded = false;
 var petition, petitionID, hour_range;
@@ -24,7 +23,6 @@ function initPetition() {
             isAdmin = true; //the user is admin. 
             $("#adminOnly").css("display", "block");
         }
-
     }
 
     fetchPetiton(isReceiving);
@@ -125,9 +123,11 @@ function initTimeline(inTimeline) {
             if (!maploaded) {
                 maploaded = true;
                 createMap();
-                fetchMap(null);
+                markMap(null);
 
                 centerMap(center);
+                createCircle(petitionID, { "lat": petition["latitude"], "lng": petition["longitude"] }, petition["title"]);
+
                 selectSignature();
             }
 
@@ -182,6 +182,10 @@ function fetchPetiton(inReceiving) {
     });
 }
 
+function isSlow(inQuorum) {
+    return inQuorum == SLOW_TOTAL;
+}
+
 function storePetitionInfo(inPetition) {
     petition = inPetition;
 
@@ -230,7 +234,7 @@ function selectSignature() {
         playersRef.once("value").then(function(snapshot) {
                 users = snapshot.val();
 
-                filterSignature(hour_range, { "lat": pLat, "lng": pLng }, petition["quorum"]);
+                filterSignature(isSlow(), hour_range, { "lat": pLat, "lng": pLng }, petition["quorum"]);
 
             },
             function(errorObject) {
@@ -239,7 +243,7 @@ function selectSignature() {
             });
     } //If END, when DB is not yet fetched
     else {
-        filterSignature(hour_range, { "lat": pLat, "lng": pLng }, petition["quorum"]);
+        filterSignature(isSlow(), hour_range, { "lat": pLat, "lng": pLng }, petition["quorum"]);
         //ttt();
         // $btn.button('reset');
     } //else END, when DB is already fetched
@@ -248,7 +252,7 @@ function selectSignature() {
 function checkEligibility() {
     var hour = new Date().getHours();
     if (!filterHour(hour_range, (hour_range + 3) % 24, hour)) {
-        alert("민원 시간대에 해당하지 않습니다! " + hour_range + ":00 ~ " + (hour_range + 3) % 24 + ":00");
+        alert("민원 시간대에 해당하지 않습니다! " + hour_range + ":00 ~ " + (hour_range + 3) + ":00");
         return;
     }
 

@@ -11,6 +11,9 @@ var APPLICATIONS = [],
     SPEED = [],
     CONSISTENCY = [];
 
+var SLOW_TOTAL = 5,
+    CONN_TOTAL = 3;
+
 /* Initialize map. */
 function createMap() {
     map = new google.maps.Map(document.getElementById('map'), {
@@ -30,7 +33,7 @@ function initDB() {
 }
 
 /* Fetch data points from DB & Push markers on the map. */
-function fetchMap(inUserID) {
+function markMap(inUserID) {
     var playersRef = firebase.database().ref('users/');
     // Attach an asynchronous callback to read the data at our posts reference
     playersRef.once("value").then(function(snapshot) {
@@ -190,7 +193,7 @@ function filterHour(hour_from, hour_to, hour3) {
     }
 }
 
-function filterSignature(inTargetHour, inTargetLoc, inQuorum) {
+function filterSignature(inIsSlow, inTargetHour, inTargetLoc, inQuorum) {
     var apps = {},
         speed = [0, 0, 0],
         cons = [0, 0, 0],
@@ -199,7 +202,10 @@ function filterSignature(inTargetHour, inTargetLoc, inQuorum) {
 
     for (var o in users) {
         for (var u in users[o]) {
-            //TODO: filter issue by conn 
+
+            if (!(inIsSlow ? !u.includes("conn") : u.includes("conn"))) //Not XOR
+                continue;
+
             var hour = new Date(users[o][u].time).getHours();
 
             var hour_range = inTargetHour;

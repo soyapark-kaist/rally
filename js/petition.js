@@ -1,8 +1,6 @@
 var dbLoaded = false;
 var isSafari = detectBrowser();
 var isSlow; // the petition is about slow ineteret or disconnection?
-var SLOW_TOTAL = 5,
-    CONN_TOTAL = 3;
 var users;
 var cnt = 0; // # of signature filtered
 var petitionID = generateID(8);
@@ -16,7 +14,6 @@ function initListener() {
 
 function initMap() {
     createMap();
-
     // displayMap();
     initLocationPicker();
 
@@ -190,6 +187,7 @@ function selectSignature() {
         playersRef.once("value").then(function(snapshot) {
                 users = snapshot.val();
                 filterSignature(
+                    isSlow,
                     parseInt($('#timeRange-start').val().split(":")[0]), {
                         "lat": $('#map').locationpicker("location").latitude,
                         "lng": $('#map').locationpicker("location").longitude
@@ -204,7 +202,9 @@ function selectSignature() {
             });
     } //If END, when DB is not yet fetched
     else {
-        filterSignature(parseInt($('#timeRange-start').val().split(":")[0]), {
+        filterSignature(
+            isSlow,
+            parseInt($('#timeRange-start').val().split(":")[0]), {
                 "lat": $('#map').locationpicker("location").latitude,
                 "lng": $('#map').locationpicker("location").longitude
             },
