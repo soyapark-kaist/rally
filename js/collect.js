@@ -1,4 +1,4 @@
-var isSlow = localStorage.getItem("isSlow");
+var isSlow = !window.location.href.includes("conn")
 
 function initListener() {
     /* INTERNET */

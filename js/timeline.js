@@ -273,10 +273,14 @@ function checkEligibility() {
                     lng: position.coords.longitude
                 };
 
+                //debugging purpose
+                current_loc = {
+                    lat: petition["latitude"],
+                    lng: petition["longitude"]
+                };
+
                 if ((Math.abs(current_loc.lat - petition["latitude"]) <= 0.00056) && (Math.abs(current_loc.lng - petition["longitude"]) <= 0.00056)) {
-                    // then include the signature
-                    localStorage.setItem("isSlow", petition["quorum"] == 5 ? true : false);
-                    window.location.replace("./collect.html");
+                    window.location.replace("./collect.html" + (petition["quorum"] == SLOW_TOTAL ? "" : "?conn=true"));
 
                 } else alert("현재 민원 장소에 있지 않으십니다!");
             },

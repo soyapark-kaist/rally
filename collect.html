@@ -59,20 +59,12 @@
 
     <!-- Google API -->
     <script src="https://www.gstatic.com/firebasejs/3.6.7/firebase.js"></script>
-    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
-    </script>
 
     <script src="js/bootstrap.min.js"></script>
 
 
     <!-- Service Worker -->
     <script>
-        navigator.serviceWorker.getRegistrations().then(function(registrations) {
-            for (let registration of registrations) {
-                registration.unregister()
-            }
-        })
-
         // if ('serviceWorker' in navigator) {
         //     navigator.serviceWorker.register('sw.js', {
         //             scope: '.'
