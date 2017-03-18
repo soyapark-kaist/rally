@@ -281,6 +281,8 @@ function filterSignature(inIsSlow, inTargetHour, inTargetLoc, inQuorum) {
     $("#finalStage").css("visibility", "visible");
 }
 
+
+
 function initStat(inSelector, inSelectorList, inDataList) {
     // set active chart to first one.
     $(inSelector + " a").removeClass("active");
