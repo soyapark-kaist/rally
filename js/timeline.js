@@ -189,6 +189,8 @@ function isSlow(inQuorum) {
 function storePetitionInfo(inPetition) {
     petition = inPetition;
 
+    displayType(isSlow(inPetition["quorum"]));
+
     displayPetition({
         'title': inPetition.title,
         'content': inPetition.content,
@@ -209,6 +211,13 @@ function storePetitionInfo(inPetition) {
         petitionloaded = true;
         initTimeline(inPetition["time-line"]);
     }
+}
+
+function displayType(inResponse) {
+    if (inResponse)
+        $("#internetSlow").css("display", "block");
+    else
+        $("#internetConn").css("display", "block");
 }
 
 function displayPetition(inResponse) {
