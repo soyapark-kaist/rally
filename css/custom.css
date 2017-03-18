@@ -629,3 +629,27 @@ footer {
 .footer-links a:hover {
     color: #ff6c40;
 }
+
+/* logo container for index.html */
+@media (max-width: 767px){
+    .logo-container img {
+        height: 6vw;
+    }
+    .logo-container a+a {
+        margin-left: 5.663vw;
+    }
+}
+
+@media (min-width: 768px) {
+    .logo-container img {
+        height: 3vw;
+    }
+    .logo-container a+a {
+        margin-left: 4.854vw;
+    }
+}
+
+.logo-container {
+    text-align: center;
+    margin: 20px auto;
+}
