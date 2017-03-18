@@ -5,6 +5,7 @@ var maploaded = false,
 var petition, petitionID, hour_range;
 var isReceiving = false,
     isAdmin = false;
+var users;
 
 function initPetition() {
     toggleLoading("#timeline");
@@ -114,6 +115,8 @@ function initTimeline(inTimeline) {
     var timeline = new vis.Timeline(container, items, groups, options);
 
     timeline.on('click', function(inEvent) {
+        toggleLoading(".loading");
+
         $("#petition").css("display", "none");
         $("#receive").css("display", "none");
         $("#respond").css("display", "none");
@@ -137,6 +140,8 @@ function initTimeline(inTimeline) {
         } else {
 
         }
+
+        toggleLoading(".loading");
     });
 
     toggleLoading("#timeline");
@@ -148,7 +153,6 @@ function fetchPetiton(inReceiving) {
     // Attach an asynchronous callback to read the data at our posts reference
     playersRef.once("value").then(function(snapshot) {
         var users = snapshot.val();
-        var petitions = [];
 
         if (!users[petitionID]) {
             alert("존재하지 않은 탄원서입니다!")
@@ -217,69 +221,67 @@ function centerMap(inCenter) {
 }
 
 function selectSignature() {
-    var playersRef = firebase.database().ref('users/');
-    // Attach an asynchronous callback to read the data at our posts reference
-    playersRef.once("value").then(function(snapshot) {
-        var users = snapshot.val();
-        var datas = {},
-            download = [],
-            upload = [];
+    var pLat = center.lat,
+        pLng = center.lng;
 
-        var pLat = center.lat,
-            pLng = center.lng;
+    if (!users) {
+        var playersRef = firebase.database().ref('users/');
+        // Attach an asynchronous callback to read the data at our posts reference
+        playersRef.once("value").then(function(snapshot) {
+                users = snapshot.val();
 
-        for (var o in users) {
-            for (var u in users[o]) {
-                var hour = new Date(users[o][u].time);
-                hour = hour.getHours();
+                filterSignature(hour_range, { "lat": pLat, "lng": pLng }, petition["quorum"]);
 
-                if (!(hour_range <= hour && hour < hour_range + 3)) {
-                    continue;
-                }
+            },
+            function(errorObject) {
+                alert("The read failed: " + errorObject.code);
+                // $btn.button('reset');
+            });
+    } //If END, when DB is not yet fetched
+    else {
+        filterSignature(hour_range, { "lat": pLat, "lng": pLng }, petition["quorum"]);
+        //ttt();
+        // $btn.button('reset');
+    } //else END, when DB is already fetched
+}
 
-                var lat = users[o][u].latitude,
-                    lng = users[o][u].longitude;
+function checkEligibility() {
+    var hour = new Date().getHours();
+    if (!filterHour(hour_range, (hour_range + 3) % 24, hour)) {
+        alert("민원 시간대에 해당하지 않습니다! " + hour_range + ":00 ~ " + (hour_range + 3) % 24 + ":00");
+        return;
+    }
 
-                if ((Math.abs(pLat - lat) <= 0.0016) && (Math.abs(pLng - lng) <= 0.0016)) {
+    // Try HTML5 geolocation.
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+                current_loc = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+
+                if ((Math.abs(current_loc.lat - petition["latitude"]) <= 0.00056) && (Math.abs(current_loc.lng - petition["longitude"]) <= 0.00056)) {
                     // then include the signature
-                    var act = users[o][u].activity;
-                    if (datas[act])
-                        datas[act] += 1;
-                    else
-                        datas[act] = 1;
+                    localStorage.setItem("isSlow", petition["quorum"] == 5 ? true : false);
+                    window.location.replace("./collect.html");
 
-                    download.push(parseFloat(users[o][u].download));
-                    upload.push(parseFloat(users[o][u].upload));
-                }
+                } else alert("현재 민원 장소에 있지 않으십니다!");
+            },
+            function() { //error callback
+                console.log("Error geolocation");
+                alert('브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.');
+                // handleLocationError(true, infoWindow, map.getCenter());
+            }, {
+                timeout: 10000
+            });
 
-            }
-        }
 
-        if (download.length > 0) {
-            /* Data preparation for application pie chart. */
-            var m = [],
-                cnt = 0;
-            for (var d in datas) {
-                m.push({ "label": d, "population": datas[d] });
-                cnt += datas[d];
-            }
-
-            drawChart("#application", m);
-
-            var sum = download.reduce(function(a, b) { return a + b; });
-            var downAvg = sum / download.length;
-
-            var sum = upload.reduce(function(a, b) { return a + b; });
-            var upAvg = sum / upload.length;
-
-            $("#number").text("총 " + cnt + "개");
-            $("#bandwidth").text("평균 download / upload : " + downAvg + " / " + upAvg + "Mbps");
-            $("#stat").css("display", "block");
-        } else {
-            $("#number").text("해당 범위에 아직 서명이 존재하지 않습니다. 친구들에게 홍보해 더 많은 싸인을 모아보세요!");
-            $("#stat").css("display", "none");
-        }
-    });
+    } else {
+        // Browser doesn't support Geolocation
+        console.log("Error geolocation; brower doesn't support");
+        alert('브라우저의 위치정보 수집이 불가합니다. 다른 브라우저에서 다시 시도해주세요.');
+        // handleLocationError(false, infoWindow, map.getCenter());
+    }
 }
 
 function postRespond() {

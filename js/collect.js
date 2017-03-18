@@ -1,4 +1,4 @@
-var isSlow = "waiting";
+var isSlow = localStorage.getItem("isSlow");
 
 function initListener() {
     /* INTERNET */
@@ -52,6 +52,25 @@ function initListener() {
             scrollTop: $("#activitySection").position().top
         }, 1500);
     })
+
+    if (isSlow) {
+        $(".internet-slow>div.container").css("display", "block");
+        $("#speedtest").css("visibility", "visible");
+    } else {
+        $(".internet-connection").css("display", "block");
+        $("#info-area").css("visibility", "visible");
+        $("#info-area").css("margin-top", "-300px");
+        $("#speedtest").css("margin-bottom", "-350px");
+
+        $("#addAP").on("click", function() {
+            if ($("#apRead").val() == "")
+                return;
+            $("#apList").append("<p>" + $("#apRead").val() + '<button onclick="removeAP(this)" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></p>');
+            $("#apRead").val("");
+        });
+    }
+
+    $("#finalStage").css("display", "block");
 }
 
 function turnOnSlow() {

@@ -6,6 +6,11 @@ var map, center;
 var infoWindow;
 var viewDate = 15; // Set how many dates for 
 
+// Data storing for drawing charts.
+var APPLICATIONS = [],
+    SPEED = [],
+    CONSISTENCY = [];
+
 /* Initialize map. */
 function createMap() {
     map = new google.maps.Map(document.getElementById('map'), {
@@ -150,6 +155,148 @@ function fromLatLngToPoint(latLng) {
 
 function toggleLoading(inSelector) {
     $(inSelector).toggleClass("loader");
+}
+
+function setProgressbar(inNow, inMax) {
+    // aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"
+    $(".progress-bar").css("width", (inNow / inMax * 100) + "%").attr("aria-valuenow", inNow);
+    $(".progress-bar").attr("aria-valuemax", inMax);
+
+    $("#leftQuorum").text(inMax - inNow);;
+}
+
+function createCircle(inID, inCenter, inTitle) {
+    return new google.maps.Circle({
+        strokeColor: '#FF0000',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#FF0000',
+        fillOpacity: 0.35,
+        map: map,
+        center: { lat: inCenter.lat, lng: inCenter.lng },
+        radius: 70,
+        petitionID: inID,
+        title: inTitle
+    });
+}
+
+function filterHour(hour_from, hour_to, hour3) {
+    if (hour_from == hour_to) {
+        return hour_to == hour3;
+    } else if (hour_from < hour_to) {
+        return hour_from <= hour3 && hour3 < hour_to;
+    } else {
+        return hour3 >= hour_from || hour3 < hour_to;
+    }
+}
+
+function filterSignature(inTargetHour, inTargetLoc, inQuorum) {
+    var apps = {},
+        speed = [0, 0, 0],
+        cons = [0, 0, 0],
+        download = [],
+        upload = [];
+
+    for (var o in users) {
+        for (var u in users[o]) {
+            //TODO: filter issue by conn 
+            var hour = new Date(users[o][u].time).getHours();
+
+            var hour_range = inTargetHour;
+            //parseInt($('#timeRange-start').val().split(":")[0]);
+
+            if (!filterHour(hour_range, (hour_range + 3) % 24, hour)) {
+                continue;
+            }
+
+            var lat = users[o][u].latitude,
+                lng = users[o][u].longitude;
+
+            if ((Math.abs(inTargetLoc.lat - lat) <= 0.00056) && (Math.abs(inTargetLoc.lng - lng) <= 0.00056)) {
+                //if ((Math.abs($('#map').locationpicker("location").latitude - lat) <= 0.00056) && (Math.abs($('#map').locationpicker("location").longitude - lng) <= 0.00056)) {
+                // then include the signature
+                var act = users[o][u].activity;
+                if (apps[act])
+                    apps[act] += 1;
+                else
+                    apps[act] = 1;
+
+                speed[parseInt(users[o][u].speed) - 1]++;
+                cons[parseInt(users[o][u].consistency) - 1]++;
+
+                download.push(parseFloat(users[o][u].download));
+                upload.push(parseFloat(users[o][u].upload));
+            }
+
+        }
+    }
+
+    if (download.length > 0) {
+        cnt = 0, APPLICATIONS = [], SPEED = [], CONSISTENCY = [];
+
+        /* Data preparation for application pie chart. */
+        for (var d in apps) {
+            APPLICATIONS.push({ "label": d, "population": apps[d] });
+            cnt += apps[d];
+        }
+
+        SPEED.push({ "label": "즉각적이다", "population": speed[0] });
+        SPEED.push({ "label": "클릭마다 지체가 있긴 하지만 쓸만하다", "population": speed[1] });
+        SPEED.push({ "label": "새로고침을 하게 된다", "population": speed[2] });
+
+        CONSISTENCY.push({ "label": "일정한 속도를 유지한다", "population": cons[0] });
+        CONSISTENCY.push({ "label": "속도가 일정치 않아서 신경쓰이긴 하지만 쓸만하다", "population": cons[1] });
+        CONSISTENCY.push({ "label": "종잡을 수 없다", "population": cons[2] });
+
+        // Add event handler for stat navbars, call this function after data are prepared. 
+        var selectors = [];
+        selectors.push("#application"), selectors.push("#speed"), selectors.push("#consistency");
+        var datas = [];
+        datas.push(APPLICATIONS), datas.push(SPEED), datas.push(CONSISTENCY);
+        initStat("#stat", selectors, datas);
+
+        var sum = download.reduce(function(a, b) { return a + b; });
+        var downAvg = sum / download.length;
+
+        var sum = upload.reduce(function(a, b) { return a + b; });
+        var upAvg = sum / upload.length;
+
+        $("#number").text("총 " + cnt + "개");
+        $("#bandwidth").text("평균 download / upload : " + downAvg + " / " + upAvg + "Mbps");
+        $("#stat").css("display", "block");
+        $("#speed").css("display", "none");
+        $("#consistency").css("display", "none");
+    } else {
+        $("#number").text("해당 범위에 아직 서명이 존재하지 않습니다. 친구들에게 홍보해 더 많은 싸인을 모아보세요!");
+        $("#stat").css("display", "none");
+    }
+
+    setProgressbar(cnt, inQuorum);
+    $("#finalStage").css("visibility", "visible");
+}
+
+function initStat(inSelector, inSelectorList, inDataList) {
+    // set active chart to first one.
+    $(inSelector + " a").removeClass("active");
+    $(inSelector + " a:first").addClass("active");
+    drawChart(inSelectorList[0], inDataList[0]);
+
+    $(inSelector + " a").on("click", function() {
+        $(inSelector + " a").removeClass("active");
+        $(this).addClass("active");
+
+        $(inSelector + " .col-sm-8").css("display", "none");
+
+        drawChart(inSelectorList[$(this).index()], inDataList[$(this).index()]);
+        // if ($(this).text() == "인터넷 활동") {
+        //     drawChart("#application", APPLICATIONS);
+        // } else if ($(this).text() == "속도 만족도") {
+        //     drawChart("#speed", SPEED);
+        // } else {
+        //     drawChart("#consistency", CONSISTENCY);
+        // }
+
+    });
 }
 
 // function calcTime(city, offset) {
