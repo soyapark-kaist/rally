@@ -7,36 +7,9 @@ var users;
 var cnt = 0; // # of signature filtered
 var petitionID = generateID(8);
 
-// Data storing for drawing charts.
-var APPLICATIONS = [],
-    SPEED = [],
-    CONSISTENCY = [];
 
 function initListener() {
-    document.documentElement.addEventListener('DOMAttrModified', function(e) {
-        console.log(e);
-        if (e.attrName === 'disabled') {
-
-            alert("here");
-        }
-    }, false);
-
     toggleLoading("#loading");
-
-    $("#stat a").on("click", function() {
-        $("#stat a").removeClass("active");
-        $(this).addClass("active");
-
-        $("#stat .col-sm-8").css("display", "none");
-        if ($(this).text() == "인터넷 활동") {
-            drawChart("#application", APPLICATIONS);
-        } else if ($(this).text() == "속도 만족도") {
-            drawChart("#speed", SPEED);
-        } else {
-            drawChart("#consistency", CONSISTENCY);
-        }
-
-    });
 
     initDB();
 }
@@ -216,7 +189,11 @@ function selectSignature() {
         // Attach an asynchronous callback to read the data at our posts reference
         playersRef.once("value").then(function(snapshot) {
                 users = snapshot.val();
-                filterSignature();
+                filterSignature(
+                    parseInt($('#timeRange-start').val().split(":")[0]), {
+                        "lat": $('#map').locationpicker("location").latitude,
+                        "lng": $('#map').locationpicker("location").longitude
+                    });
 
                 $btn.button('reset');
             },
@@ -226,90 +203,12 @@ function selectSignature() {
             });
     } //If END, when DB is not yet fetched
     else {
-        filterSignature();
+        filterSignature(parseInt($('#timeRange-start').val().split(":")[0]), {
+            "lat": $('#map').locationpicker("location").latitude,
+            "lng": $('#map').locationpicker("location").longitude
+        });
         $btn.button('reset');
     } //else END, when DB is already fetched
 
     return false;
-}
-
-function filterSignature() {
-    var apps = {},
-        speed = [0, 0, 0],
-        cons = [0, 0, 0],
-        download = [],
-        upload = [];
-
-    for (var o in users) {
-        for (var u in users[o]) {
-            //TODO: filter issue by conn 
-            var hour = new Date(users[o][u].time).getHours();
-
-            var hour_range = parseInt($('#timeRange-start').val().split(":")[0]);
-
-            if (!filterHour(hour_range, (hour_range + 3) % 24, hour)) {
-                continue;
-            }
-
-            var lat = users[o][u].latitude,
-                lng = users[o][u].longitude;
-
-            if ((Math.abs($('#map').locationpicker("location").latitude - lat) <= 0.00056) && (Math.abs($('#map').locationpicker("location").longitude - lng) <= 0.00056)) {
-                // then include the signature
-                var act = users[o][u].activity;
-                if (apps[act])
-                    apps[act] += 1;
-                else
-                    apps[act] = 1;
-
-                speed[parseInt(users[o][u].speed) - 1]++;
-                cons[parseInt(users[o][u].consistency) - 1]++;
-
-                download.push(parseFloat(users[o][u].download));
-                upload.push(parseFloat(users[o][u].upload));
-            }
-
-        }
-    }
-
-    if (download.length > 0) {
-        cnt = 0, APPLICATIONS = [], SPEED = [], CONSISTENCY = [];
-
-        /* Data preparation for application pie chart. */
-        for (var d in apps) {
-            APPLICATIONS.push({ "label": d, "population": apps[d] });
-            cnt += apps[d];
-        }
-
-        SPEED.push({ "label": "즉각적이다", "population": speed[0] });
-        SPEED.push({ "label": "클릭마다 지체가 있긴 하지만 쓸만하다", "population": speed[1] });
-        SPEED.push({ "label": "새로고침을 하게 된다", "population": speed[2] });
-
-        CONSISTENCY.push({ "label": "일정한 속도를 유지한다", "population": cons[0] });
-        CONSISTENCY.push({ "label": "속도가 일정치 않아서 신경쓰이긴 하지만 쓸만하다", "population": cons[1] });
-        CONSISTENCY.push({ "label": "종잡을 수 없다", "population": cons[2] });
-
-        // set active chart to first one.
-        $("#stat a").removeClass("active");
-        $("#stat a:first").addClass("active");
-        drawChart("#application", APPLICATIONS);
-
-        var sum = download.reduce(function(a, b) { return a + b; });
-        var downAvg = sum / download.length;
-
-        var sum = upload.reduce(function(a, b) { return a + b; });
-        var upAvg = sum / upload.length;
-
-        $("#number").text("총 " + cnt + "개");
-        $("#bandwidth").text("평균 download / upload : " + downAvg + " / " + upAvg + "Mbps");
-        $("#stat").css("display", "block");
-        $("#speed").css("display", "none");
-        $("#consistency").css("display", "none");
-    } else {
-        $("#number").text("해당 범위에 아직 서명이 존재하지 않습니다. 친구들에게 홍보해 더 많은 싸인을 모아보세요!");
-        $("#stat").css("display", "none");
-    }
-
-    setProgressbar(cnt, isSlow ? SLOW_TOTAL : CONN_TOTAL);
-    $("#finalStage").css("visibility", "visible");
 }
