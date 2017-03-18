@@ -601,5 +601,61 @@ footer .social li a:hover {
 
 tbody tr:hover {
     cursor: pointer;
-    /*background-color: #cca;*/
+}
+
+
+/* footer css */
+
+footer {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.right-links {
+    float: right;
+}
+
+.footer-links li+li {
+    margin-left: 10px;
+}
+
+.footer-links li {
+    display: inline-block;
+    line-height: 16px;
+}
+
+.footer-links {
+    margin-left: 0px;
+}
+
+.footer-links a {
+    color: #888888;
+}
+
+.footer-links a:hover {
+    color: #ff6c40;
+}
+
+/* logo container for index.html */
+@media (max-width: 767px){
+    .logo-container img {
+        height: 6vw;
+    }
+    .logo-container a+a {
+        margin-left: 5.663vw;
+    }
+}
+
+@media (min-width: 768px) {
+    .logo-container img {
+        height: 3vw;
+    }
+    .logo-container a+a {
+        margin-left: 4.854vw;
+    }
+}
+
+.logo-container {
+    text-align: center;
+    margin: 30px auto;
 }
