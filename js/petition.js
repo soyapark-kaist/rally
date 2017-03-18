@@ -1,8 +1,8 @@
 var dbLoaded = false;
 var isSafari = detectBrowser();
 var isSlow; // the petition is about slow ineteret or disconnection?
-var SLOW_TOTAL = 3,
-    CONN_TOTAL = 5;
+var SLOW_TOTAL = 5,
+    CONN_TOTAL = 3;
 var users;
 var cnt = 0; // # of signature filtered
 var petitionID = generateID(8);
@@ -193,7 +193,8 @@ function selectSignature() {
                     parseInt($('#timeRange-start').val().split(":")[0]), {
                         "lat": $('#map').locationpicker("location").latitude,
                         "lng": $('#map').locationpicker("location").longitude
-                    });
+                    },
+                    isSlow ? SLOW_TOTAL : CONN_TOTAL);
 
                 $btn.button('reset');
             },
@@ -204,9 +205,10 @@ function selectSignature() {
     } //If END, when DB is not yet fetched
     else {
         filterSignature(parseInt($('#timeRange-start').val().split(":")[0]), {
-            "lat": $('#map').locationpicker("location").latitude,
-            "lng": $('#map').locationpicker("location").longitude
-        });
+                "lat": $('#map').locationpicker("location").latitude,
+                "lng": $('#map').locationpicker("location").longitude
+            },
+            isSlow ? SLOW_TOTAL : CONN_TOTAL);
         $btn.button('reset');
     } //else END, when DB is already fetched
 

@@ -230,7 +230,7 @@ function selectSignature() {
         playersRef.once("value").then(function(snapshot) {
                 users = snapshot.val();
 
-                filterSignature(hour_range, { "lat": pLat, "lng": pLng });
+                filterSignature(hour_range, { "lat": pLat, "lng": pLng }, petition["quorum"]);
 
             },
             function(errorObject) {
@@ -239,7 +239,7 @@ function selectSignature() {
             });
     } //If END, when DB is not yet fetched
     else {
-        filterSignature(hour_range, { "lat": pLat, "lng": pLng });
+        filterSignature(hour_range, { "lat": pLat, "lng": pLng }, petition["quorum"]);
         //ttt();
         // $btn.button('reset');
     } //else END, when DB is already fetched

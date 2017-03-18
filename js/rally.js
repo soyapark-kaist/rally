@@ -161,6 +161,8 @@ function setProgressbar(inNow, inMax) {
     // aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"
     $(".progress-bar").css("width", (inNow / inMax * 100) + "%").attr("aria-valuenow", inNow);
     $(".progress-bar").attr("aria-valuemax", inMax);
+
+    $("#leftQuorum").text(inMax - inNow);;
 }
 
 function createCircle(inID, inCenter, inTitle) {
@@ -188,7 +190,7 @@ function filterHour(hour_from, hour_to, hour3) {
     }
 }
 
-function filterSignature(inTargetHour, inTargetLoc) {
+function filterSignature(inTargetHour, inTargetLoc, inQuorum) {
     var apps = {},
         speed = [0, 0, 0],
         cons = [0, 0, 0],
@@ -269,7 +271,7 @@ function filterSignature(inTargetHour, inTargetLoc) {
         $("#stat").css("display", "none");
     }
 
-    setProgressbar(cnt, isSlow ? SLOW_TOTAL : CONN_TOTAL);
+    setProgressbar(cnt, inQuorum);
     $("#finalStage").css("visibility", "visible");
 }
 
