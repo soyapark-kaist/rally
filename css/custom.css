@@ -599,7 +599,13 @@ footer .social li a:hover {
     margin: 15px;
 }
 
+tbody tr:hover {
+    cursor: pointer;
+}
+
+
 /* footer css */
+
 footer {
     margin-top: 20px;
     margin-bottom: 10px;
@@ -619,7 +625,7 @@ footer {
 }
 
 .footer-links {
-   margin-left: 0px;
+    margin-left: 0px;
 }
 
 .footer-links a {
