@@ -72,9 +72,11 @@ function displayLocationPicker() {
     map.setZoom(16);
 }
 
-function pickIssueType() {
+function pickIssueType(t) {
     $(".issue-question button").prop('disabled', true)
         .addClass("disabled");
+    isSlow = t;
+
     return false;
 }
 
@@ -232,6 +234,7 @@ function filterSignature() {
 
     for (var o in users) {
         for (var u in users[o]) {
+            //TODO: filter issue by conn 
             var hour = new Date(users[o][u].time).getHours();
 
             var hour_range = parseInt($('#timeRange-start').val().split(":")[0]);

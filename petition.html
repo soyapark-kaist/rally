@@ -117,10 +117,10 @@
             <!-- Post -->
             <div class="post issue-question">
                 <h4>다음 중 현재 겪고 있는 인터넷 문제를 선택해주세요.</h4>
-                <form onsubmit="return pickIssueType();">
+                <form onsubmit="return false;">
                     <div class="btn-group inline issue-type">
-                        <button type="submit" class="btn">인터넷 연결불능<br><span>와이파이에 연결조차 안될 때 선택해주세요</span></button>
-                        <button type="submit" class="btn">인터넷 느림<br><span>와이파이에 연결은 되지만 느릴 때 선택해주세요</span></button>
+                        <button type="submit" onclick="return pickIssueType(false);" class="btn">인터넷 연결불능<br><span>와이파이에 연결조차 안될 때 선택해주세요</span></button>
+                        <button type="submit" onclick="return pickIssueType(true);" class="btn">인터넷 느림<br><span>와이파이에 연결은 되지만 느릴 때 선택해주세요</span></button>
                     </div>
                 </form>
 
