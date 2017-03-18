@@ -598,3 +598,8 @@ footer .social li a:hover {
     background-color: #ccc;
     margin: 15px;
 }
+
+tbody tr:hover {
+    cursor: pointer;
+    /*background-color: #cca;*/
+}
