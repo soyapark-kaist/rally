@@ -17,7 +17,7 @@
  */
 
 // Version 0.57
-//
+
 self.addEventListener('install', e => {
     e.waitUntil(
         caches.open('airhorner').then(cache => {

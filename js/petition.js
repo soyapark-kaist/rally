@@ -13,6 +13,14 @@ var APPLICATIONS = [],
     CONSISTENCY = [];
 
 function initListener() {
+    document.documentElement.addEventListener('DOMAttrModified', function(e) {
+        console.log(e);
+        if (e.attrName === 'disabled') {
+
+            alert("here");
+        }
+    }, false);
+
     toggleLoading("#loading");
 
     $("#stat a").on("click", function() {
