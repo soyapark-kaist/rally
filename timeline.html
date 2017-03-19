@@ -37,31 +37,32 @@
             height: 200px;
             width: 100%;
         }
-
+        
         .vis-item.vis-background.negative {
             background-color: rgba(255, 0, 0, 0.2);
         }
-
+        
         .vis-item.vis-background.positive {
             background-color: rgba(105, 255, 98, 0.20);
         }
-
+        
         .vis-item.marker {
             border-left: 2px solid green;
         }
-
+        
         #petition,
         #receive,
         #respond,
+        #stat,
         #adminOnly {
             margin-top: 30px;
             display: none;
         }
-
+        
         .issue-type {
             display: none;
         }
-
+        
         #timeline {}
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -118,7 +119,7 @@
                     <li><svg viewBox="0 0 50 80">
                         <polyline points="0.375,0.375 45.63,38.087 0.375,75.8 "/>
                     </svg></li>
-                    <li><span data-toggle="tooltip" data-placement="top" title="서명 모집">
+                    <li><span data-toggle="tooltip" data-placement="top" title="서명 모집 중. 24시간 이내에 충분한 서명을 모으지 못하면 정보통신팀에 전송되지 않습니다.">
                         <svg><circle cx="10" cy="10" r="5" class="progress-circle-1" /></svg>
                     </span></li>
                     <li><svg viewBox="0 0 50 80">
@@ -173,6 +174,11 @@
                             <span id="leftQuorum"></span><span>명의 서명이 모인 후, 정보통신팀에 보내집니다.</span>
                         </p>
                     </div>
+
+                    <a onclick="checkEligibility()" class="btn btn-success btn-lg">동참하기</a>
+                    <p>본 민원에 힘이 되고 싶으신가요? 30초 안에 함께 해 보세요!</p>
+                    <div style="color: gray"><i class="fa fa-map-marker" aria-hidden="true"></i> 민원 지역에 있는지 확인하기 위해 위치정보를 묻습니다</div>
+
                 </div>
 
                 <div id="receive">
@@ -212,9 +218,6 @@
                     </div>
                 </div>
 
-                <a onclick="checkEligibility()" class="btn btn-success btn-lg">동참하기</a>
-                <p>본 민원에 힘이 되고 싶으신가요? 30초 안에 함께 해 보세요!</p>
-                <div style="color: gray"><i class="fa fa-map-marker" aria-hidden="true"></i> 민원 지역에 있는지 확인하기 위해 위치정보를 묻습니다</div>
 
                 <div class="modal fade" id="available-modal" tabindex="-1" role="dialog">
                     <div class="modal-dialog modal-lg">
