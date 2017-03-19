@@ -2,7 +2,7 @@ var dbLoaded = false;
 var isSafari = detectBrowser();
 var isSlow; // the petition is about slow ineteret or disconnection?
 var users;
-var cnt = 0; // # of signature filtered
+var filteredCnt = 0; // # of signature filtered
 var petitionID = generateID(8);
 
 
