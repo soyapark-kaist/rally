@@ -29,7 +29,7 @@ function initMap() {
 
                 var progress = "";
 
-                appendRow(o, users[o].title, users[o]["time-line"]["submit"].split(" GMT")[0], passed ? '정보통신팀에 전송' : '서명 모집 중');
+                // appendRow(o, users[o].title, users[o]["time-line"]["submit"].split(" GMT")[0], passed ? '정보통신팀에 전송' : '서명 모집 중');
 
                 // Add the circle for the petition to the map.
                 var cityCircle = createCircle(o, { lat: users[o].latitude, lng: users[o].longitude }, users[o].title);
