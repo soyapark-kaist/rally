@@ -27,6 +27,8 @@ function initPetition() {
 
     fetchPetiton(isReceiving);
     // initTimeline();
+
+    fill_progress_circle(1);
 }
 
 function initTimeline(inTimeline) {
@@ -183,7 +185,6 @@ function fetchPetiton(inReceiving) {
 }
 
 function isSlow(inQuorum) {
-    debugger;
     return inQuorum == SLOW_TOTAL;
 }
 

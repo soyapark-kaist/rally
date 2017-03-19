@@ -2,36 +2,7 @@ var userID;
 var pos;
 
 function initVis() {
-    var params = window.location.search.substring(1).split("&");
-    for (var p in params) {
-        if (params[p].split("=")[0] == "sig")
-            userID = params[p].split("=")[1];
-    }
-
-    var playersRef = firebase.database().ref('users/');
-    playersRef.once("value").then(function(snapshot) {
-        var users = snapshot.val();
-        var isExist = false;
-
-        for (var o in users) {
-            if (users[o][userID]) {
-                isExist = true;
-                pos = {
-                    lat: users[o][userID].latitude,
-                    lng: users[o][userID].longitude
-                };
-                break;
-            }
-        }
-
-        if (!isExist) {
-            alert("존재하지 않은 데이터 서명입니다!")
-            return;
-        }
-
-        // fetchPetiton(users[o][userID], displayPetitions);
-    });
-
+    toggleLoading("#loading");
     var playersReff = firebase.database().ref("petition/");
     infoWindow = new google.maps.InfoWindow({ map: map });
 
@@ -64,7 +35,7 @@ function initVis() {
 
             }
 
-            // toggleLoading("#loading");
+            toggleLoading("#loading");
         },
         function(errorObject) {
             alert("The read failed: " + errorObject.code);
