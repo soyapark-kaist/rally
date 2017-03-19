@@ -636,8 +636,10 @@ footer {
     color: #ff6c40;
 }
 
+
 /* logo container for index.html */
-@media (max-width: 767px){
+
+@media (max-width: 767px) {
     .logo-container img {
         height: 6vw;
     }
@@ -658,4 +660,30 @@ footer {
 .logo-container {
     text-align: center;
     margin: 30px auto;
+}
+
+
+/* timeline progress*/
+
+.timeline-progress li+li {
+    margin-left: 10px;
+}
+
+.timeline-progress li {
+    display: inline-block;
+    line-height: 16px;
+}
+
+.timeline-progress {
+    margin-left: 0px;
+    text-align: center;
+}
+
+.timeline-progress svg {
+    height: 20px;
+    width: 20px;
+}
+
+.timeline-progress circle {
+    fill: black;
 }
