@@ -183,6 +183,7 @@ function fetchPetiton(inReceiving) {
 }
 
 function isSlow(inQuorum) {
+    debugger;
     return inQuorum == SLOW_TOTAL;
 }
 
@@ -243,7 +244,7 @@ function selectSignature() {
         playersRef.once("value").then(function(snapshot) {
                 users = snapshot.val();
 
-                filterSignature(isSlow(), hour_range, { "lat": pLat, "lng": pLng }, petition["quorum"]);
+                filterSignature(isSlow(petition["quorum"]), hour_range, { "lat": pLat, "lng": pLng }, petition["quorum"]);
 
             },
             function(errorObject) {
@@ -252,7 +253,7 @@ function selectSignature() {
             });
     } //If END, when DB is not yet fetched
     else {
-        filterSignature(isSlow(), hour_range, { "lat": pLat, "lng": pLng }, petition["quorum"]);
+        filterSignature(isSlow(petition["quorum"]), hour_range, { "lat": pLat, "lng": pLng }, petition["quorum"]);
         //ttt();
         // $btn.button('reset');
     } //else END, when DB is already fetched

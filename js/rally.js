@@ -224,7 +224,7 @@ function filterSignature(inIsSlow, inTargetHour, inTargetLoc, inQuorum) {
 
             var hour_range = inTargetHour;
             //parseInt($('#timeRange-start').val().split(":")[0]);
-
+            console.log(u, hour, users[o][u].latitude, users[o][u].longitude);
             if (!filterHour(hour_range, (hour_range + 3) % 24, hour)) {
                 continue;
             }
@@ -285,7 +285,7 @@ function filterSignature(inIsSlow, inTargetHour, inTargetLoc, inQuorum) {
             var upAvg = sum / upload.length;
 
             $("#number").text("총 " + filteredCnt + "개");
-            $("#bandwidth").text("평균 download / upload : " + downAvg + " / " + upAvg + "Mbps");
+            $("#bandwidth").text("평균 download / upload : " + downAvg.toFixed(2) + " / " + upAvg.toFixed(2) + "Mbps");
             $("#stat").css("display", "block");
             $("#speed").css("display", "none");
             $("#consistency").css("display", "none");
