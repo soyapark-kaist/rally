@@ -659,3 +659,37 @@ footer {
     text-align: center;
     margin: 30px auto;
 }
+
+/* timeline progress*/
+.timeline-progress li+li {
+    margin-left: 10px;
+}
+
+.timeline-progress li {
+    display: inline-block;
+    line-height: 16px;
+}
+
+.timeline-progress {
+    margin-left: 0px;
+    text-align: center;
+}
+
+.timeline-progress svg {
+    height: 20px;
+    width: 20px;
+}
+
+.timeline-progress circle {
+    cx: 10px;
+    cy: 10px;
+    r: 5px;
+    fill: black;
+}
+
+.timeline-progress polyline {
+    fill="none";
+    stroke="#FFFFFF";
+    stroke-linecap="round";
+    stroke-linejoin="round";
+}
