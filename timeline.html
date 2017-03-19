@@ -61,6 +61,8 @@
         .issue-type {
             display: none;
         }
+        
+        #timeline {}
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
@@ -109,6 +111,40 @@
                     </div>
                 </div>
                 <h6 style=" margin-top: 50px;">자세히 보려면 아래 타임라인의 각 블록을 클릭해보세요.</h6>
+
+
+                <ul class="timeline-progress">
+                    <li><span data-toggle="tooltip" data-placement="top" title="제출">
+                        <svg><circle class="progress-circle-0" /></svg>
+                    </span></li>
+                    <li><svg viewBox="0 0 50 80">
+                        <polyline points="0.375,0.375 45.63,38.087 0.375,75.8 "/>
+                    </svg></li>
+                    <li><span data-toggle="tooltip" data-placement="top" title="서명 모집">
+                        <svg><circle class="progress-circle-1" /></svg>
+                    </span></li>
+                    <li><svg viewBox="0 0 50 80">
+                        <polyline points="0.375,0.375 45.63,38.087 0.375,75.8 "/>
+                    </svg></li>
+                    <li><span data-toggle="tooltip" data-placement="top" title="정보통신팀 전송">
+                        <svg><circle class="progress-circle-2" /></svg>
+                    </span></li>
+                    <li><svg viewBox="0 0 50 80">
+                        <polyline points="0.375,0.375 45.63,38.087 0.375,75.8 "/>
+                    </svg></li>
+                    <li><span data-toggle="tooltip" data-placement="top" title="정보통신팀 답변">
+                        <svg><circle class="progress-circle-3" /></svg>
+                    </span></li>
+                    <li><svg viewBox="0 0 50 80">
+                        <polyline points="0.375,0.375 45.63,38.087 0.375,75.8 "/>
+                    </svg></li>
+                    <li><span data-toggle="tooltip" data-placement="top" title="민원인 피드백">
+                        <svg><circle class="progress-circle-4" /></svg>
+                    </span></li>
+                </ul>
+
+                <h6>자세히 보려면 아래 타임라인의 각 블록을 클릭해보세요.</h6>
+
                 <div id="timeline"></div>
                 <div class="loading"></div>
                 <div id="petition">
@@ -235,7 +271,16 @@
             </ul>
         </div>
     </footer>
+    <script type="text/javascript">
+        $(function() {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
 
+        function fill_progress_circle(cid /* integer 0~4*/ ) {
+            let circle_class = ".progress-circle-" + cid
+            $(circle_class).css("fill", "#ff6c40")
+        }
+    </script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCByCLtjJ9BAR29-HXHHDBU8DWCyyuA_CE">
     </script>
 </body>
