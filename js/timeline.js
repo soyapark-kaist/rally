@@ -273,6 +273,11 @@ function checkEligibility() {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude
                 };
+                //debugging purpose
+                // current_loc = {
+                //     lat: petition["latitude"],
+                //     lng: petition["longitude"]
+                // };
 
                 if (isEligible && (Math.abs(current_loc.lat - petition["latitude"]) <= 0.00056) && (Math.abs(current_loc.lng - petition["longitude"]) <= 0.00056)) {
                     window.location.replace("./collect.html" + (petition["quorum"] == SLOW_TOTAL ? "" : "?conn=true"));
@@ -367,12 +372,8 @@ function filterPetiton(inHour, inLoc, inCallback) {
             var lat = petitions[o].latitude,
                 lng = petitions[o].longitude;
 
-            //debugging purpose
-            // inLoc = {
-            //     lat: lat,
-            //     lng: lng
-            // };
 
+            // if (true) {
             if ((Math.abs(inLoc.lat - lat) <= 0.00056) && (Math.abs(inLoc.lng - lng) <= 0.00056)) {
                 // then include the petition
                 p.push({
