@@ -685,15 +685,5 @@ footer {
 }
 
 .timeline-progress circle {
-    cx: 10px;
-    cy: 10px;
-    r: 5px;
     fill: black;
-}
-
-.timeline-progress polyline {
-    fill: "none";
-    stroke: "#FFFFFF";
-    stroke-linecap: "round";
-    stroke-linejoin: "round";
 }
