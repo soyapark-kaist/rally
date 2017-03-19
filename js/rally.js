@@ -59,7 +59,7 @@ function markMap(inUserID) {
                         if (inUserID == u) {
                             infoWindow = new google.maps.InfoWindow({ content: "내 서명", map: map });
                             infoWindow.setPosition({
-                                'lat': users[o][u].latitude,
+                                'lat': users[o][u].latitude + 0.001,
                                 'lng': users[o][u].longitude
                             });
                         }
@@ -140,6 +140,19 @@ function routeToVis(inUserID) {
 
     var newUrl = window.location.href.split("rally/")[0] + "rally/visual.html?" + p;
     window.location.replace(newUrl);
+}
+
+function detectOS() {
+    var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+    if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i) || userAgent.match(/iPod/i)) {
+        return 'iOS';
+    } else if (userAgent.match(/Android/i)) {
+        return 'Android';
+    } else if (userAgent.match(/Mac/i)) {
+        return 'mac';
+    } else // windows
+        return 'unknown';
 }
 
 function detectBrowser() {

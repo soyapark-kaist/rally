@@ -85,7 +85,7 @@ function displayPetitions(inPetitions) {
 function initMap() {
     createMap();
     initDB();
-    fetchMap(getUserID());
+    markMap(getUserID());
 
     centerMap();
 

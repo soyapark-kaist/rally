@@ -68,6 +68,9 @@ function initListener() {
             $("#apList").append("<p>" + $("#apRead").val() + '<button onclick="removeAP(this)" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></p>');
             $("#apRead").val("");
         });
+
+        // Set AP screenshot depending on the os
+        var myOS = detectOS();
     }
 
     $("#finalStage").css("display", "block");
