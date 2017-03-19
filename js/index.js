@@ -4,8 +4,10 @@ var apiKey = 'AIzaSyD9v41gd511lFHseGqCXwNyfpQyArNgZLQ';
 function initMap() {
     toggleLoading("#loading");
     createMap();
+    initLegend();
     initDB();
     markMap(null);
+
 
     map.setCenter(kaist);
 

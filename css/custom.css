@@ -687,3 +687,18 @@ footer {
 .timeline-progress circle {
     fill: #999999;
 }
+
+
+/* google map legend */
+#legend {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 5px;
+    margin: 5px;
+}
+#legend img {
+    width: 25px;
+    margin-right: 5px;
+}
+#legend div+div {
+    margin-top: 5px;
+}
