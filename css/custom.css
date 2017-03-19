@@ -650,10 +650,10 @@ footer {
 
 @media (min-width: 768px) {
     .logo-container img {
-        height: 3vw;
+        height: 30px;
     }
     .logo-container a+a {
-        margin-left: 4.854vw;
+        margin-left: 55px;
     }
 }
 
