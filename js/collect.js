@@ -1,4 +1,4 @@
-var isSlow = localStorage.getItem("isSlow");
+var isSlow = !window.location.href.includes("conn")
 
 function initListener() {
     /* INTERNET */
@@ -68,6 +68,8 @@ function initListener() {
             $("#apList").append("<p>" + $("#apRead").val() + '<button onclick="removeAP(this)" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></p>');
             $("#apRead").val("");
         });
+
+        initGuideImg();
     }
 
     $("#finalStage").css("display", "block");
@@ -116,6 +118,30 @@ function getListWifi() {
     });
 
     return wifi;
+}
+
+function initGuideImg() {
+    // Set AP screenshot depending on the os
+    var myOS = detectOS();
+    var imgSrc;
+    switch (myOS) {
+        case 'iOS':
+            imgSrc = "ios.png";
+            break;
+        case 'Android':
+            imgSrc = "android.png";
+            break;
+        case 'mac':
+            imgSrc = "mac.png";
+            break;
+        case 'unknown':
+            imgSrc = "windows.png";
+            break;
+    }
+
+    imgSrc = 'img/' + imgSrc;
+    $(".tooltiptext img").attr("src", imgSrc);
+    debugger;
 }
 
 function collectData() {

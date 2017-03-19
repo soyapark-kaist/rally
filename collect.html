@@ -59,20 +59,12 @@
 
     <!-- Google API -->
     <script src="https://www.gstatic.com/firebasejs/3.6.7/firebase.js"></script>
-    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
-    </script>
 
     <script src="js/bootstrap.min.js"></script>
 
 
     <!-- Service Worker -->
     <script>
-        navigator.serviceWorker.getRegistrations().then(function(registrations) {
-            for (let registration of registrations) {
-                registration.unregister()
-            }
-        })
-
         // if ('serviceWorker' in navigator) {
         //     navigator.serviceWorker.register('sw.js', {
         //             scope: '.'
@@ -125,8 +117,44 @@
             width: 70%;
         }
         
-        .steps {
-            margin-top: 100px;
+        .tooltipContainer {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted black;
+        }
+        
+        .tooltipContainer .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+        
+        .tooltipContainer .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+        
+        .tooltipContainer:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+            z-index: 999;
         }
     </style>
 </head>
@@ -212,7 +240,12 @@
                 </div>
 
                 <div class="post">
-                    <h4>Wi-Fi 공유기</h4>
+                    <h4>Wi-Fi 공유기
+                        <div class="tooltipContainer">
+                            <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                            <span class="tooltiptext"><img src="https://www.w3schools.com/images/w3schools_green.jpg"/>찾는 방법</span>
+                        </div>
+                    </h4>
                     <h6>잡히는 Wi-Fi 공유기 이름을 적어주세요.(예: Welcome_KAIST)</h6>
                     <div class="input-group">
                         <input id="apRead" type="text" class="form-control" placeholder="공유기 이름">

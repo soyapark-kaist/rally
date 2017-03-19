@@ -1,5 +1,4 @@
-// How many date is allowed before sending to 정보통신팀
-var openDate = 1;
+var openDate = 1; // How many date is allowed before sending to 정보통신팀
 var maploaded = false,
     petitionloaded = false;
 var petition, petitionID, hour_range;
@@ -24,7 +23,6 @@ function initPetition() {
             isAdmin = true; //the user is admin. 
             $("#adminOnly").css("display", "block");
         }
-
     }
 
     fetchPetiton(isReceiving);
@@ -125,9 +123,11 @@ function initTimeline(inTimeline) {
             if (!maploaded) {
                 maploaded = true;
                 createMap();
-                fetchMap(null);
+                markMap(null);
 
                 centerMap(center);
+                createCircle(petitionID, { "lat": petition["latitude"], "lng": petition["longitude"] }, petition["title"]);
+
                 selectSignature();
             }
 
@@ -182,8 +182,15 @@ function fetchPetiton(inReceiving) {
     });
 }
 
+function isSlow(inQuorum) {
+    debugger;
+    return inQuorum == SLOW_TOTAL;
+}
+
 function storePetitionInfo(inPetition) {
     petition = inPetition;
+
+    displayType(isSlow(inPetition["quorum"]));
 
     displayPetition({
         'title': inPetition.title,
@@ -205,6 +212,13 @@ function storePetitionInfo(inPetition) {
         petitionloaded = true;
         initTimeline(inPetition["time-line"]);
     }
+}
+
+function displayType(inResponse) {
+    if (inResponse)
+        $("#internetSlow").css("display", "block");
+    else
+        $("#internetConn").css("display", "block");
 }
 
 function displayPetition(inResponse) {
@@ -230,7 +244,7 @@ function selectSignature() {
         playersRef.once("value").then(function(snapshot) {
                 users = snapshot.val();
 
-                filterSignature(hour_range, { "lat": pLat, "lng": pLng }, petition["quorum"]);
+                filterSignature(isSlow(petition["quorum"]), hour_range, { "lat": pLat, "lng": pLng }, petition["quorum"]);
 
             },
             function(errorObject) {
@@ -239,17 +253,18 @@ function selectSignature() {
             });
     } //If END, when DB is not yet fetched
     else {
-        filterSignature(hour_range, { "lat": pLat, "lng": pLng }, petition["quorum"]);
+        filterSignature(isSlow(petition["quorum"]), hour_range, { "lat": pLat, "lng": pLng }, petition["quorum"]);
         //ttt();
         // $btn.button('reset');
     } //else END, when DB is already fetched
 }
 
 function checkEligibility() {
+    var isEligible = true;
     var hour = new Date().getHours();
     if (!filterHour(hour_range, (hour_range + 3) % 24, hour)) {
-        alert("민원 시간대에 해당하지 않습니다! " + hour_range + ":00 ~ " + (hour_range + 3) % 24 + ":00");
-        return;
+        //alert("민원 시간대에 해당하지 않습니다! " + hour_range + ":00 ~ " + (hour_range + 3) + ":00");
+        isEligible = false;
     }
 
     // Try HTML5 geolocation.
@@ -259,13 +274,24 @@ function checkEligibility() {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude
                 };
+                //debugging purpose
+                // current_loc = {
+                //     lat: petition["latitude"],
+                //     lng: petition["longitude"]
+                // };
 
-                if ((Math.abs(current_loc.lat - petition["latitude"]) <= 0.00056) && (Math.abs(current_loc.lng - petition["longitude"]) <= 0.00056)) {
-                    // then include the signature
-                    localStorage.setItem("isSlow", petition["quorum"] == 5 ? true : false);
-                    window.location.replace("./collect.html");
+                if (isEligible && (Math.abs(current_loc.lat - petition["latitude"]) <= 0.00056) && (Math.abs(current_loc.lng - petition["longitude"]) <= 0.00056)) {
+                    window.location.replace("./collect.html" + (petition["quorum"] == SLOW_TOTAL ? "" : "?conn=true"));
 
-                } else alert("현재 민원 장소에 있지 않으십니다!");
+                } else {
+                    isEligible = false;
+                }
+
+                //recommend other petition
+                if (!isEligible) {
+                    filterPetiton(hour, current_loc, displayAvailablePetition);
+                }
+
             },
             function() { //error callback
                 console.log("Error geolocation");
@@ -282,6 +308,30 @@ function checkEligibility() {
         alert('브라우저의 위치정보 수집이 불가합니다. 다른 브라우저에서 다시 시도해주세요.');
         // handleLocationError(false, infoWindow, map.getCenter());
     }
+}
+
+function displayAvailablePetition(inPetitions) {
+    if (inPetitions.length == 0) {
+        $(".table-inbox").css("display", "none");
+        $("#inavailable").css("display", "block");
+    } else {
+        for (var o in inPetitions) {
+            appendRow(inPetitions[o].id, inPetitions[o].title, inPetitions[o]["time-line"]["submit"].split(" GMT")[0], '서명 모집 중');
+        }
+    }
+
+
+    $('#available-modal').modal('show');
+}
+
+function appendRow(inID, inTitle, inDate, inProgress) {
+    $('.table-inbox tbody').append(
+        '<tr onclick="window.document.location=\'./timeline.html?id=' + inID + '\';">\
+            <td>' + inTitle + '</td>\
+            <td>' + inDate + '</td>\
+            <td>' + inProgress + '</td>\
+          </tr>'
+    );
 }
 
 function postRespond() {
@@ -303,4 +353,40 @@ function postRespond() {
     });
 
     return false;
+}
+
+/* Fetch petitions. */
+function filterPetiton(inHour, inLoc, inCallback) {
+    var playersRef = firebase.database().ref('petition/');
+    // Attach an asynchronous callback to read the data at our posts reference
+    playersRef.once("value").then(function(snapshot) {
+        var petitions = snapshot.val();
+        var p = [];
+
+        for (var o in petitions) {
+            var hour = inHour;
+            var hour_from = parseInt(petitions[o]["time-range"].split(":")[0]);
+            if (!filterHour(hour_from, (hour_from + 3) % 24, hour)) {
+                continue;
+            }
+
+            var lat = petitions[o].latitude,
+                lng = petitions[o].longitude;
+
+
+            // if (true) {
+            if ((Math.abs(inLoc.lat - lat) <= 0.00056) && (Math.abs(inLoc.lng - lng) <= 0.00056)) {
+                // then include the petition
+                p.push({
+                    'id': o,
+                    'title': petitions[o].title,
+                    'content': petitions[o].content,
+                    'time-range': petitions[o]["time-range"],
+                    'time-line': petitions[o]["time-line"]
+                });
+            }
+        }
+
+        inCallback(p);
+    });
 }

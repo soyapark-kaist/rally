@@ -5,7 +5,7 @@ function initMap() {
     toggleLoading("#loading");
     createMap();
     initDB();
-    fetchMap(null);
+    markMap(null);
 
     map.setCenter(kaist);
 

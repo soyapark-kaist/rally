@@ -11,6 +11,9 @@ var APPLICATIONS = [],
     SPEED = [],
     CONSISTENCY = [];
 
+var SLOW_TOTAL = 5,
+    CONN_TOTAL = 3;
+
 /* Initialize map. */
 function createMap() {
     map = new google.maps.Map(document.getElementById('map'), {
@@ -30,7 +33,7 @@ function initDB() {
 }
 
 /* Fetch data points from DB & Push markers on the map. */
-function fetchMap(inUserID) {
+function markMap(inUserID) {
     var playersRef = firebase.database().ref('users/');
     // Attach an asynchronous callback to read the data at our posts reference
     playersRef.once("value").then(function(snapshot) {
@@ -56,7 +59,7 @@ function fetchMap(inUserID) {
                         if (inUserID == u) {
                             infoWindow = new google.maps.InfoWindow({ content: "내 서명", map: map });
                             infoWindow.setPosition({
-                                'lat': users[o][u].latitude,
+                                'lat': users[o][u].latitude + 0.001,
                                 'lng': users[o][u].longitude
                             });
                         }
@@ -139,6 +142,19 @@ function routeToVis(inUserID) {
     window.location.replace(newUrl);
 }
 
+function detectOS() {
+    var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+    if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i) || userAgent.match(/iPod/i)) {
+        return 'iOS';
+    } else if (userAgent.match(/Android/i)) {
+        return 'Android';
+    } else if (userAgent.match(/Mac/i)) {
+        return 'mac';
+    } else // windows
+        return 'unknown';
+}
+
 function detectBrowser() {
     var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
@@ -190,21 +206,25 @@ function filterHour(hour_from, hour_to, hour3) {
     }
 }
 
-function filterSignature(inTargetHour, inTargetLoc, inQuorum) {
+function filterSignature(inIsSlow, inTargetHour, inTargetLoc, inQuorum) {
     var apps = {},
-        speed = [0, 0, 0],
-        cons = [0, 0, 0],
+        speed = [0, 0, 0, 0],
+        cons = [0, 0, 0, 0],
         download = [],
-        upload = [];
+        upload = [],
+        filteredCnt = 0;
 
     for (var o in users) {
         for (var u in users[o]) {
-            //TODO: filter issue by conn 
+
+            if (!(inIsSlow ? !u.includes("conn") : u.includes("conn"))) //Not XOR
+                continue;
+
             var hour = new Date(users[o][u].time).getHours();
 
             var hour_range = inTargetHour;
             //parseInt($('#timeRange-start').val().split(":")[0]);
-
+            console.log(u, hour, users[o][u].latitude, users[o][u].longitude);
             if (!filterHour(hour_range, (hour_range + 3) % 24, hour)) {
                 continue;
             }
@@ -226,54 +246,61 @@ function filterSignature(inTargetHour, inTargetLoc, inQuorum) {
 
                 download.push(parseFloat(users[o][u].download));
                 upload.push(parseFloat(users[o][u].upload));
+
+                filteredCnt++;
             }
 
         }
     }
 
     if (download.length > 0) {
-        cnt = 0, APPLICATIONS = [], SPEED = [], CONSISTENCY = [];
+        if (inIsSlow) {
+            APPLICATIONS = [], SPEED = [], CONSISTENCY = [];
 
-        /* Data preparation for application pie chart. */
-        for (var d in apps) {
-            APPLICATIONS.push({ "label": d, "population": apps[d] });
-            cnt += apps[d];
+            /* Data preparation for application pie chart. */
+            for (var d in apps) {
+                APPLICATIONS.push({ "label": d, "population": apps[d] });
+            }
+
+            SPEED.push({ "label": "즉각적이다", "population": speed[0] });
+            SPEED.push({ "label": "지연을 느끼지만, 사용에 지장은 없다", "population": speed[1] });
+            SPEED.push({ "label": "지연으로 인해 원하는만큼 사용하지 못하고 있다", "population": speed[2] });
+            SPEED.push({ "label": "응답하지 않는다", "population": speed[3] });
+
+            CONSISTENCY.push({ "label": "일정한 속도를 유지한다", "population": cons[0] });
+            CONSISTENCY.push({ "label": "속도가 일정치 않아서 신경쓰이긴 하지만 쓸만하다", "population": cons[1] });
+            CONSISTENCY.push({ "label": "종잡을 수 없다", "population": cons[2] });
+
+            // Add event handler for stat navbars, call this function after data are prepared. 
+            var selectors = [];
+            selectors.push("#application"), selectors.push("#speed"), selectors.push("#consistency");
+            var datas = [];
+            datas.push(APPLICATIONS), datas.push(SPEED), datas.push(CONSISTENCY);
+            initStat("#stat", selectors, datas);
+
+            var sum = download.reduce(function(a, b) { return a + b; });
+            var downAvg = sum / download.length;
+
+            var sum = upload.reduce(function(a, b) { return a + b; });
+            var upAvg = sum / upload.length;
+
+            $("#number").text("총 " + filteredCnt + "개");
+            $("#bandwidth").text("평균 download / upload : " + downAvg.toFixed(2) + " / " + upAvg.toFixed(2) + "Mbps");
+            $("#stat").css("display", "block");
+            $("#speed").css("display", "none");
+            $("#consistency").css("display", "none");
         }
 
-        SPEED.push({ "label": "즉각적이다", "population": speed[0] });
-        SPEED.push({ "label": "클릭마다 지체가 있긴 하지만 쓸만하다", "population": speed[1] });
-        SPEED.push({ "label": "새로고침을 하게 된다", "population": speed[2] });
-
-        CONSISTENCY.push({ "label": "일정한 속도를 유지한다", "population": cons[0] });
-        CONSISTENCY.push({ "label": "속도가 일정치 않아서 신경쓰이긴 하지만 쓸만하다", "population": cons[1] });
-        CONSISTENCY.push({ "label": "종잡을 수 없다", "population": cons[2] });
-
-        // Add event handler for stat navbars, call this function after data are prepared. 
-        var selectors = [];
-        selectors.push("#application"), selectors.push("#speed"), selectors.push("#consistency");
-        var datas = [];
-        datas.push(APPLICATIONS), datas.push(SPEED), datas.push(CONSISTENCY);
-        initStat("#stat", selectors, datas);
-
-        var sum = download.reduce(function(a, b) { return a + b; });
-        var downAvg = sum / download.length;
-
-        var sum = upload.reduce(function(a, b) { return a + b; });
-        var upAvg = sum / upload.length;
-
-        $("#number").text("총 " + cnt + "개");
-        $("#bandwidth").text("평균 download / upload : " + downAvg + " / " + upAvg + "Mbps");
-        $("#stat").css("display", "block");
-        $("#speed").css("display", "none");
-        $("#consistency").css("display", "none");
     } else {
         $("#number").text("해당 범위에 아직 서명이 존재하지 않습니다. 친구들에게 홍보해 더 많은 싸인을 모아보세요!");
         $("#stat").css("display", "none");
     }
 
-    setProgressbar(cnt, inQuorum);
+    setProgressbar(filteredCnt, inQuorum);
     $("#finalStage").css("visibility", "visible");
 }
+
+
 
 function initStat(inSelector, inSelectorList, inDataList) {
     // set active chart to first one.

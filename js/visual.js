@@ -29,7 +29,7 @@ function initVis() {
             return;
         }
 
-        fetchPetiton(users[o][userID]);
+        fetchPetiton(users[o][userID], displayPetitions);
     });
 }
 
@@ -43,28 +43,28 @@ function getUserID() {
 }
 
 /* Fetch petitions. */
-function fetchPetiton(inUser) {
+function fetchPetiton(inUser, inCallback) {
     var playersRef = firebase.database().ref('petition/');
     // Attach an asynchronous callback to read the data at our posts reference
     playersRef.once("value").then(function(snapshot) {
         var petitions = snapshot.val();
-        var petitions = [];
+        var p = [];
 
         for (var o in petitions) {
             var hour = new Date(inUser.time);
             hour = hour.getHours();
 
             var hour_range = parseInt(petitions[o]["time-range"].split(":")[0]);
-            if (!(hour_range <= hour && hour < hour_range + 3)) {
+            if (!filterHour(hour_range, (hour_range + 3) % 24, hour)) {
                 continue;
             }
 
             var lat = petitions[o].latitude,
                 lng = petitions[o].longitude;
 
-            if ((Math.abs(inUser.latitude - lat) <= 0.0016) && (Math.abs(inUser.longitude - lng) <= 0.0016)) {
+            if ((Math.abs(inUser.latitude - lat) <= 0.00056) && (Math.abs(inUser.longitude - lng) <= 0.00056)) {
                 // then include the petition
-                petitions.push({
+                p.push({
                     'id': o,
                     'title': petitions[o].title,
                     'content': petitions[o].content,
@@ -72,14 +72,20 @@ function fetchPetiton(inUser) {
                 });
             }
         }
+
+        inCallback(p);
     });
+}
+
+function displayPetitions(inPetitions) {
+
 }
 
 
 function initMap() {
     createMap();
     initDB();
-    fetchMap(getUserID());
+    markMap(getUserID());
 
     centerMap();
 
