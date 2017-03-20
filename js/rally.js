@@ -4,7 +4,7 @@ var kaist = {
 };
 var map, center;
 var infoWindow;
-var viewDate = 15; // Set how many dates for 
+var viewDate = 15; // Set how many dates for
 
 // Data storing for drawing charts.
 var APPLICATIONS = [],
@@ -98,6 +98,29 @@ function markMap(inUserID) {
         function(errorObject) {
             console.log("The read failed: " + errorObject.code);
         });
+}
+
+function initLegend(){
+    var legend = document.getElementById('legend');
+    var activities = [
+        { name: "작동 안함", icon: "conn"},
+        { name: "웹 컨퍼런싱", icon: "conferencing" },
+        { name: "페이스북", icon: "facebook"},
+        { name: "파일 업로드/다운로드", icon: "file"},
+        { name: "카이스트 포탈 등", icon: "kaist"},
+        { name: "뮤직 스트리밍", icon: "music"},
+        { name: "트위터", icon: "twitter" },
+        { name: "비디오 스트리밍", icon: "video"},
+        { name: "웹 브라우징", icon: "web"},
+    ]
+    for (let act of activities) {
+        var name = act.name;
+        var icon = "./img/activity/" + act.icon + ".png";
+        var div = document.createElement('div');
+        div.innerHTML = '<img src="' + icon + '"> ' + name;
+        legend.appendChild(div);
+    }
+    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('legend'));
 }
 
 /* Error Handler when current location is not detectable. */
@@ -271,7 +294,7 @@ function filterSignature(inIsSlow, inTargetHour, inTargetLoc, inQuorum) {
             CONSISTENCY.push({ "label": "속도가 일정치 않아서 신경쓰이긴 하지만 쓸만하다", "population": cons[1] });
             CONSISTENCY.push({ "label": "종잡을 수 없다", "population": cons[2] });
 
-            // Add event handler for stat navbars, call this function after data are prepared. 
+            // Add event handler for stat navbars, call this function after data are prepared.
             var selectors = [];
             selectors.push("#application"), selectors.push("#speed"), selectors.push("#consistency");
             var datas = [];

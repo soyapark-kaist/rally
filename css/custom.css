@@ -650,10 +650,10 @@ footer {
 
 @media (min-width: 768px) {
     .logo-container img {
-        height: 3vw;
+        height: 30px;
     }
     .logo-container a+a {
-        margin-left: 4.854vw;
+        margin-left: 55px;
     }
 }
 
@@ -685,5 +685,20 @@ footer {
 }
 
 .timeline-progress circle {
-    fill: black;
+    fill: #999999;
+}
+
+
+/* google map legend */
+#legend {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 5px;
+    margin: 5px;
+}
+#legend img {
+    width: 25px;
+    margin-right: 5px;
+}
+#legend div+div {
+    margin-top: 5px;
 }
