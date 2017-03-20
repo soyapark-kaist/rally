@@ -130,7 +130,7 @@ function routeToTimeline(inPetitionID, isAdmin) {
     var params = isAdmin ? { adn: true, id: inPetitionID } : { id: inPetitionID };
     var p = jQuery.param(params);
 
-    var newUrl = window.location.href.split("rally/")[0] + "rally/timeline.html?" + p;
+    var newUrl = "./timeline.html?" + p;
     window.location.replace(newUrl);
 }
 
