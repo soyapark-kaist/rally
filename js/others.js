@@ -5,6 +5,7 @@ function initVis() {
     toggleLoading("#loading");
     var playersReff = firebase.database().ref("petition/");
     infoWindow = new google.maps.InfoWindow({ map: map });
+    infoWindow.close();
 
     // Attach an asynchronous callback to read the data at our posts reference
     playersReff.on("value", function(snapshot) {
@@ -29,11 +30,10 @@ function initVis() {
                 var cityCircle = createCircle(o, { lat: users[o].latitude, lng: users[o].longitude }, users[o].title);
 
                 cityCircle.addListener('click', function(e) {
+                    infoWindow.open(map);
                     infoWindow.setContent(this.title + " <a class='btn' href='./timeline.html?id=" + this.petitionID + "'>자세히 보기</a>");
                     infoWindow.setPosition(this.getCenter())
                 });
-
-
             }
 
             toggleLoading("#loading");

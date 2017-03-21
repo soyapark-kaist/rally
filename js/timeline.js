@@ -27,8 +27,6 @@ function initPetition() {
 
     fetchPetiton(isReceiving);
     // initTimeline();
-
-    fill_progress_circle(1);
 }
 
 function initTimeline(inTimeline) {
@@ -190,6 +188,12 @@ function isSlow(inQuorum) {
 
 function storePetitionInfo(inPetition) {
     petition = inPetition;
+
+    var prog = getProgress(inPetition["time-line"]);
+    if (prog == "답변 대기 중") fill_progress_circle(2);
+    else if (prog == "정보통신팀 답변 도착") fill_progress_circle(3);
+    else fill_progress_circle(1);
+
 
     displayType(isSlow(inPetition["quorum"]));
 
