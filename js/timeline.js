@@ -189,11 +189,7 @@ function isSlow(inQuorum) {
 function storePetitionInfo(inPetition) {
     petition = inPetition;
 
-    var prog = getProgress(inPetition["time-line"]);
-    if (prog == "답변 대기 중") fill_progress_circle(2);
-    else if (prog == "정보통신팀 답변 도착") fill_progress_circle(3);
-    else fill_progress_circle(1);
-
+    fill_progress_circle(getProgress(inPetition["time-line"]));
 
     displayType(isSlow(inPetition["quorum"]));
 
