@@ -105,27 +105,18 @@
                     $('.table-inbox tbody').empty()
 
                     for (var o in users) {
-                        var submitDate = new Date(users[o]["time-line"]["submit"]);
-                        var passed = new Date() > submitDate.setDate(submitDate.getDate() + 1);
-
-                        appendRow(users[o].title, users[o]["time-line"]["submit"], passed ? '<button ' + 'id=' + o +
-                            ' onclick="sendEmail(this)">완료, 메일 보내기</button>' : 'In progress');
-
+                        var prog = getProgress(users[o]["time-line"]);
+                        if (prog == "검증 중") {
+                            prog = '<button ' + 'id=' + o +
+                                ' onclick="sendEmail(this)">완료, 메일 보내기</button><button ' + 'id=' + o +
+                                ' onclick="closePetition(this)">폐기하기</button>';
+                        }
+                        appendRow(o, users[o].title, users[o]["time-line"]["submit"], prog);
                     }
                 },
                 function(errorObject) {
                     alert("The read failed: " + errorObject.code);
                 });
-        }
-
-        function appendRow(inTitle, inDate, inProgress) {
-            $('.table-inbox tbody').append(
-                '<tr>\
-            <td>' + inTitle + '</td>\
-            <td>' + inDate + '</td>\
-            <td>' + inProgress + '</td>\
-          </tr>'
-            );
         }
 
         function handleClientLoad() {
@@ -171,15 +162,29 @@
         function sendEmail(inID) {
             $('#send-button').addClass('disabled');
 
-            sendMessage({
-                    'To': 'noreply.kixlab.rally@gmail.com',
-                    'Subject': '[no-reply]Rally: new request has arrived.'
-                },
-                'Rally에서 새 탄원이 도착했습니다. https://kixlab.org/rally/timeline.html?adn=true&r3v=true&id=' + inID.id + " (이 링크를 학생들과 공유하지 마십시오. 관리자(정보통신팀) 전용 링크입니다.) ",
-                notifySend
-            );
+            var pRef = firebase.database().ref("petition/" + inID.id);
+            pRef.once("value").then(function(snapshot) {
+                var p = snapshot.val();
 
-            return false;
+                pRef.update({
+                    "time-line": {
+                        "submit": p["time-line"]["submit"],
+                        "sent": new Date().toString()
+                    }
+                }, function(error) {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        sendMessage({
+                                'To': 'noreply.kixlab.rally@gmail.com',
+                                'Subject': '[no-reply]Rally: new request has arrived.'
+                            },
+                            'Rally에서 새 탄원이 도착했습니다. https://kixlab.org/rally/timeline.html?adn=true&r3v=true&id=' + inID.id + " (이 링크를 학생들과 공유하지 마십시오. 관리자(정보통신팀) 전용 링크입니다.) ",
+                            notifySend
+                        );
+                    }
+                });
+            });
         }
 
         function notifySend() {
@@ -202,6 +207,52 @@
             });
 
             return sendRequest.execute(callback);
+        }
+
+        function closePetition(inPetitionID) {
+            var pRef = firebase.database().ref("petition/" + inPetitionID.id);
+            pRef.once("value").then(function(snapshot) {
+                var p = snapshot.val();
+
+                pRef.update({
+                    "time-line": {
+                        "submit": p["time-line"]["submit"],
+                        "erase": new Date().toString()
+                    }
+                }, function(error) {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        alert("폐기 처리 되었습니다");
+                    }
+                });
+            });
+        }
+
+        function appendRow(inID, inTitle, inDate, inProgress) {
+            $('.table-inbox tbody').append(
+                '<tr>\
+            <td>' + inTitle + '</td>\
+            <td>' + inDate + '</td>\
+            <td>' + inProgress + '</td>\
+          </tr>'
+            );
+        }
+
+        function getProgress(inTimeline) {
+            var submitDate = new Date(inTimeline["submit"]);
+            if (inTimeline["erase"])
+                return "폐기"
+
+            else if (inTimeline["respond"])
+                return "정보통신팀 답변 도착"
+
+            else if (inTimeline["sent"])
+                return "답변 대기 중"
+
+            else if (new Date() < (d = submitDate.setDate(submitDate.getDate() + 1))) return "데이터 모집 중";
+
+            else return "검증 중"
         }
 
         function getHeader(headers, index) {

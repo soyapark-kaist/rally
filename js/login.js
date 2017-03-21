@@ -9,7 +9,6 @@ var uiConfig = {
             if (window.opener) {
                 // The widget has been opened in a popup, so close the window
                 // and return false to not redirect the opener.
-                debugger;
                 window.close();
                 return false;
             } else {
@@ -21,7 +20,8 @@ var uiConfig = {
                         "latitude": parseFloat(localStorage.getItem("latitude")),
                         "longitude": parseFloat(localStorage.getItem("longitude")),
                         "time-range": localStorage.getItem("time-range"),
-                        "time-line": { "submit": localStorage.getItem("submit") }
+                        "time-line": { "submit": localStorage.getItem("submit") },
+                        "email": firebase.auth().currentUser.email
                     },
                     function(error) {
                         if (error) {

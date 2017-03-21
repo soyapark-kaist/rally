@@ -27,8 +27,6 @@ function initPetition() {
 
     fetchPetiton(isReceiving);
     // initTimeline();
-
-    fill_progress_circle(1);
 }
 
 function initTimeline(inTimeline) {
@@ -191,6 +189,12 @@ function isSlow(inQuorum) {
 function storePetitionInfo(inPetition) {
     petition = inPetition;
 
+    var prog = getProgress(inPetition["time-line"]);
+    if (prog == "답변 대기 중") fill_progress_circle(2);
+    else if (prog == "정보통신팀 답변 도착") fill_progress_circle(3);
+    else fill_progress_circle(1);
+
+
     displayType(isSlow(inPetition["quorum"]));
 
     displayPetition({
@@ -317,22 +321,12 @@ function displayAvailablePetition(inPetitions) {
         $("#inavailable").css("display", "block");
     } else {
         for (var o in inPetitions) {
-            appendRow(inPetitions[o].id, inPetitions[o].title, inPetitions[o]["time-line"]["submit"].split(" GMT")[0], '서명 모집 중');
+            appendRow(inPetitions[o].id, inPetitions[o].title, inPetitions[o]["time-line"]["submit"].split(" GMT")[0], MSG_PROGRESS[getProgress(inPetitions[o]["time-line"])]);
         }
     }
 
 
     $('#available-modal').modal('show');
-}
-
-function appendRow(inID, inTitle, inDate, inProgress) {
-    $('.table-inbox tbody').append(
-        '<tr onclick="window.document.location=\'./timeline.html?id=' + inID + '\';">\
-            <td>' + inTitle + '</td>\
-            <td>' + inDate + '</td>\
-            <td>' + inProgress + '</td>\
-          </tr>'
-    );
 }
 
 function postRespond() {
