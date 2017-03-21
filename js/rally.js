@@ -364,7 +364,6 @@ function appendRow(inID, inTitle, inDate, inProgress) {
 
 function getProgress(inTimeline) {
     var submitDate = new Date(inTimeline["submit"]);
-    debugger;
     if (inTimeline["erase"])
         return "폐기"
 

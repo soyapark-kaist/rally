@@ -116,6 +116,7 @@ function postPetition() {
 
     // User is signed in.
     if (user) {
+        debugger;
         //route to timeline.html
         var playersRef = firebase.database().ref("petition/" + petitionID);
 
@@ -128,7 +129,8 @@ function postPetition() {
             "time-line": {
                 "submit": new Date().toString()
             },
-            "quorum": isSlow ? SLOW_TOTAL : CONN_TOTAL
+            "quorum": isSlow ? SLOW_TOTAL : CONN_TOTAL,
+            "email": user.email
         }, function(error) {
             if (error) {
                 console.log(error);
