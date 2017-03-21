@@ -105,27 +105,18 @@
                     $('.table-inbox tbody').empty()
 
                     for (var o in users) {
-                        var submitDate = new Date(users[o]["time-line"]["submit"]);
-                        var passed = new Date() > submitDate.setDate(submitDate.getDate() + 1);
-
-                        appendRow(users[o].title, users[o]["time-line"]["submit"], passed ? '<button ' + 'id=' + o +
-                            ' onclick="sendEmail(this)">완료, 메일 보내기</button>' : 'In progress');
-
+                        var prog = getProgress(users[o]["time-line"]);
+                        if (prog == "검증 중") {
+                            prog = '<button ' + 'id=' + o +
+                                ' onclick="sendEmail(this)">완료, 메일 보내기</button><button ' + 'id=' + o +
+                                ' onclick="closePetition(this)">폐기하기</button>';
+                        }
+                        appendRow(o, users[o].title, users[o]["time-line"]["submit"], prog);
                     }
                 },
                 function(errorObject) {
                     alert("The read failed: " + errorObject.code);
                 });
-        }
-
-        function appendRow(inTitle, inDate, inProgress) {
-            $('.table-inbox tbody').append(
-                '<tr>\
-            <td>' + inTitle + '</td>\
-            <td>' + inDate + '</td>\
-            <td>' + inProgress + '</td>\
-          </tr>'
-            );
         }
 
         function handleClientLoad() {
@@ -202,6 +193,51 @@
             });
 
             return sendRequest.execute(callback);
+        }
+
+        function closePetition(inPetitionID) {
+            var pRef = firebase.database().ref("petition/" + inPetitionID.id);
+            pRef.update({
+                "time-line": {
+                    "erase": new Date().toString()
+                }
+            }, function(error) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    // when post to DB is successful 
+                    alert("폐기 처리 되었습니다");
+                    return false;
+                }
+            });
+
+            return false;
+        }
+
+        function appendRow(inID, inTitle, inDate, inProgress) {
+            $('.table-inbox tbody').append(
+                '<tr>\
+            <td>' + inTitle + '</td>\
+            <td>' + inDate + '</td>\
+            <td>' + inProgress + '</td>\
+          </tr>'
+            );
+        }
+
+        function getProgress(inTimeline) {
+            var submitDate = new Date(inTimeline["submit"]);
+            if (inTimeline["erase"])
+                return "폐기"
+
+            else if (inTimeline["respond"])
+                return "정보통신팀 답변 도착"
+
+            else if (inTimeline["sent"])
+                return "답변 대기 중"
+
+            else if (new Date() < submitDate.setDate(submitDate.getDate() + 1)) return "데이터 모집 중";
+
+            else return "검증 중"
         }
 
         function getHeader(headers, index) {

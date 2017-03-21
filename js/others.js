@@ -17,6 +17,7 @@ function initVis() {
             $('.table-inbox tbody').empty()
 
             for (var o in users) {
+                if (users[o]["time-line"]["erase"]) continue;
                 var submitDate = new Date(users[o]["time-line"]["submit"]);
                 var passed = new Date() > submitDate.setDate(submitDate.getDate() + 1);
 
@@ -40,16 +41,6 @@ function initVis() {
         function(errorObject) {
             alert("The read failed: " + errorObject.code);
         });
-}
-
-function appendRow(inID, inTitle, inDate, inProgress) {
-    $('.table-inbox tbody').append(
-        '<tr onclick="window.document.location=\'./timeline.html?id=' + inID + '\';">\
-            <td>' + inTitle + '</td>\
-            <td>' + inDate + '</td>\
-            <td>' + inProgress + '</td>\
-          </tr>'
-    );
 }
 
 function getUserID() {

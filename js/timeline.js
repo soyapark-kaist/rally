@@ -325,16 +325,6 @@ function displayAvailablePetition(inPetitions) {
     $('#available-modal').modal('show');
 }
 
-function appendRow(inID, inTitle, inDate, inProgress) {
-    $('.table-inbox tbody').append(
-        '<tr onclick="window.document.location=\'./timeline.html?id=' + inID + '\';">\
-            <td>' + inTitle + '</td>\
-            <td>' + inDate + '</td>\
-            <td>' + inProgress + '</td>\
-          </tr>'
-    );
-}
-
 function postRespond() {
     var pRef = firebase.database().ref("petition/" + petitionID);
     pRef.update({

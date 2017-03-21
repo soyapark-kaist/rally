@@ -71,16 +71,6 @@ function initVis() {
         });
 }
 
-function appendRow(inID, inTitle, inDate, inProgress) {
-    $('.table-inbox tbody').append(
-        '<tr onclick="window.document.location=\'./timeline.html?id=' + inID + '\';">\
-            <td>' + inTitle + '</td>\
-            <td>' + inDate + '</td>\
-            <td>' + inProgress + '</td>\
-          </tr>'
-    );
-}
-
 function getUserID() {
     var params = window.location.search.substring(1).split("&");
     for (var p in params) {

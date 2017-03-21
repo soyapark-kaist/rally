@@ -31,8 +31,6 @@ function initMap() {
 
                 var progress = "";
 
-                // appendRow(o, users[o].title, users[o]["time-line"]["submit"].split(" GMT")[0], passed ? '정보통신팀에 전송' : '서명 모집 중');
-
                 // Add the circle for the petition to the map.
                 var cityCircle = createCircle(o, { lat: users[o].latitude, lng: users[o].longitude }, users[o].title);
 
@@ -49,14 +47,4 @@ function initMap() {
         function(errorObject) {
             alert("The read failed: " + errorObject.code);
         });
-}
-
-function appendRow(inID, inTitle, inDate, inProgress) {
-    $('.table-inbox tbody').append(
-        '<tr onclick="window.document.location=\'./timeline.html?id=' + inID + '\';">\
-            <td>' + inTitle + '</td>\
-            <td>' + inDate + '</td>\
-            <td>' + inProgress + '</td>\
-          </tr>'
-    );
 }

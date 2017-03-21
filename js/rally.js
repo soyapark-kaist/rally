@@ -100,18 +100,18 @@ function markMap(inUserID) {
         });
 }
 
-function initLegend(){
+function initLegend() {
     var legend = document.getElementById('legend');
     var activities = [
-        { name: "작동 안함", icon: "conn"},
+        { name: "작동 안함", icon: "conn" },
         { name: "웹 컨퍼런싱", icon: "conferencing" },
-        { name: "페이스북", icon: "facebook"},
-        { name: "파일 업로드/다운로드", icon: "file"},
-        { name: "카이스트 포탈 등", icon: "kaist"},
-        { name: "뮤직 스트리밍", icon: "music"},
+        { name: "페이스북", icon: "facebook" },
+        { name: "파일 업로드/다운로드", icon: "file" },
+        { name: "카이스트 포탈 등", icon: "kaist" },
+        { name: "뮤직 스트리밍", icon: "music" },
         { name: "트위터", icon: "twitter" },
-        { name: "비디오 스트리밍", icon: "video"},
-        { name: "웹 브라우징", icon: "web"},
+        { name: "비디오 스트리밍", icon: "video" },
+        { name: "웹 브라우징", icon: "web" },
     ]
     for (let act of activities) {
         var name = act.name;
@@ -347,6 +347,32 @@ function initStat(inSelector, inSelectorList, inDataList) {
         // }
 
     });
+}
+
+function appendRow(inID, inTitle, inDate, inProgress) {
+    $('.table-inbox tbody').append(
+        '<tr onclick="window.document.location=\'./timeline.html?id=' + inID + '\';">\
+            <td>' + inTitle + '</td>\
+            <td>' + inDate + '</td>\
+            <td>' + inProgress + '</td>\
+          </tr>'
+    );
+}
+
+function getProgress(inTimeline) {
+    var submitDate = new Date(inTimeline["submit"]);
+    if (inTimeline["erase"])
+        return "폐기"
+
+    else if (inTimeline["respond"])
+        return "정보통신팀 답변 도착"
+
+    else if (inTimeline["sent"])
+        return "답변 대기 중"
+
+    else if (new Date() < submitDate.setDate(submitDate.getDate() + 1)) return "데이터 모집 중";
+
+    else return "검증 중"
 }
 
 // function calcTime(city, offset) {

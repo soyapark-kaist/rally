@@ -9,7 +9,6 @@ var uiConfig = {
             if (window.opener) {
                 // The widget has been opened in a popup, so close the window
                 // and return false to not redirect the opener.
-                debugger;
                 window.close();
                 return false;
             } else {
