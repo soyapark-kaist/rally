@@ -11,8 +11,11 @@ var APPLICATIONS = [],
     SPEED = [],
     CONSISTENCY = [];
 
+// Number of quorum
 var SLOW_TOTAL = 5,
     CONN_TOTAL = 3;
+
+var MSG_PROGRESS = ["제출", "데이터 모집 중", "검증 중", "답변 대기 중", "정보통신팀 답변 도착"];
 
 /* Initialize map. */
 function createMap() {
@@ -361,18 +364,19 @@ function appendRow(inID, inTitle, inDate, inProgress) {
 
 function getProgress(inTimeline) {
     var submitDate = new Date(inTimeline["submit"]);
+    debugger;
     if (inTimeline["erase"])
         return "폐기"
 
     else if (inTimeline["respond"])
-        return "정보통신팀 답변 도착"
+        return 4;
 
     else if (inTimeline["sent"])
-        return "답변 대기 중"
+        return 3;
 
-    else if (new Date() < submitDate.setDate(submitDate.getDate() + 1)) return "데이터 모집 중";
+    else if (new Date() < (d = submitDate.setDate(submitDate.getDate() + 1))) return 1;
 
-    else return "검증 중"
+    else return 2;
 }
 
 // function calcTime(city, offset) {

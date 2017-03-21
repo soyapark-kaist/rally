@@ -250,7 +250,7 @@
             else if (inTimeline["sent"])
                 return "답변 대기 중"
 
-            else if (new Date() < submitDate.setDate(submitDate.getDate() + 1)) return "데이터 모집 중";
+            else if (new Date() < (d = submitDate.setDate(submitDate.getDate() + 1))) return "데이터 모집 중";
 
             else return "검증 중"
         }

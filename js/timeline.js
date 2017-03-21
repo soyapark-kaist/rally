@@ -321,7 +321,7 @@ function displayAvailablePetition(inPetitions) {
         $("#inavailable").css("display", "block");
     } else {
         for (var o in inPetitions) {
-            appendRow(inPetitions[o].id, inPetitions[o].title, inPetitions[o]["time-line"]["submit"].split(" GMT")[0], '서명 모집 중');
+            appendRow(inPetitions[o].id, inPetitions[o].title, inPetitions[o]["time-line"]["submit"].split(" GMT")[0], MSG_PROGRESS[getProgress(inPetitions[o]["time-line"])]);
         }
     }
 
