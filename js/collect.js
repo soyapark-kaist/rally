@@ -139,7 +139,7 @@ function initGuideImg() {
             break;
     }
 
-    imgSrc = 'img/' + "mac.png";
+    imgSrc = 'img/' + imgSrc;
     $(".tooltiptext img").attr("src", imgSrc);
 }
 
