@@ -116,20 +116,20 @@
 
             <!-- Post -->
             <div class="post issue-question">
-                <h4>다음 중 현재 겪고 있는 인터넷 문제를 선택해주세요.</h4>
+                <h4>현재 겪고 있는 인터넷 문제를 선택해주세요.</h4>
                 <form autocomplete="off">
                     <div class="btn-group inline issue-type">
                         <button type="submit" onclick="return pickIssueType(false);" class="btn"> <i class="fa fa-chain-broken" aria-hidden="true"></i> 인터넷 연결불능 문제<br><span>와이파이에 연결조차 안될 때 선택해주세요</span></button>
                         <button type="submit" onclick="return pickIssueType(true);" class="btn"> <i class="fa fa-exclamation-circle" aria-hidden="true"></i> 인터넷 느림 문제<br><span>와이파이에 연결은 되지만 느릴 때 선택해주세요</span></button>
                     </div>
                 </form>
-
             </div>
 
             <!-- Post -->
             <div class="post" style="margin-top: 0px">
                 <form action="" onsubmit="return selectSignature();">
-                    <h4>시간 대</h4>
+
+                    <h4>인터넷 문제가 발생한 시간은 언제인가요?</h4>
                     <h6>시간 범위를 선택해보세요.</h6>
                     <div class="input-group bootstrap-timepicker timepicker">
                         <input id="timeRange-start" type="text" class="form-control input-small" data-provide="timepicker" data-template="modal" data-minute-step="1" data-modal-backdrop="true" required>
@@ -140,9 +140,9 @@
                     </div>
                     <div class="input-group bootstrap-timepicker timepicker">
                     </div>
-
-                    <h4>지역</h4>
-                    <h6>마커를 움직여 청원하려는 지역을 선택해보세요.</h6>
+                    <br>
+                    <h4>인터넷 문제가 발생한 위치는 어디인가요?</h4>
+                    <h6>마커를 움직여 선택해주세요</h6>
                     <div id="loading"></div>
                     <div id="map"></div>
 
@@ -169,31 +169,27 @@
                             </div>
                         </div>
                         <p>
-                            <span id="leftQuorum"></span><span>명의 서명이 모인 후, 정보통신팀에 보내집니다.</span>
+                            <span id="leftQuorum"></span><span>명의 서명이 모이면 정보통신팀에 민원을 보냅니다</span>
                         </p>
                     </div>
-
-
                 </form>
 
                 <form action="" onsubmit="return postPetition();">
                     <div class="form-group">
-                        <label class="sr-only" for="exampleInputEmail3">Title</label>
-                        <input type="text" class="form-control" id="title" placeholder="Title" required />
+                        <label for="title">제목</label>
+                        <input type="text" class="form-control" id="title"
+                                placeholder="예) 화상 회의에서 인터넷 접속이 안됨" required />
                     </div>
-                    <div class="alert alert-info" role="alert">
-                        <strong>Keep it short and to the point</strong> Example: "Prepare for stable and perfect video conferencing meeting"
-                    </div>
-
-                    <textarea class="form-control" rows="3" id="content" placeholder="Explain the problem you want to solve" required></textarea>
-                    <div class="alert alert-info" role="alert">
-                        <strong>Describe the people involved and the problem they are facing</strong> Readers are most likely to take action when they understand who is affected.
+                    <div class="form-group">
+                        <label for="content">내용</label>
+                        <textarea id="content" class="form-control" rows="5" id="content"
+                                    placeholder="예) A일 B시 C동에서 있던 화상 회의에서 1분 정도의 주기로 인터넷이 끊어졌음" required></textarea>
                     </div>
 
                     <div id="finalStage">
                         <button onclick="preview()" class="btn btn-default" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                             미리보기
-                            </button>
+                        </button>
 
                         <button type="submit" id="submitSection" class="btn btn-primary">SNS 로그인 후 제출</button>
                         <i class="fa fa-google" aria-hidden="true"></i>

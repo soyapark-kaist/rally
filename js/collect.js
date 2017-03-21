@@ -141,7 +141,6 @@ function initGuideImg() {
 
     imgSrc = 'img/' + imgSrc;
     $(".tooltiptext img").attr("src", imgSrc);
-    debugger;
 }
 
 function collectData() {

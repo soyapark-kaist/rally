@@ -520,51 +520,7 @@ select[multiple="multiple"] {
   line-height: 1.35em;
   width: 100%;
 }
-input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="url"],
-input[type="phone"],
-input[type="tel"],
-input[type="number"],
-input[type="datetime"],
-input[type="date"],
-input[type="month"],
-input[type="color"],
-input[type="time"],
-input[type="search"],
-input[type="datetime-local"] {
-  font-family: "Helvetica Neue", Helvetica, Tahoma, sans-serif;
-  font-size: 1em;
-  box-shadow: none;
-  padding: 0.3em 0.35em;
-  line-height: 1.65em;
-  border-radius: 0;
-  outline: none;
-}
-select[multiple],
-select[multiple="multiple"],
-textarea,
-input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="url"],
-input[type="phone"],
-input[type="tel"],
-input[type="number"],
-input[type="datetime"],
-input[type="date"],
-input[type="month"],
-input[type="color"],
-input[type="time"],
-input[type="search"],
-input[type="datetime-local"] {
-  background: #ffffff;
-  border: 1px solid #cccccc;
-  position: relative;
-  z-index: 2;
-  -webkit-appearance: none;
-}
+
 textarea[disabled],
 input[type="text"][disabled],
 input[type="password"][disabled],

@@ -281,7 +281,7 @@ function checkEligibility() {
                 //     lng: petition["longitude"]
                 // };
 
-                if (isEligible && (Math.abs(current_loc.lat - petition["latitude"]) <= 0.00056) && (Math.abs(current_loc.lng - petition["longitude"]) <= 0.00056)) {
+                if (isEligible && (Math.abs(current_loc.lat - petition["latitude"]) <= 0.0009) && (Math.abs(current_loc.lng - petition["longitude"]) <= 0.0009)) {
                     window.location.replace("./collect.html" + (petition["quorum"] == SLOW_TOTAL ? "" : "?conn=true"));
 
                 } else {
@@ -376,7 +376,7 @@ function filterPetiton(inHour, inLoc, inCallback) {
 
 
             // if (true) {
-            if ((Math.abs(inLoc.lat - lat) <= 0.00056) && (Math.abs(inLoc.lng - lng) <= 0.00056)) {
+            if ((Math.abs(inLoc.lat - lat) <= 0.0009) && (Math.abs(inLoc.lng - lng) <= 0.0009)) {
                 // then include the petition
                 p.push({
                     'id': o,
