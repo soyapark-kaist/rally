@@ -64,8 +64,9 @@ function fetchPetiton(inUser, inCallback) {
             var hour = new Date(inUser.time);
             hour = hour.getHours();
 
-            var hour_range = parseInt(petitions[o]["time-range"].split(":")[0]);
-            if (!filterHour(hour_range, (hour_range + 3) % 24, hour)) {
+            var hour_from = TIME_RANGE[parseInt(petitions[o]["time-range"])].from,
+                hour_to = TIME_RANGE[parseInt(petitions[o]["time-range"])].to;
+            if (!filterHour(hour_from, hour_to, hour)) {
                 continue;
             }
 

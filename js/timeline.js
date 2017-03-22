@@ -189,11 +189,7 @@ function isSlow(inQuorum) {
 function storePetitionInfo(inPetition) {
     petition = inPetition;
 
-    var prog = getProgress(inPetition["time-line"]);
-    if (prog == "답변 대기 중") fill_progress_circle(2);
-    else if (prog == "정보통신팀 답변 도착") fill_progress_circle(3);
-    else fill_progress_circle(1);
-
+    fill_progress_circle(getProgress(inPetition["time-line"]));
 
     displayType(isSlow(inPetition["quorum"]));
 
@@ -267,7 +263,9 @@ function selectSignature() {
 function checkEligibility() {
     var isEligible = true;
     var hour = new Date().getHours();
-    if (!filterHour(hour_range, (hour_range + 3) % 24, hour)) {
+    var hour_from = TIME_RANGE[parseInt(petition["time-range"])].from,
+        hour_to = TIME_RANGE[parseInt(petition["time-range"])].to;
+    if (!filterHour(hour_range, hour_to, hour)) {
         //alert("민원 시간대에 해당하지 않습니다! " + hour_range + ":00 ~ " + (hour_range + 3) + ":00");
         isEligible = false;
     }
@@ -360,8 +358,9 @@ function filterPetiton(inHour, inLoc, inCallback) {
 
         for (var o in petitions) {
             var hour = inHour;
-            var hour_from = parseInt(petitions[o]["time-range"].split(":")[0]);
-            if (!filterHour(hour_from, (hour_from + 3) % 24, hour)) {
+            var hour_from = TIME_RANGE[parseInt(petitions[o]["time-range"])].from,
+                hour_to = TIME_RANGE[parseInt(petitions[o]["time-range"])].to;
+            if (!filterHour(hour_from, hour_to, hour)) {
                 continue;
             }
 

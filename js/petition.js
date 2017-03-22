@@ -109,6 +109,11 @@ function postPetition() {
         }
     }
 
+    var lat, lng;
+    ($('#location :selected').val() == -1) ?
+    (lat = $('#map').locationpicker("location").latitude, lng = $('#map').locationpicker("location").longitude) :
+    (lat = BLDG[$('#location :selected').text()].lat, lng = BLDG[$('#location :selected').text()].lng)
+
     //then save input to local storage
 
     // Check whether the user is authenticated
@@ -116,30 +121,31 @@ function postPetition() {
 
     // User is signed in.
     if (user) {
-        debugger;
         //route to timeline.html
         var playersRef = firebase.database().ref("petition/" + petitionID);
 
         playersRef.set({
-            "title": $("#title").val(),
-            "content": $("#content").val(),
-            "latitude": $('#map').locationpicker("location").latitude,
-            "longitude": $('#map').locationpicker("location").longitude,
-            "time-range": $('#timeRange-start').val(),
-            "time-line": {
-                "submit": new Date().toString()
+                "title": $("#title").val(),
+                "content": $("#content").val(),
+                "latitude": lat,
+                "longitude": lng,
+                "time-range": $("input[name='time-range']:checked").val(),
+                "day-range": $("input[name='day-range']:checked").val(),
+                "time-line": {
+                    "submit": new Date().toString()
+                },
+                "quorum": isSlow ? SLOW_TOTAL : CONN_TOTAL,
+                "email": user.email
             },
-            "quorum": isSlow ? SLOW_TOTAL : CONN_TOTAL,
-            "email": user.email
-        }, function(error) {
-            if (error) {
-                console.log(error);
-            } else {
-                // when post to DB is successful 
-                routeToTimeline(petitionID);
-            }
+            function(error) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    // when post to DB is successful 
+                    routeToTimeline(petitionID);
+                }
 
-        });
+            });
     }
     // No user is signed in.
     else {
@@ -148,9 +154,10 @@ function postPetition() {
         localStorage.setItem("petitionID", petitionID);
         localStorage.setItem("title", $("#title").val());
         localStorage.setItem("content", $("#content").val());
-        localStorage.setItem("latitude", $('#map').locationpicker("location").latitude);
-        localStorage.setItem("longitude", $('#map').locationpicker("location").longitude);
-        localStorage.setItem("time-range", $('#timeRange-start').val());
+        localStorage.setItem("latitude", lat);
+        localStorage.setItem("longitude", lng);
+        localStorage.setItem("time-range", $("input[name='time-range']:checked").val());
+        localStorage.setItem("day-range", $("input[name='day-range']:checked").val());
         localStorage.setItem("submit", new Date().toString());
         localStorage.setItem("quorum", isSlow ? SLOW_TOTAL : CONN_TOTAL);
 
@@ -171,48 +178,81 @@ function selectSignature() {
     }
 
     if (isSafari) {
-        if ($("#timeRange-start").val() == '') {
+        if ($("input[name='time-range']:checked").length == 0) {
             alert("시간 대를 선택해주세요.");
+            $("input[name='time-range']").focus();
+            // e.preventDefault();
+            return false;
+        }
 
-            $("#timeRange-start").focus();
-
+        if ($("input[name='day-range']:checked").length == 0) {
+            alert("어느 날에 일어나는지 선택해주세요.");
+            $("input[name='day-range']").focus();
             // e.preventDefault();
             return false;
         }
     }
 
     var $btn = $('#viewSignature').button('loading');
+    var selectedLoc = {
+        "lat": $('#map').locationpicker("location").latitude,
+        "lng": $('#map').locationpicker("location").longitude
+    };
 
-    if (!users) {
-        var playersRef = firebase.database().ref('users/');
-        // Attach an asynchronous callback to read the data at our posts reference
-        playersRef.once("value").then(function(snapshot) {
-                users = snapshot.val();
-                filterSignature(
-                    isSlow,
-                    parseInt($('#timeRange-start').val().split(":")[0]), {
-                        "lat": $('#map').locationpicker("location").latitude,
-                        "lng": $('#map').locationpicker("location").longitude
-                    },
-                    isSlow ? SLOW_TOTAL : CONN_TOTAL);
+    var bldg = [];
+    for (var l in BLDG) {
+        if (Math.abs(selectedLoc.lat - BLDG[l].lat) < 0.002 && Math.abs(selectedLoc.lng - BLDG[l].lng) < 0.002) {
+            bldg.push(l);
+        }
+    }
+    console.log(bldg);
+    $('#location select').remove();
+    if (bldg.length > 0) {
+        var s = $('<select />');
 
-                $btn.button('reset');
-            },
-            function(errorObject) {
-                alert("The read failed: " + errorObject.code);
-                $btn.button('reset');
-            });
-    } //If END, when DB is not yet fetched
-    else {
-        filterSignature(
-            isSlow,
-            parseInt($('#timeRange-start').val().split(":")[0]), {
-                "lat": $('#map').locationpicker("location").latitude,
-                "lng": $('#map').locationpicker("location").longitude
-            },
-            isSlow ? SLOW_TOTAL : CONN_TOTAL);
-        $btn.button('reset');
-    } //else END, when DB is already fetched
+        $('<option />', { value: -1, text: "혹시 이 건물에 계신가요?" }).appendTo(s);
+        for (var val in bldg) {
+            $('<option />', { value: val, text: bldg[val] }).appendTo(s);
+        }
 
+        s.appendTo('#location'); // or wherever it should be
+    }
+
+    $("#finalStage").css("visibility", "visible");
+
+    /*
+        if (!users) {
+            var playersRef = firebase.database().ref('users/');
+            // Attach an asynchronous callback to read the data at our posts reference
+            playersRef.once("value").then(function(snapshot) {
+                    users = snapshot.val();
+                    filterSignature(
+                        isSlow,
+                        parseInt($('#timeRange-start').val().split(":")[0]), {
+                            "lat": $('#map').locationpicker("location").latitude,
+                            "lng": $('#map').locationpicker("location").longitude
+                        },
+                        isSlow ? SLOW_TOTAL : CONN_TOTAL);
+
+                    $btn.button('reset');
+                },
+                function(errorObject) {
+                    alert("The read failed: " + errorObject.code);
+                    $btn.button('reset');
+                });
+        } //If END, when DB is not yet fetched
+        else {
+            filterSignature(
+                isSlow,
+                parseInt($('#timeRange-start').val().split(":")[0]), {
+                    "lat": $('#map').locationpicker("location").latitude,
+                    "lng": $('#map').locationpicker("location").longitude
+                },
+                isSlow ? SLOW_TOTAL : CONN_TOTAL);
+            $btn.button('reset');
+        } //else END, when DB is already fetched
+        */
+
+    $btn.button('reset');
     return false;
 }
