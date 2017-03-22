@@ -54,6 +54,7 @@
         ga('send', 'pageview');
     </script>
 
+    <script type="text/javascript" src="js/conf.js"></script>
     <script type="text/javascript" src="js/rally.js"></script>
     <script type="text/javascript" src="js/petition.js"></script>
     <script type="text/javascript" src="js/donutChart.js"></script>
@@ -100,7 +101,7 @@
         <nav class="collapse navbar-collapse rally-navbar-collapse">
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="./others.html">살펴보기</a></li>
-                <li><a href="./petition.html">민원내기</a></li>
+                <li><a href="./petition.html">제보하기</a></li>
             </ul>
         </nav>
     </header>
@@ -110,12 +111,12 @@
     <div class="content">
         <div class="container">
             <div class="page-header">
-                <h1>새 민원 시작하기</h1>
+                <h1>새 제보 시작하기</h1>
             </div>
 
             <!-- Post -->
             <div class="post issue-question">
-                <h4>현재 겪고 있는 인터넷 문제를 선택해주세요.</h4>
+                <h4>현재 겪고 있는 인터넷 문제를 선택해주세요 *</h4>
                 <form autocomplete="off">
                     <div class="btn-group inline issue-type">
                         <button type="submit" onclick="return pickIssueType(false);" class="btn"> <i class="fa fa-chain-broken" aria-hidden="true"></i> 인터넷 연결불능 문제<br><span>와이파이에 연결조차 안될 때 선택해주세요</span></button>
@@ -128,25 +129,27 @@
             <div class="post" style="margin-top: 0px">
                 <form action="" onsubmit="return selectSignature();">
 
-                    <h4>인터넷 문제가 발생한 시간은 언제인가요?</h4>
-                    <h6>시간 범위를 선택해보세요.</h6>
-                    <div class="input-group bootstrap-timepicker timepicker">
-                        <input id="timeRange-start" type="text" class="form-control input-small" data-provide="timepicker" data-template="modal" data-minute-step="1" data-modal-backdrop="true" required>
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                    <h4>이런 문제는 언제 발생하나요? *</h4>
+                    <h6>시간 범위를 선택해주세요.</h6>
+                    <label class="radio-inline"><input type="radio" value=0 name="time-range" required>새벽</label>
+                    <label class="radio-inline"><input type="radio" value=1 name="time-range">오전</label>
+                    <label class="radio-inline"><input type="radio" value=2 name="time-range">점심</label>
+                    <label class="radio-inline"><input type="radio" value=3 name="time-range">오후</label>
+                    <label class="radio-inline"><input type="radio" value=4 name="time-range">저녁</label>
 
-                        <input id="timeRange-end" type="text" class="form-control input-small" data-provide="timepicker" data-template="modal" data-minute-step="1" data-modal-backdrop="true" disabled>
-                        <span class="input-group-addon">까지</span>
-                    </div>
-                    <div class="input-group bootstrap-timepicker timepicker">
-                    </div>
+                    <h6>반복</h6>
+                    <label class="radio-inline"><input type="radio" value=0 name="day-range" required>매일</label>
+                    <label class="radio-inline"><input type="radio" value=1 name="day-range">매주 평일</label>
+                    <label class="radio-inline"><input type="radio" value=2 name="day-range">매주 주말</label>
+                    <label class="radio-inline"><input type="radio" value=3 name="day-range">그 외<input type="text"></label>
                     <br>
-                    <h4>인터넷 문제가 발생한 위치는 어디인가요?</h4>
+                    <h4>인터넷 문제가 발생한 위치는 어디인가요? *</h4>
                     <h6>마커를 움직여 선택해주세요</h6>
                     <div id="loading"></div>
                     <div id="map"></div>
 
-                    <div style="text-align:center;margin-top:20px;">
-                        <button type="submit" id="viewSignature" class="btn btn-success btn-lg" data-loading-text="Loading...">선택된 서명보기</button>
+                    <div id="location" style="text-align:center;margin-top:20px;">
+                        <button type="submit" id="viewSignature" class="btn btn-success btn-lg" data-loading-text="Loading...">장소 선택하기</button>
                     </div>
 
                     <p id="number"></p>
@@ -168,7 +171,7 @@
                             </div>
                         </div>
                         <p>
-                            <span id="leftQuorum"></span><span>명의 서명이 모이면 정보통신팀에 민원을 보냅니다</span>
+                            <span id="leftQuorum"></span><span>명이 더 참여하면 정보통신팀에 민원을 보냅니다</span>
                         </p>
                     </div>
                 </form>
@@ -218,7 +221,7 @@
             <ul class="footer-links right-links">
                 <li><a href="mailto:kixlab.rally@gmail.com">contact</a></li>
                 <li><a href="./privacy.html">privacy</a></li>
-                <li>ver 0.1.17</li>
+                <li>ver 0.2</li>
             </ul>
             <ul class="footer-links">
                 <li>© 2017 KIXLAB</li>
