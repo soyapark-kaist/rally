@@ -247,11 +247,12 @@ function filterSignature(inIsSlow, inTargetHour, inTargetLoc, inQuorum) {
                 continue;
 
             var hour = new Date(users[o][u].time).getHours();
-
-            var hour_range = inTargetHour;
             //parseInt($('#timeRange-start').val().split(":")[0]);
             console.log(u, hour, users[o][u].latitude, users[o][u].longitude);
-            if (!filterHour(hour_range, (hour_range + 3) % 24, hour)) {
+
+            var hour_from = TIME_RANGE[inTargetHour].from,
+                hour_to = TIME_RANGE[inTargetHour].to;
+            if (!filterHour(hour_from, hour_to, hour)) {
                 continue;
             }
 
@@ -318,7 +319,7 @@ function filterSignature(inIsSlow, inTargetHour, inTargetLoc, inQuorum) {
         }
 
     } else {
-        $("#number").text("해당 범위에 아직 서명이 존재하지 않습니다. 친구들에게 홍보해 더 많은 싸인을 모아보세요!");
+        $("#number").text("해당 범위에 아직 데이터가 존재하지 않습니다. 친구들에게 홍보해 더 많은 데이터를 모아보세요!");
         $("#stat").css("display", "none");
     }
 

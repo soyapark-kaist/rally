@@ -1,3 +1,11 @@
+var TIME_RANGE = [
+    { "from": 0, "to": 6 },
+    { "from": 6, "to": 12 },
+    { "from": 12, "to": 14 },
+    { "from": 13, "to": 18 },
+    { "from": 18, "to": 0 },
+];
+
 var BLDG = {
     "N1": {
         "lat": 36.374,
