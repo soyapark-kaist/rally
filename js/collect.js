@@ -138,7 +138,7 @@ function initGuideImg() {
             imgSrc = "windows.png";
             break;
         default:
-            imgSrc = "mac.png";
+            imgSrc = "android.png";
     }
 
     imgSrc = 'img/' + imgSrc;
