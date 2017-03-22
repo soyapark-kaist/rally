@@ -261,6 +261,8 @@ function selectSignature() {
 }
 
 function checkEligibility() {
+    var $btn = $("#participate").button('loading');
+
     var isEligible = true;
     var hour = new Date().getHours();
     var hour_from = TIME_RANGE[parseInt(petition["time-range"])].from,
@@ -299,7 +301,8 @@ function checkEligibility() {
             function() { //error callback
                 console.log("Error geolocation");
                 alert('브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.');
-                // handleLocationError(true, infoWindow, map.getCenter());
+                $("#participate").button('reset')
+                    // handleLocationError(true, infoWindow, map.getCenter());
             }, {
                 timeout: 10000
             });
@@ -309,7 +312,8 @@ function checkEligibility() {
         // Browser doesn't support Geolocation
         console.log("Error geolocation; brower doesn't support");
         alert('브라우저의 위치정보 수집이 불가합니다. 다른 브라우저에서 다시 시도해주세요.');
-        // handleLocationError(false, infoWindow, map.getCenter());
+        $("#participate").button('reset')
+            // handleLocationError(false, infoWindow, map.getCenter());
     }
 }
 
@@ -323,7 +327,7 @@ function displayAvailablePetition(inPetitions) {
         }
     }
 
-
+    $("#participate").button('reset');
     $('#available-modal').modal('show');
 }
 
