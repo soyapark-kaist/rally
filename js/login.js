@@ -21,6 +21,7 @@ var uiConfig = {
                         "longitude": parseFloat(localStorage.getItem("longitude")),
                         "time-range": localStorage.getItem("time-range"),
                         "day-range": localStorage.getItem("day-range"),
+                        "quorum": localStorage.getItem("quorum"),
                         "time-line": { "submit": localStorage.getItem("submit") },
                         "email": firebase.auth().currentUser.email
                     },
