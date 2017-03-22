@@ -125,16 +125,16 @@ function initGuideImg() {
     var myOS = detectOS();
     var imgSrc;
     switch (myOS) {
-        case 'iOS':
+        case 'ios':
             imgSrc = "ios.png";
             break;
-        case 'Android':
+        case 'android':
             imgSrc = "android.png";
             break;
         case 'mac':
             imgSrc = "mac.png";
             break;
-        case 'unknown':
+        case 'windows':
             imgSrc = "windows.png";
             break;
     }

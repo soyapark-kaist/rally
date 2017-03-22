@@ -171,14 +171,14 @@ function routeToVis(inUserID) {
 function detectOS() {
     var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
-    if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i) || userAgent.match(/iPod/i)) {
-        return 'iOS';
+    if (userAgent.match(/Windows/i)) {
+        return 'windows';
     } else if (userAgent.match(/Android/i)) {
-        return 'Android';
+        return 'android';
     } else if (userAgent.match(/Mac/i)) {
         return 'mac';
-    } else // windows
-        return 'unknown';
+    } else
+        return 'ios';
 }
 
 function detectBrowser() {
