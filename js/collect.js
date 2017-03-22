@@ -137,6 +137,8 @@ function initGuideImg() {
         case 'windows':
             imgSrc = "windows.png";
             break;
+        default:
+            imgSrc = "android.png";
     }
 
     imgSrc = 'img/' + imgSrc;

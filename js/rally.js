@@ -116,9 +116,9 @@ function initLegend() {
         { name: "비디오 스트리밍", icon: "video" },
         { name: "웹 브라우징", icon: "web" },
     ]
-    for (let act of activities) {
-        var name = act.name;
-        var icon = "./img/activity/" + act.icon + ".png";
+    for (var act in activities) {
+        var name = activities[act].name;
+        var icon = "./img/activity/" + activities[act].icon + ".png";
         var div = document.createElement('div');
         div.innerHTML = '<img src="' + icon + '"> ' + name;
         legend.appendChild(div);
