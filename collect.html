@@ -5,6 +5,23 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="always" />
+    <!-- META FOR IOS & HANDHELD -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <style type="text/stylesheet">
+        @-webkit-viewport { width: device-width; } @-moz-viewport { width: device-width; } @-ms-viewport { width: device-width; } @-o-viewport { width: device-width; } @viewport { width: device-width; }
+    </style>
+    <script type="text/javascript">
+        //<![CDATA[
+        if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
+            var msViewportStyle = document.createElement("style");
+            msViewportStyle.appendChild(
+                document.createTextNode("@-ms-viewport{width:auto!important}")
+            );
+            document.getElementsByTagName("head")[0].appendChild(msViewportStyle);
+        }
+        //]]>
+    </script>
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
@@ -28,32 +45,6 @@
     <!-- Custom styles for this template -->
     <link href="css/theme.css" rel="stylesheet">
     <link href="css/collect.css" rel="stylesheet">
-
-    <meta name="referrer" content="always" />
-    <!-- META FOR IOS & HANDHELD -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <style type="text/stylesheet">
-        @-webkit-viewport { width: device-width; } @-moz-viewport { width: device-width; } @-ms-viewport { width: device-width; } @-o-viewport { width: device-width; } @viewport { width: device-width; }
-    </style>
-    <script type="text/javascript">
-        //<![CDATA[
-        if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
-            var msViewportStyle = document.createElement("style");
-            msViewportStyle.appendChild(
-                document.createTextNode("@-ms-viewport{width:auto!important}")
-            );
-            document.getElementsByTagName("head")[0].appendChild(msViewportStyle);
-        }
-
-        if ("geolocation" in navigator) {
-            /* geolocation is available */
-            console.log("geolocation ok")
-        } else {
-            /* geolocation IS NOT available */
-            alert("위치정보 수집이 불가합니다")
-        }
-        //]]>
-    </script>
 
     <script type="text/javascript" src="js/jquery.min.js"></script>
 
@@ -231,11 +222,23 @@
             <div class="container">
 
                 <div class="post">
-                    <!--기숙사 방번호-->
+                    <!--방번호-->
                     <h4>방 번호</h4>
                     <h6>현재 몇 호에서 인터넷을 사용하고 있는지 적어주세요</h6>
-                    <input type="number" onkeypress='return event.charCode >= 48 && event.charCode <= 57' class="form-control" id="roomNumber" placeholder="기숙사 방 번호" required />
-                    <h6>* 와이파이 채널 중첩은 기숙사 방에 따라 일어나는 현상일 수 있습니다. 이 정보는 다른 사용자에게 공개되지 않습니다</h6>
+                    <input type="text" class="form-control" id="roomNumber" placeholder="방 번호" required />
+                    <h6>* 와이파이 채널 중첩은 위치한 방에 따라 일어나는 현상일 수 있습니다. 이 정보는 다른 사용자에게 공개되지 않습니다</h6>
+                </div>
+
+                <div class="post">
+                    <!-- 안테나 갯수 -->
+                    <h4>WELCOME_KAIST의 안테나 갯수</h4>
+                    <h6>현재 WELCOME_KAIST의 안테나가 얼마나 차 있나요?</h6>
+                    <div class="col-xs-6">전혀 채워져있지 않다</div>
+                    <div class="col-xs-6" style="text-align: right;">전부 채워져있다</div>
+                    <div class="range-slider">
+                        <input class="range-slider__range" type="range" value="50" min="0" max="100" step="25">
+                        <span class="range-slider__value"><span class="antenna">50</span>%</span>
+                    </div>
                 </div>
 
                 <div class="post">
