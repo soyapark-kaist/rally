@@ -69,6 +69,7 @@ function initListener() {
             $("#apRead").val("");
         });
 
+        initRangeSlider();
         initGuideImg();
     }
 
@@ -145,6 +146,24 @@ function initGuideImg() {
     $(".tooltiptext img").attr("src", imgSrc);
 }
 
+function initRangeSlider() {
+    var slider = $('.range-slider'),
+        range = $('.range-slider__range'),
+        value = $('.antenna');
+
+    slider.each(function() {
+
+        value.each(function() {
+            var value = $(this).prev().attr('value');
+            $(this).text(value);
+        });
+
+        range.on('input', function() {
+            value.text(this.value);
+        });
+    });
+};
+
 function collectData() {
     if (isSlow)
         $("#preview").html(
@@ -161,6 +180,7 @@ function collectData() {
     else {
         $("#preview").html(
             "기숙사 방 번호: " + $("#roomNumber").val() +
+            "<br> Welcome_KAIST 강도: " + $(".antenna").text() + "%" +
             "<br> Wi-Fi: " + getListWifi() +
             "<br> IP address: " + $(".ip-address").text() +
             "<br> OS: " + $(".operation-system").text() +
@@ -265,6 +285,7 @@ function postUsers() {
 
                     playersRef.set({
                         "room": $("#roomNumber").val(),
+                        "welcome_kaist": $(".antenna").text(),
                         "wi-fi": getListWifi(),
                         "ip_addr": $(".ip-address ").text(),
                         "latitude": center.lat,
