@@ -52,14 +52,6 @@
             );
             document.getElementsByTagName("head")[0].appendChild(msViewportStyle);
         }
-
-        if ("geolocation" in navigator) {
-            /* geolocation is available */
-            console.log("geolocation ok")
-        } else {
-            /* geolocation IS NOT available */
-            alert("위치정보 수집이 불가합니다")
-        }
         //]]>
     </script>
 
@@ -72,12 +64,10 @@
         //         .then(function(registration) {
         //             console.log('Service Worker Registered');
         //         });
-
         //     navigator.serviceWorker.ready.then(function(registration) {
         //         console.log('Service Worker Ready');
         //     });
         // }
-
         // (function(i, s, o, g, r, a, m) {
         //     i['GoogleAnalyticsObject'] = r;
         //     i[r] = i[r] || function() {
@@ -89,7 +79,6 @@
         //     a.src = g;
         //     m.parentNode.insertBefore(a, m)
         // })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-
         // ga('create', 'UA-59325548-2', 'auto');
         // ga('send', 'pageview');
     </script>
@@ -125,7 +114,6 @@
             <ul class="footer-links right-links">
                 <li><a href="mailto:kixlab.rally@gmail.com">contact</a></li>
                 <li><a href="./privacy.html">privacy</a></li>
-                <li>ver 0.1.17</li>
             </ul>
             <ul class="footer-links">
                 <li>© 2017 KIXLAB</li>
