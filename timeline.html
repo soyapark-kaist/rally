@@ -148,10 +148,20 @@
 
                 <div id="timeline"></div>
                 <div class="loading"></div>
+
                 <div id="petition">
-                    <p id="title"></p>
-                    <p id="content"></p>
-                    <div id="map"></div>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <p id="title"></p>
+                            <i class="fa fa-clock-o" aria-hidden="true"></i>발생시간: <span class="label label-warning" id="time-range"></span>
+                            <p id="content"></p>
+                        </div>
+                        <div class="col-sm-4">
+                            <img id="map" />
+                        </div>
+                    </div>
+
+                    <!--<div id="map"></div>-->
                     <p id="signature"></p>
 
                     <p id="number"></p>
@@ -168,13 +178,21 @@
                             <div class="col-sm-8" id="consistency"></div>
                         </div>
                     </div>
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%">
-                            <!--40%-->
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-8">
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%">
+                                    <!--40%-->
+                                </div>
+                                <p>
+                                    <span id="leftQuorum"></span><span>명이 더 참여하면, 정보통신팀에 보내집니다.</span>
+                                </p>
+                            </div>
                         </div>
-                        <p>
-                            <span id="leftQuorum"></span><span>명이 더 참여하면, 정보통신팀에 보내집니다.</span>
-                        </p>
+                        <div class="col-xs-6 col-md-4">
+                            <!-- SNS share button -->
+                            <span>공유하기</span>
+                        </div>
                     </div>
                 </div>
 
@@ -215,10 +233,12 @@
                     </div>
                 </div>
 
-                <h4 style="margin-top: 30px;">문제에 공감하시나요? 30초 시간으로 함께 해보세요!</h4>
-                <div style="color: gray"><i class="fa fa-map-marker" aria-hidden="true"></i> 민원 지역에 있는지 확인하기 위해 위치정보를 묻습니다</div>
-                <div style="text-align:center; margin-top:20px;">
-                    <a id="participate" onclick="checkEligibility()" class="btn btn-success btn-lg">참여하기</a>
+                <div class="row">
+                    <h4 style="margin-top: 30px;">문제에 공감하시나요? 30초를 투자해 이 제보에 힘을 실어주세요!</h4>
+                    <div style="color: gray"><i class="fa fa-map-marker" aria-hidden="true"></i> 민원 지역에 있는지 확인하기 위해 위치정보를 묻습니다</div>
+                    <div style="text-align:center; margin-top:20px;">
+                        <a id="participate" onclick="checkEligibility()" class="btn btn-success btn-lg">참여하기</a>
+                    </div>
                 </div>
 
                 <div class="modal fade" id="available-modal" tabindex="-1" role="dialog">
@@ -281,8 +301,6 @@
             var circle_class = ".progress-circle-" + cid
             $(circle_class).css("fill", "#ff6c40")
         }
-    </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCByCLtjJ9BAR29-HXHHDBU8DWCyyuA_CE">
     </script>
 </body>
 

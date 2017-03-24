@@ -122,11 +122,11 @@ function initTimeline(inTimeline) {
         if (inEvent["item"] == "submit") {
             if (!maploaded) {
                 maploaded = true;
-                createMap();
-                markMap(null);
+                // createMap();
+                // markMap(null);
 
-                centerMap(center);
-                createCircle(petitionID, { "lat": petition["latitude"], "lng": petition["longitude"] }, petition["title"]);
+                // centerMap(center);
+                // createCircle(petitionID, { "lat": petition["latitude"], "lng": petition["longitude"] }, petition["title"]);
 
                 selectSignature();
             }
@@ -189,6 +189,9 @@ function isSlow(inQuorum) {
 function storePetitionInfo(inPetition) {
     petition = inPetition;
 
+    $("#map").attr("src", "https://maps.googleapis.com/maps/api/staticmap?zoom=16&size=250x250&maptype=roadmap &key=AIzaSyCVL-xlMCOT_zSGT4VLpQcWe1sTlDocZeo" +
+        "&markers=color:red%7Clabel:S%7C" + inPetition.latitude + "," + inPetition.longitude);
+
     fill_progress_circle(getProgress(inPetition["time-line"]));
 
     displayType(isSlow(inPetition["quorum"]));
@@ -225,10 +228,25 @@ function displayType(inResponse) {
 function displayPetition(inResponse) {
     $("#title").text(inResponse['title'] + " (case #: " + petitionID + ")");
     $('#content').text(inResponse['content']);
+    $('#time-range').text(TIME_RANGE_MSG[parseInt(inResponse['time-range'])]);
 }
 
 function displayRespond(inResponse) {
     $('#respond p').text(inResponse);
+}
+
+function displayAvailablePetition(inPetitions) {
+    if (inPetitions.length == 0) {
+        $(".table-inbox").css("display", "none");
+        $("#inavailable").css("display", "block");
+    } else {
+        for (var o in inPetitions) {
+            appendRow(inPetitions[o].id, inPetitions[o].title, inPetitions[o]["time-line"]["submit"].split(" GMT")[0], MSG_PROGRESS[getProgress(inPetitions[o]["time-line"])]);
+        }
+    }
+
+    $("#participate").button('reset');
+    $('#available-modal').modal('show');
 }
 
 function centerMap(inCenter) {
@@ -315,20 +333,6 @@ function checkEligibility() {
         $("#participate").button('reset')
             // handleLocationError(false, infoWindow, map.getCenter());
     }
-}
-
-function displayAvailablePetition(inPetitions) {
-    if (inPetitions.length == 0) {
-        $(".table-inbox").css("display", "none");
-        $("#inavailable").css("display", "block");
-    } else {
-        for (var o in inPetitions) {
-            appendRow(inPetitions[o].id, inPetitions[o].title, inPetitions[o]["time-line"]["submit"].split(" GMT")[0], MSG_PROGRESS[getProgress(inPetitions[o]["time-line"])]);
-        }
-    }
-
-    $("#participate").button('reset');
-    $('#available-modal').modal('show');
 }
 
 function postRespond() {

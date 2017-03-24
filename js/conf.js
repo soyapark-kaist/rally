@@ -6,6 +6,8 @@ var TIME_RANGE = [
     { "from": 18, "to": 0 },
 ];
 
+var TIME_RANGE_MSG = ["새벽", "아침", "점심", "오후", "저녁"];
+
 var BLDG = {
     "N1": {
         "lat": 36.374,
