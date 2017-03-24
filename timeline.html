@@ -105,15 +105,6 @@
     <div class="content">
         <div class="container">
             <div class="post">
-                <div class="page-header">
-                    <h2 style="margin-left:10px;">진행사항</h2>
-                </div>
-                <div style="float:right;">
-                    <div id="internetSlow" class="issue-type"><i class="fa fa-exclamation-circle" aria-hidden="true"> 분류: 인터넷 느림현상</i></div>
-                    <div id="internetConn" class="issue-type"><i class="fa fa-chain-broken" aria-hidden="true"> 분류: 인터넷 연결불능</i>
-                    </div>
-                </div>
-
                 <ul class="timeline-progress">
                     <li><span data-toggle="tooltip" data-placement="top" title="제출">
                         <svg><circle cx="10" cy="10" r="5" fill="black" class="progress-circle-0" /></svg>
@@ -143,6 +134,17 @@
                         <svg><circle cx="10" cy="10" r="5" fill="black" class="progress-circle-4" /></svg>
                     </span></li>
                 </ul>
+
+                <div class="page-header">
+                    <h2 style="margin-left:10px;">진행사항</h2>
+                </div>
+                <div class="row">
+                    <div style="float:right;">
+                        <div id="internetSlow" class="issue-type"><i class="fa fa-exclamation-circle" aria-hidden="true"> 분류: 인터넷 느림현상</i></div>
+                        <div id="internetConn" class="issue-type"><i class="fa fa-chain-broken" aria-hidden="true"> 분류: 인터넷 연결불능</i>
+                        </div>
+                    </div>
+                </div>
 
                 <h6>아래 블록을 클릭하면 더 자세한 내용을 보실 수 있습니다</h6>
 
@@ -296,11 +298,6 @@
         $(function() {
             $('[data-toggle="tooltip"]').tooltip()
         })
-
-        function fill_progress_circle(cid /* integer 0~4*/ ) {
-            var circle_class = ".progress-circle-" + cid
-            $(circle_class).css("fill", "#ff6c40")
-        }
     </script>
 </body>
 

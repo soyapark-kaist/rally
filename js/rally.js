@@ -126,6 +126,11 @@ function initLegend() {
     map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('legend'));
 }
 
+function fill_progress_circle(cid /* integer 0~4*/ ) {
+    var circle_class = ".progress-circle-" + cid
+    $(circle_class).css("fill", "#ff6c40")
+}
+
 /* Error Handler when current location is not detectable. */
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
     infoWindow = new google.maps.InfoWindow({ map: map });

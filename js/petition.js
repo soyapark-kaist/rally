@@ -5,9 +5,14 @@ var users;
 var filteredCnt = 0; // # of signature filtered
 var petitionID = generateID(8);
 
+$(function() {
+    $('[data-toggle="tooltip"]').tooltip()
+})
 
 function initListener() {
     toggleLoading("#loading");
+
+    fill_progress_circle(0);
 
     initDB();
 }
