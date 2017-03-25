@@ -104,6 +104,7 @@ function markMap(inUserID) {
 function initLegend() {
     var legend = document.getElementById('legend');
     var activities = [
+        { name: "등록된 민원", icon: "petition"},
         { name: "작동 안함", icon: "conn" },
         { name: "웹 컨퍼런싱", icon: "conferencing" },
         { name: "페이스북", icon: "facebook" },
