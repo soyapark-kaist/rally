@@ -679,13 +679,12 @@ footer {
     text-align: center;
 }
 
-.timeline-progress svg {
-    height: 20px;
-    width: 20px;
+.timeline-progress .fa-circle {
+    color: #888888;
 }
 
-.timeline-progress circle {
-    fill: #999999;
+.timeline-progress .fa-chevron-right {
+    color: #888888;
 }
 
 
@@ -701,4 +700,11 @@ footer {
 }
 #legend div+div {
     margin-top: 5px;
+}
+
+.fb-share {
+    cursor: pointer;
+    top: -30px;
+    position: relative;
+    width: 30px;
 }
