@@ -31,7 +31,7 @@ function initVis() {
 
                 cityCircle.addListener('click', function(e) {
                     infoWindow.open(map);
-                    infoWindow.setContent(this.title + " <a class='btn' href='./timeline.html?id=" + this.petitionID + "'>자세히 보기</a>");
+                    infoWindow.setContent(this.title + " <a class='btn btn-primary' href='./timeline.html?id=" + this.petitionID + "'>자세히 보기</a>");
                     infoWindow.setPosition(this.getCenter())
                 });
             }
