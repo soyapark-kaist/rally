@@ -1,5 +1,3 @@
-var isSlow = !window.location.href.includes("conn")
-
 function initListener() {
     /* INTERNET */
     /* Scroll to activity section */
@@ -79,8 +77,6 @@ function pickIssueType(isSlow) {
 }
 
 function turnOnSlow() {
-    if (isSlow != "waiting") return;
-    isSlow = true;
     turnOffIssue();
 
     $(".internet-slow>div.container").css("display", "block");
@@ -88,8 +84,6 @@ function turnOnSlow() {
 }
 
 function turnOnConnection() {
-    if (isSlow != "waiting") return;
-    isSlow = false;
     turnOffIssue();
 
     $(".internet-connection").css("display", "block");
@@ -121,6 +115,10 @@ function getListWifi() {
     });
 
     return wifi;
+}
+
+function isIssueConn() {
+    return $(".issue-type a.active").attr("href") == "#conn";
 }
 
 function initGuideImg() {
@@ -167,7 +165,16 @@ function initRangeSlider() {
 };
 
 function collectData() {
-    if (isSlow)
+    if (isIssueConn())
+        $("#preview").html(
+            "기숙사 방 번호: " + $("#roomNumber").val() +
+            "<br> Welcome_KAIST 강도: " + $(".antenna").text() + "%" +
+            "<br> Wi-Fi: " + getListWifi() +
+            "<br> IP address: " + $(".ip-address").text() +
+            "<br> OS: " + $(".operation-system").text() +
+            "<br> web: " + $(".browser-name").text());
+
+    else
         $("#preview").html(
             "Speed: " + $("input[name='speed']:checked").attr("description") +
             "<br>Consistency: " + $("input[name='consistency']:checked").attr("description") +
@@ -178,41 +185,11 @@ function collectData() {
             "<br> OS: " + $(".operation-system").text() +
             "<br> web: " + $(".browser-name").text() +
             "<br> Activity: " + $(".activity.select img").attr("type"));
-
-    else {
-        $("#preview").html(
-            "기숙사 방 번호: " + $("#roomNumber").val() +
-            "<br> Welcome_KAIST 강도: " + $(".antenna").text() + "%" +
-            "<br> Wi-Fi: " + getListWifi() +
-            "<br> IP address: " + $(".ip-address").text() +
-            "<br> OS: " + $(".operation-system").text() +
-            "<br> web: " + $(".browser-name").text());
-    }
 }
 
 function postSignature() {
     $(".form-alert").css("display", "none");
-    if (isSlow) {
-        /* Check whether all the question are filled. */
-        var isValid = true;
-
-        if ($(".data.download").text() == "--") {
-            $("#form-test").css("display", "block");
-            isValid = false;
-        }
-
-        if (!$(".activity.select").length) {
-            $("#form-activity").css("display", "block");
-            isValid = false;
-        }
-
-        if (isValid) {
-            // createMap();
-            initDB();
-            // fetchMap();
-            postUsers();
-        }
-    } else {
+    if (isIssueConn()) {
         /* Check whether all the question are filled. */
         var isValid = true;
 
@@ -232,6 +209,27 @@ function postSignature() {
             // fetchMap();
             postUsers();
         }
+    } else {
+        /* Check whether all the question are filled. */
+        var isValid = true;
+
+        if ($(".data.download").text() == "--") {
+            $("#form-test").css("display", "block");
+            isValid = false;
+        }
+
+        if (!$(".activity.select").length) {
+            $("#form-activity").css("display", "block");
+            isValid = false;
+        }
+
+        if (isValid) {
+            // createMap();
+            initDB();
+            // fetchMap();
+            postUsers();
+        }
+
     }
 
     return false;
@@ -255,7 +253,7 @@ function postUsers() {
                 // center = kaist;
                 var userID = generateID(5);
 
-                if (isSlow) {
+                if (!isIssueConn()) {
                     var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + userID);
                     // users/2017-3-6
 
