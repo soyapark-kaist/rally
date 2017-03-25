@@ -689,15 +689,18 @@ footer {
 
 
 /* google map legend */
+
 #legend {
     background: rgba(255, 255, 255, 0.8);
     padding: 5px;
     margin: 5px;
 }
+
 #legend img {
     width: 25px;
     margin-right: 5px;
 }
+
 #legend div+div {
     margin-top: 5px;
 }
@@ -708,3 +711,25 @@ footer {
     position: relative;
     width: 30px;
 }
+
+/* Issue type select button */
+
+.issue-type span {
+    color: gray;
+}
+
+.issue-type .btn {
+    border: 3px solid orange;
+    background: white;
+    margin: 5px;
+    border-radius: 5px !important;
+}
+
+.issue-type .btn.active {
+    background: #ff6c40;
+}
+
+.issue-type .btn:hover {
+    background: #ff6c40;
+}
+

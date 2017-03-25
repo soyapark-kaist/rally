@@ -37,10 +37,6 @@ textarea {
     display: none;
 }
 
-#speedtest {
-    visibility: hidden;
-}
-
 #apList {
     clear: both;
     list-style: none;
