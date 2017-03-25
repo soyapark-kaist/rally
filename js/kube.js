@@ -2753,6 +2753,7 @@
 
 	Copyright (c) 2009-2014, Imperavi LLC.
 */
+/* Colide with boostrap.tooltip
 (function($)
 {
 	// Plugin
@@ -2849,7 +2850,7 @@
 	});
 
 })(jQuery);
-
+*/
 /*
 	Upload Tool
 
@@ -3028,5 +3029,3 @@
 	});
 
 })(jQuery);
-
-
