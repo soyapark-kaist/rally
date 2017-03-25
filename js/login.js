@@ -19,6 +19,7 @@ var uiConfig = {
                         "content": localStorage.getItem("content"),
                         "latitude": parseFloat(localStorage.getItem("latitude")),
                         "longitude": parseFloat(localStorage.getItem("longitude")),
+                        "bldg": localStorage.getItem("bldg"),
                         "time-range": localStorage.getItem("time-range"),
                         "day-range": localStorage.getItem("day-range"),
                         "quorum": localStorage.getItem("quorum"),

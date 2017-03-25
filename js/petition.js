@@ -1,13 +1,58 @@
 var dbLoaded = false;
 var isSafari = detectBrowser();
-var isSlow; // the petition is about slow ineteret or disconnection?
 var users;
 var filteredCnt = 0; // # of signature filtered
 var petitionID = generateID(8);
 
 $(function() {
-    $('[data-toggle="tooltip"]').tooltip()
-})
+        $('[data-toggle="tooltip"]').tooltip();
+        $('#petitionForm').submit(function(event) {
+            event.preventDefault();
+            postPetition();
+        });
+
+        $("#buildingSearch").autocomplete({
+            source: Object.keys(BLDG),
+            open: function() {
+                $("#ui-id-1").append('<li class="ui-menu-item" role="presentation"><a class="ui-corner-all" tabindex="-1" onclick="clearSearch()">찾는 건물이 없으면 지도에서 장소를 클릭하세요</a></li>');
+            },
+            select: function(event, ui) {
+                debugger;
+                if (ui) //then center on map
+                    $('#map').locationpicker({
+                    location: {
+                        latitude: BLDG[ui.item.value].lat,
+                        longitude: BLDG[ui.item.value].lng
+                    },
+                    radius: 70
+                });
+            }
+        });
+    })
+    /*
+        var selectedLoc = {
+            "lat": $('#map').locationpicker("location").latitude,
+            "lng": $('#map').locationpicker("location").longitude
+        };
+
+        var bldg = [];
+        for (var l in BLDG) {
+            if (Math.abs(selectedLoc.lat - BLDG[l].lat) < 0.002 && Math.abs(selectedLoc.lng - BLDG[l].lng) < 0.002) {
+                bldg.push(l);
+            }
+        }
+        console.log(bldg);
+        $('#location select').remove();
+        if (bldg.length > 0) {
+            var s = $('<select />');
+
+            $('<option />', { value: -1, text: "혹시 이 건물에 계신가요?" }).appendTo(s);
+            for (var val in bldg) {
+                $('<option />', { value: val, text: bldg[val] }).appendTo(s);
+            }
+
+            s.appendTo('#location'); // or wherever it should be
+        }*/
 
 function initListener() {
     toggleLoading("#loading");
@@ -44,6 +89,11 @@ function initLocationPicker() {
     document.getElementsByTagName('head')[0].appendChild(script);
 }
 
+function clearSearch() {
+    $('#buildingSearch').val("");
+    $('#buildingSearch').autocomplete('close');
+}
+
 function displayLocationPicker() {
     $('#map').locationpicker({
         location: {
@@ -53,14 +103,6 @@ function displayLocationPicker() {
         radius: 70
     }, map);
     map.setZoom(16);
-}
-
-function pickIssueType(t) {
-    $(".issue-question button").prop('disabled', true)
-        .addClass("disabled");
-    isSlow = t;
-
-    return false;
 }
 
 function initTimeRangeWidget() {
@@ -92,9 +134,25 @@ function preview() {
         "<br>time-range: " + $('#timeRange-start').val());
 }
 
+
+
 function postPetition() {
     /* Check whether all the question are filled. */
     if (isSafari) {
+        if ($("input[name='time-range']:checked").length == 0) {
+            alert("시간 대를 선택해주세요.");
+            $("input[name='time-range']").focus();
+            // e.preventDefault();
+            return false;
+        }
+
+        if ($("input[name='day-range']:checked").length == 0) {
+            alert("어느 날에 일어나는지 선택해주세요.");
+            $("input[name='day-range']").focus();
+            // e.preventDefault();
+            return false;
+        }
+
         if ($("#title").val() == '') {
             // alert("시간 대를 선택해주세요.");
 
@@ -114,10 +172,11 @@ function postPetition() {
         }
     }
 
+    var $btn = $('#submitSection').button('loading');
     var lat, lng;
-    ($('#location :selected').val() == -1) ?
+    ($("#buildingSearch").val() == "") ?
     (lat = $('#map').locationpicker("location").latitude, lng = $('#map').locationpicker("location").longitude) :
-    (lat = BLDG[$('#location :selected').text()].lat, lng = BLDG[$('#location :selected').text()].lng)
+    (lat = BLDG[$("#buildingSearch").val()].lat, lng = BLDG[$("#buildingSearch").val()].lng)
 
     //then save input to local storage
 
@@ -134,12 +193,13 @@ function postPetition() {
                 "content": $("#content").val(),
                 "latitude": lat,
                 "longitude": lng,
+                "bldg": $("#buildingSearch").val(),
                 "time-range": $("input[name='time-range']:checked").val(),
                 "day-range": $("input[name='day-range']:checked").val(),
                 "time-line": {
                     "submit": new Date().toString()
                 },
-                "quorum": isSlow ? SLOW_TOTAL : CONN_TOTAL,
+                "quorum": SLOW_TOTAL,
                 "email": user.email
             },
             function(error) {
@@ -161,102 +221,15 @@ function postPetition() {
         localStorage.setItem("content", $("#content").val());
         localStorage.setItem("latitude", lat);
         localStorage.setItem("longitude", lng);
+        localStorage.setItem("bldg", $("#buildingSearch").val());
         localStorage.setItem("time-range", $("input[name='time-range']:checked").val());
         localStorage.setItem("day-range", $("input[name='day-range']:checked").val());
         localStorage.setItem("submit", new Date().toString());
-        localStorage.setItem("quorum", isSlow ? SLOW_TOTAL : CONN_TOTAL);
+        localStorage.setItem("quorum", SLOW_TOTAL);
 
         window.location.replace("./login.html");
         return false;
     }
-
-    return false;
-}
-
-function selectSignature() {
-    if (!$(".issue-type .disabled").length) {
-        alert("인터넷 문제를 선택해주세요.");
-
-        $(".issue-type button").focus();
-
-        return false;
-    }
-
-    if (isSafari) {
-        if ($("input[name='time-range']:checked").length == 0) {
-            alert("시간 대를 선택해주세요.");
-            $("input[name='time-range']").focus();
-            // e.preventDefault();
-            return false;
-        }
-
-        if ($("input[name='day-range']:checked").length == 0) {
-            alert("어느 날에 일어나는지 선택해주세요.");
-            $("input[name='day-range']").focus();
-            // e.preventDefault();
-            return false;
-        }
-    }
-
-    var $btn = $('#viewSignature').button('loading');
-    var selectedLoc = {
-        "lat": $('#map').locationpicker("location").latitude,
-        "lng": $('#map').locationpicker("location").longitude
-    };
-
-    var bldg = [];
-    for (var l in BLDG) {
-        if (Math.abs(selectedLoc.lat - BLDG[l].lat) < 0.002 && Math.abs(selectedLoc.lng - BLDG[l].lng) < 0.002) {
-            bldg.push(l);
-        }
-    }
-    console.log(bldg);
-    $('#location select').remove();
-    if (bldg.length > 0) {
-        var s = $('<select />');
-
-        $('<option />', { value: -1, text: "혹시 이 건물에 계신가요?" }).appendTo(s);
-        for (var val in bldg) {
-            $('<option />', { value: val, text: bldg[val] }).appendTo(s);
-        }
-
-        s.appendTo('#location'); // or wherever it should be
-    }
-
-    $("#finalStage").css("visibility", "visible");
-
-    /*
-        if (!users) {
-            var playersRef = firebase.database().ref('users/');
-            // Attach an asynchronous callback to read the data at our posts reference
-            playersRef.once("value").then(function(snapshot) {
-                    users = snapshot.val();
-                    filterSignature(
-                        isSlow,
-                        parseInt($('#timeRange-start').val().split(":")[0]), {
-                            "lat": $('#map').locationpicker("location").latitude,
-                            "lng": $('#map').locationpicker("location").longitude
-                        },
-                        isSlow ? SLOW_TOTAL : CONN_TOTAL);
-
-                    $btn.button('reset');
-                },
-                function(errorObject) {
-                    alert("The read failed: " + errorObject.code);
-                    $btn.button('reset');
-                });
-        } //If END, when DB is not yet fetched
-        else {
-            filterSignature(
-                isSlow,
-                parseInt($('#timeRange-start').val().split(":")[0]), {
-                    "lat": $('#map').locationpicker("location").latitude,
-                    "lng": $('#map').locationpicker("location").longitude
-                },
-                isSlow ? SLOW_TOTAL : CONN_TOTAL);
-            $btn.button('reset');
-        } //else END, when DB is already fetched
-        */
 
     $btn.button('reset');
     return false;

@@ -14,11 +14,14 @@
     <!-- Google API -->
     <script src="https://www.gstatic.com/firebasejs/3.6.7/firebase.js"></script>
 
+    <link href="css/jquery-ui.min.css" rel="stylesheet">
+
+    <script src="js/jquery-ui.min.js"></script>
+
     <script src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/jquery.timepicker.min.js"></script>
     <script type="text/javascript" src="js/bootstrap-datepicker.js"></script>
 
-    <script src="js/kube.min.js"></script>
     <script src="js/d3.min.js"></script>
 
     <!-- Service Worker -->
@@ -56,8 +59,6 @@
     <script type="text/javascript" src="js/rally.js"></script>
     <script type="text/javascript" src="js/petition.js"></script>
     <script type="text/javascript" src="js/donutChart.js"></script>
-
-    <link rel="stylesheet" href="css/kube.min.css" />
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap theme -->
@@ -75,6 +76,9 @@
     <link href="css/speedtest.css" rel="stylesheet">
     <link href="css/theme.css" rel="stylesheet">
     <link href="css/petition.css" rel="stylesheet">
+
+
+
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -143,20 +147,8 @@
                 </div>
             </div>
             <!-- Post -->
-            <div class="post issue-question">
-                <h4>현재 겪고 있는 인터넷 문제를 선택해주세요 *</h4>
-                <form autocomplete="off">
-                    <div class="btn-group inline issue-type">
-                        <button type="submit" onclick="return pickIssueType(false);" class="btn"> <i class="fa fa-chain-broken" aria-hidden="true"></i> 인터넷 연결불능 문제<br><span>와이파이에 연결조차 안될 때 선택해주세요</span></button>
-                        <button type="submit" onclick="return pickIssueType(true);" class="btn"> <i class="fa fa-exclamation-circle" aria-hidden="true"></i> 인터넷 느림 문제<br><span>와이파이에 연결은 되지만 느릴 때 선택해주세요</span></button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Post -->
             <div class="post" style="margin-top: 0px">
-                <form action="" onsubmit="return selectSignature();">
-
+                <form id="petitionForm">
                     <h4>이런 문제는 언제 발생하나요? *</h4>
                     <h6>시간 범위를 선택해주세요.</h6>
                     <label class="radio-inline"><input type="radio" value=0 name="time-range" required>새벽</label>
@@ -173,12 +165,9 @@
                     <br>
                     <h4>인터넷 문제가 발생한 위치는 어디인가요? *</h4>
                     <h6>마커를 움직여 선택해주세요</h6>
+                    <input id="buildingSearch" type="text" class="form-control" placeholder="건물 검색">
                     <div id="loading"></div>
                     <div id="map"></div>
-
-                    <div id="location" style="text-align:center;margin-top:20px;">
-                        <button type="submit" id="viewSignature" class="btn btn-success btn-lg" data-loading-text="Loading...">장소 선택하기</button>
-                    </div>
 
                     <p id="number"></p>
                     <div id="stat">
@@ -202,9 +191,7 @@
                             <span id="leftQuorum"></span><span>명이 더 참여하면 정보통신팀에 민원을 보냅니다</span>
                         </p>
                     </div>
-                </form>
 
-                <form action="" onsubmit="return postPetition();">
                     <div class="form-group">
                         <label for="title">제목</label>
                         <input type="text" class="form-control" id="title" placeholder="예) 화상 회의에서 인터넷 접속이 안됨" required />
@@ -219,7 +206,7 @@
                             미리보기
                         </button>
 
-                        <button type="submit" id="submitSection" class="btn btn-primary">SNS 로그인 후 제출</button>
+                        <button type="submit" id="submitSection" class="btn btn-primary" data-loading-text="Loading...">SNS 로그인 후 제출</button>
                         <i class="fa fa-google" aria-hidden="true"></i>
                         <i class="fa fa-facebook" aria-hidden="true"></i>
                         <i class="fa fa-twitter" aria-hidden="true"></i>
