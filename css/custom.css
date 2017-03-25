@@ -702,3 +702,10 @@ footer {
 #legend div+div {
     margin-top: 5px;
 }
+
+.fb-share {
+    cursor: pointer;
+    top: -30px;
+    position: relative;
+    width: 30px;
+}
