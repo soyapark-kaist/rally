@@ -15,8 +15,6 @@ var APPLICATIONS = [],
 var SLOW_TOTAL = 5,
     CONN_TOTAL = 3;
 
-var MSG_PROGRESS = ["제출", "데이터 모집 중", "검증 중", "답변 대기 중", "정보통신팀 답변 도착"];
-
 /* Initialize map. */
 function createMap() {
     map = new google.maps.Map(document.getElementById('map'), {
@@ -161,7 +159,7 @@ function routeToTimeline(inPetitionID, isAdmin) {
     var params = isAdmin ? { adn: true, id: inPetitionID } : { id: inPetitionID };
     var p = jQuery.param(params);
 
-    var newUrl = "./timeline.html?" + p;
+    var newUrl = window.location.href + "?" + +p;
     window.location.replace(newUrl);
 }
 
@@ -169,7 +167,7 @@ function routeToVis(inUserID) {
     var params = { sig: inUserID };
     var p = jQuery.param(params);
 
-    var newUrl = window.location.href.split("rally/")[0] + "rally/visual.html?" + p;
+    var newUrl = "./visual.html?" + p;
     window.location.replace(newUrl);
 }
 

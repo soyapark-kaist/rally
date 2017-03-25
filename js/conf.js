@@ -8,6 +8,8 @@ var TIME_RANGE = [
 
 var TIME_RANGE_MSG = ["새벽", "아침", "점심", "오후", "저녁"];
 
+var MSG_PROGRESS = ["제출", "데이터 모집 중", "검증 중", "답변 대기 중", "정보통신팀 답변 도착"];
+
 var BLDG = {
     "N1": {
         "lat": 36.374,
