@@ -126,8 +126,8 @@ function initLegend() {
 }
 
 function fill_progress_circle(cid /* integer 0~4*/ ) {
-    var circle_class = ".progress-circle-" + cid
-    $(circle_class).css("fill", "#ff6c40")
+    var circle_selector = ".timeline-progress .fa-circle:eq("+cid+")";
+    $(circle_selector).css("color", "#ff6c40")
 }
 
 /* Error Handler when current location is not detectable. */
