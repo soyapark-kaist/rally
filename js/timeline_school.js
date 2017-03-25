@@ -121,11 +121,11 @@ function initTimeline(inTimeline) {
         if (inEvent["item"] == "submit") {
             if (!maploaded) {
                 maploaded = true;
-                // createMap();
-                // markMap(null);
+                createMap();
+                markMap(null);
 
-                // centerMap(center);
-                // createCircle(petitionID, { "lat": petition["latitude"], "lng": petition["longitude"] }, petition["title"]);
+                centerMap(center);
+                createCircle(petitionID, { "lat": petition["latitude"], "lng": petition["longitude"] }, petition["title"]);
 
                 selectSignature();
             }
@@ -187,9 +187,6 @@ function isSlow(inQuorum) {
 
 function storePetitionInfo(inPetition) {
     petition = inPetition;
-
-    $("#map").attr("src", "https://maps.googleapis.com/maps/api/staticmap?zoom=16&size=250x250&maptype=roadmap &key=AIzaSyCVL-xlMCOT_zSGT4VLpQcWe1sTlDocZeo" +
-        "&markers=color:red%7Clabel:S%7C" + inPetition.latitude + "," + inPetition.longitude);
 
     fill_progress_circle(getProgress(inPetition["time-line"]));
 
