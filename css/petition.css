@@ -29,21 +29,6 @@ textarea {
     float: right;
 }
 
-.issue-type span {
-    color: gray;
-}
-
-.issue-type button {
-    border: 3px solid orange;
-    background: white;
-    margin: 5px;
-    border-radius: 5px !important;
-}
-
-.issue-type button:hover {
-    background: #ff6c40;
-}
-
 #stat {
     display: none;
     width: 100%;

@@ -53,14 +53,16 @@ function initListener() {
         }, 1500);
     })
 
-    if (isSlow) {
-        $(".internet-slow>div.container").css("display", "block");
-        $("#speedtest").css("visibility", "visible");
-    } else {
-        $(".internet-connection").css("display", "block");
-        $("#info-area").css("visibility", "visible");
-        $("#info-area").css("margin-top", "-300px");
-        $("#speedtest").css("margin-bottom", "-350px");
+    $("#finalStage").css("display", "block");
+}
+
+function pickIssueType(isSlow) {
+    $("#speedtest-area").toggle();
+    $(".result-area").toggle();
+    $(".issue-type a").toggleClass("active");
+
+    if (isSlow) {} else {
+        // $("#speedtest").css("margin-bottom", "-350px");
 
         $("#addAP").on("click", function() {
             if ($("#apRead").val() == "")
@@ -73,7 +75,7 @@ function initListener() {
         initGuideImg();
     }
 
-    $("#finalStage").css("display", "block");
+    return false;
 }
 
 function turnOnSlow() {
