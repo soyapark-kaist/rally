@@ -66,6 +66,15 @@ function initMap() {
     createMap();
     // displayMap();
     initLocationPicker();
+    google.maps.event.addListener(map, 'click', function(event) {
+        $('#map').locationpicker({
+            location: {
+                latitude: event.latLng.lat(),
+                longitude: event.latLng.lng()
+            },
+            radius: 70
+        });
+    });
 
     initTimeRangeWidget();
 
