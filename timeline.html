@@ -173,39 +173,54 @@
 
                             <div class="tab-content">
                                 <div id="overall" class="tab-pane fade in active">
-                                    <p id="number"></p>
+                                    <div class="col-sm-4">
+                                        <div id="issue-chart"></div>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <p style="margin-top:20px;" id="number"></p>
+                                        <div id="progress-quorum">
+                                            <div class="progress">
+                                                <div class="progress-bar active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%">
+                                                </div>
+                                            </div>
+                                            <p>
+                                                <span id="leftQuorum"></span><span>명이 더 참여하면, 정보통신팀에 보내집니다.</span>
+                                            </p>
+                                        </div>
+                                        <!-- SNS share button -->
+                                        <p style="margin-bottom:30px;">더 많은 목소리가 모일수록 강해집니다.</p>
+                                        <img class="fb-share" src="img/fb.png" />
+
+                                    </div>
                                 </div>
                                 <div id="internet-conn" class="tab-pane fade">
-                                    <h3>Menu 1</h3>
-                                    <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                                    <div class="col-xs-4">
+                                        <div id="strength-chart"></div>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <div id="os-chart"></div>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <div id="web-chart"></div>
+                                    </div>
                                 </div>
                                 <div id="internet-slow" class="tab-pane fade">
-                                    <p id="bandwidth"></p>
-                                    <div id="application"></div>
-                                    <div id="speed"></div>
-                                    <div id="consistency"></div>
+                                    <p style="margin-top:20px;" id="bandwidth"></p>
+                                    <div class="col-xs-4">
+                                        <div id="application"></div>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <div id="speed"></div>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <div id="consistency"></div>
+                                    </div>
                                 </div>
                                 <div id="menu3" class="tab-pane fade">
                                     <h3>Menu 3</h3>
                                     <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-6 col-md-8">
-                            <div class="progress">
-                                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%">
-                                    <!--40%-->
-                                </div>
-                                <p>
-                                    <span id="leftQuorum"></span><span>명이 더 참여하면, 정보통신팀에 보내집니다.</span>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-xs-6 col-md-4">
-                            <!-- SNS share button -->
-                            <img class="fb-share" src="img/fb.png" />
                         </div>
                     </div>
                 </div>
