@@ -347,7 +347,7 @@ function filterSignature(inTargetHour, inTargetLoc, inQuorum) {
         $("#stat").css("display", "none");
     }
 
-    if (conn["cnt"] + slow["cnt"] >= inQuorum) $("#progress-quorum").css("visibility", "hidden");
+    if (conn["cnt"] + slow["cnt"] >= inQuorum) $("#progress-quorum").toggle();
     else
         setProgressbar(conn["cnt"] + slow["cnt"], inQuorum);
     $("#finalStage").css("visibility", "visible");
