@@ -238,14 +238,17 @@ function filterHour(hour_from, hour_to, hour3) {
 
 function filterSignature(inTargetHour, inTargetLoc, inQuorum) {
     var conn = {
-            "strength": [0, 0, 0, 0, 0] // 0, 25 ... 100%
+            "strength": [0, 0, 0, 0, 0], // 0, 25 ... 100%
+            "cnt": 0
         },
-        apps = {},
-        speed = [0, 0, 0, 0],
-        cons = [0, 0, 0, 0],
-        download = [],
-        upload = [],
-        filteredCnt = 0;
+        slow = {
+            "apps": {},
+            "speed": [0, 0, 0, 0],
+            "cons": [0, 0, 0, 0],
+            "download": [],
+            "upload": [],
+            "cnt": 0
+        }
 
     for (var o in users) {
         for (var u in users[o]) {
@@ -268,63 +271,75 @@ function filterSignature(inTargetHour, inTargetLoc, inQuorum) {
                 if (u.includes("conn")) {
                     // Get welcome kaist strength
                     conn["strength"][100 / parseInt(users[o][u]["welcome_kaist"])]++;
-
+                    conn["cnt"]++;
                 } else {
                     var act = users[o][u].activity;
-                    if (apps[act])
-                        apps[act] += 1;
+                    if (slow["apps"][act]) slow["apps"][act] += 1;
                     else
-                        apps[act] = 1;
+                        slow["apps"][act] = 1;
 
-                    speed[parseInt(users[o][u].speed) - 1]++;
-                    cons[parseInt(users[o][u].consistency) - 1]++;
+                    slow["speed"][parseInt(users[o][u].speed) - 1]++;
+                    slow["cons"][parseInt(users[o][u].consistency) - 1]++;
 
-                    download.push(parseFloat(users[o][u].download));
-                    upload.push(parseFloat(users[o][u].upload));
+                    slow["download"].push(parseFloat(users[o][u].download));
+                    slow["upload"].push(parseFloat(users[o][u].upload));
+                    slow["cnt"]++;
                 }
-
-                filteredCnt++;
             }
 
         }
     }
 
-    if (filteredCnt > 0) {
+    if (conn["cnt"] + slow["cnt"] > 0) {
+        drawChart("#issue-chart", [{ "label": "느린 인터넷", "population": slow["cnt"] },
+            { "label": "연결 불능", "population": conn["cnt"] }
+        ]);
+
         APPLICATIONS = [], SPEED = [], CONSISTENCY = [];
 
-        if (download.length > 0) {
-            /* Data preparation for application pie chart. */
-            for (var d in apps) {
-                APPLICATIONS.push({ "label": d, "population": apps[d] });
+        if (conn["cnt"] > 0) {
+            var c = [];
+            for (var i = 0; i < conn["strength"].length; i++) {
+                c.push({ "label": WIFI_STRENGTH_MSG[i], "population": conn["strength"][i] });
             }
 
-            SPEED.push({ "label": "즉각적이다", "population": speed[0] });
-            SPEED.push({ "label": "지연을 느끼지만, 사용에 지장은 없다", "population": speed[1] });
-            SPEED.push({ "label": "지연으로 인해 원하는만큼 사용하지 못하고 있다", "population": speed[2] });
-            SPEED.push({ "label": "응답하지 않는다", "population": speed[3] });
+            drawChart("#strength-chart", c);
+        }
+        if (slow["cnt"] > 0) {
+            /* Data preparation for application pie chart. */
+            for (var d in slow["apps"]) {
+                APPLICATIONS.push({ "label": d, "population": slow["apps"][d] });
+            }
 
-            CONSISTENCY.push({ "label": "일정한 속도를 유지한다", "population": cons[0] });
-            CONSISTENCY.push({ "label": "속도가 일정치 않아서 신경쓰이긴 하지만 쓸만하다", "population": cons[1] });
-            CONSISTENCY.push({ "label": "종잡을 수 없다", "population": cons[2] });
+            SPEED.push({ "label": "즉각적이다", "population": slow["speed"][0] });
+            SPEED.push({ "label": "지연을 느낌", "population": slow["speed"][1] });
+            SPEED.push({ "label": "원하는만큼 못 사용", "population": slow["speed"][2] });
+            SPEED.push({ "label": "응답없음", "population": slow["speed"][3] });
+
+            CONSISTENCY.push({ "label": "일정함", "population": slow["cons"][0] });
+            CONSISTENCY.push({ "label": "쓸만함", "population": slow["cons"][1] });
+            CONSISTENCY.push({ "label": "불안정", "population": slow["cons"][2] });
 
             // Add event handler for stat navbars, call this function after data are prepared.
             var selectors = [];
             selectors.push("#application"), selectors.push("#speed"), selectors.push("#consistency");
             var datas = [];
             datas.push(APPLICATIONS), datas.push(SPEED), datas.push(CONSISTENCY);
-            initStat("#stat", selectors, datas);
+            drawChart("#application", APPLICATIONS);
+            drawChart("#speed", SPEED);
+            drawChart("#consistency", CONSISTENCY);
+            // initStat("#stat", selectors, datas);
 
-            var sum = download.reduce(function(a, b) { return a + b; });
-            var downAvg = sum / download.length;
+            var sum = slow["download"].reduce(function(a, b) { return a + b; });
+            var downAvg = sum / slow["download"].length;
 
-            var sum = upload.reduce(function(a, b) { return a + b; });
-            var upAvg = sum / upload.length;
+            var sum = slow["upload"].reduce(function(a, b) { return a + b; });
+            var upAvg = sum / slow["upload"].length;
 
             $("#bandwidth").text("평균 download / upload : " + downAvg.toFixed(2) + " / " + upAvg.toFixed(2) + "Mbps");
         }
 
-
-        $("#number").text("총 " + filteredCnt + "개");
+        $("#number").text("총 " + (conn["cnt"] + slow["cnt"]) + "명");
 
         $("#stat").css("display", "block");
     } else {
@@ -332,7 +347,9 @@ function filterSignature(inTargetHour, inTargetLoc, inQuorum) {
         $("#stat").css("display", "none");
     }
 
-    setProgressbar(filteredCnt, inQuorum);
+    if (conn["cnt"] + slow["cnt"] >= inQuorum) $("#progress-quorum").css("visibility", "hidden");
+    else
+        setProgressbar(conn["cnt"] + slow["cnt"], inQuorum);
     $("#finalStage").css("visibility", "visible");
 }
 
@@ -347,8 +364,6 @@ function initStat(inSelector, inSelectorList, inDataList) {
     $(inSelector + " a").on("click", function() {
         $(inSelector + " a").removeClass("active");
         $(this).addClass("active");
-
-        $(inSelector + " .col-sm-8").css("display", "none");
 
         drawChart(inSelectorList[$(this).index()], inDataList[$(this).index()]);
         // if ($(this).text() == "인터넷 활동") {

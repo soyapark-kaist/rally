@@ -1,9 +1,9 @@
 function drawChart(inSelector, inData) {
-    $(inSelector + " svg").remove();
-    $(inSelector).css("display", "block");
+    // $(inSelector + " svg").remove();
+    // $(inSelector).css("display", "block");
 
-    var width = 360,
-        height = 250,
+    var width = 160,
+        height = 200,
         radius = Math.min(width, height) / 2;
 
     var color = d3.scale.ordinal()
@@ -11,7 +11,7 @@ function drawChart(inSelector, inData) {
 
     var arc = d3.svg.arc()
         .outerRadius(radius - 10)
-        .innerRadius(radius - 70);
+        .innerRadius(radius - 50);
 
     var pie = d3.layout.pie()
         .sort(null)
