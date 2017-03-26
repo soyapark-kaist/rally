@@ -193,8 +193,6 @@ function storePetitionInfo(inPetition) {
 
     fill_progress_circle(getProgress(inPetition["time-line"]));
 
-    displayType(isSlow(inPetition["quorum"]));
-
     displayPetition({
         'title': inPetition.title,
         'content': inPetition.content,
@@ -262,7 +260,7 @@ function selectSignature() {
         playersRef.once("value").then(function(snapshot) {
                 users = snapshot.val();
 
-                filterSignature(isSlow(petition["quorum"]), hour_range, { "lat": pLat, "lng": pLng }, petition["quorum"]);
+                filterSignature(hour_range, { "lat": pLat, "lng": pLng }, petition["quorum"]);
 
             },
             function(errorObject) {
@@ -271,7 +269,7 @@ function selectSignature() {
             });
     } //If END, when DB is not yet fetched
     else {
-        filterSignature(isSlow(petition["quorum"]), hour_range, { "lat": pLat, "lng": pLng }, petition["quorum"]);
+        filterSignature(hour_range, { "lat": pLat, "lng": pLng }, petition["quorum"]);
         //ttt();
         // $btn.button('reset');
     } //else END, when DB is already fetched
@@ -303,7 +301,7 @@ function checkEligibility() {
                 // };
 
                 if (isEligible && (Math.abs(current_loc.lat - petition["latitude"]) <= 0.0009) && (Math.abs(current_loc.lng - petition["longitude"]) <= 0.0009)) {
-                    window.location.replace("./collect.html" + (petition["quorum"] == SLOW_TOTAL ? "" : "?conn=true"));
+                    window.location.replace("./collect.html");
 
                 } else {
                     isEligible = false;

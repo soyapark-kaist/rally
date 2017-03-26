@@ -104,7 +104,7 @@ function markMap(inUserID) {
 function initLegend() {
     var legend = document.getElementById('legend');
     var activities = [
-        { name: "등록된 민원", icon: "petition"},
+        { name: "등록된 민원", icon: "petition" },
         { name: "작동 안함", icon: "conn" },
         { name: "웹 컨퍼런싱", icon: "conferencing" },
         { name: "페이스북", icon: "facebook" },
@@ -126,7 +126,7 @@ function initLegend() {
 }
 
 function fill_progress_circle(cid /* integer 0~4*/ ) {
-    var circle_selector = ".timeline-progress .fa-circle:eq("+cid+")";
+    var circle_selector = ".timeline-progress .fa-circle:eq(" + cid + ")";
     $(circle_selector).css("color", "#ff6c40")
 }
 
@@ -236,8 +236,11 @@ function filterHour(hour_from, hour_to, hour3) {
     }
 }
 
-function filterSignature(inIsSlow, inTargetHour, inTargetLoc, inQuorum) {
-    var apps = {},
+function filterSignature(inTargetHour, inTargetLoc, inQuorum) {
+    var conn = {
+            "strength": [0, 0, 0, 0, 0] // 0, 25 ... 100%
+        },
+        apps = {},
         speed = [0, 0, 0, 0],
         cons = [0, 0, 0, 0],
         download = [],
@@ -246,10 +249,6 @@ function filterSignature(inIsSlow, inTargetHour, inTargetLoc, inQuorum) {
 
     for (var o in users) {
         for (var u in users[o]) {
-
-            if (!(inIsSlow ? !u.includes("conn") : u.includes("conn"))) //Not XOR
-                continue;
-
             var hour = new Date(users[o][u].time).getHours();
             //parseInt($('#timeRange-start').val().split(":")[0]);
             console.log(u, hour, users[o][u].latitude, users[o][u].longitude);
@@ -266,17 +265,23 @@ function filterSignature(inIsSlow, inTargetHour, inTargetLoc, inQuorum) {
             if ((Math.abs(inTargetLoc.lat - lat) <= 0.00056) && (Math.abs(inTargetLoc.lng - lng) <= 0.00056)) {
                 //if ((Math.abs($('#map').locationpicker("location").latitude - lat) <= 0.00056) && (Math.abs($('#map').locationpicker("location").longitude - lng) <= 0.00056)) {
                 // then include the signature
-                var act = users[o][u].activity;
-                if (apps[act])
-                    apps[act] += 1;
-                else
-                    apps[act] = 1;
+                if (u.includes("conn")) {
+                    // Get welcome kaist strength
+                    conn["strength"][100 / parseInt(users[o][u]["welcome_kaist"])]++;
 
-                speed[parseInt(users[o][u].speed) - 1]++;
-                cons[parseInt(users[o][u].consistency) - 1]++;
+                } else {
+                    var act = users[o][u].activity;
+                    if (apps[act])
+                        apps[act] += 1;
+                    else
+                        apps[act] = 1;
 
-                download.push(parseFloat(users[o][u].download));
-                upload.push(parseFloat(users[o][u].upload));
+                    speed[parseInt(users[o][u].speed) - 1]++;
+                    cons[parseInt(users[o][u].consistency) - 1]++;
+
+                    download.push(parseFloat(users[o][u].download));
+                    upload.push(parseFloat(users[o][u].upload));
+                }
 
                 filteredCnt++;
             }
@@ -284,10 +289,10 @@ function filterSignature(inIsSlow, inTargetHour, inTargetLoc, inQuorum) {
         }
     }
 
-    if (download.length > 0) {
-        if (inIsSlow) {
-            APPLICATIONS = [], SPEED = [], CONSISTENCY = [];
+    if (filteredCnt > 0) {
+        APPLICATIONS = [], SPEED = [], CONSISTENCY = [];
 
+        if (download.length > 0) {
             /* Data preparation for application pie chart. */
             for (var d in apps) {
                 APPLICATIONS.push({ "label": d, "population": apps[d] });
@@ -315,15 +320,15 @@ function filterSignature(inIsSlow, inTargetHour, inTargetLoc, inQuorum) {
             var sum = upload.reduce(function(a, b) { return a + b; });
             var upAvg = sum / upload.length;
 
-            $("#number").text("총 " + filteredCnt + "개");
             $("#bandwidth").text("평균 download / upload : " + downAvg.toFixed(2) + " / " + upAvg.toFixed(2) + "Mbps");
-            $("#stat").css("display", "block");
-            $("#speed").css("display", "none");
-            $("#consistency").css("display", "none");
         }
 
+
+        $("#number").text("총 " + filteredCnt + "개");
+
+        $("#stat").css("display", "block");
     } else {
-        $("#number").text("해당 범위에 아직 데이터가 존재하지 않습니다. 친구들에게 홍보해 더 많은 데이터를 모아보세요!");
+        $("#number").text("해당 범위에 아직 참여한 사람이 없습니다. 친구들에게 홍보해 더 많은 힘을 모아보세요!");
         $("#stat").css("display", "none");
     }
 

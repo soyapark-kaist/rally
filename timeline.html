@@ -163,18 +163,33 @@
                     <!--<div id="map"></div>-->
                     <p id="signature"></p>
 
-                    <p id="number"></p>
                     <div id="stat">
-                        <p id="bandwidth"></p>
                         <div class="row">
-                            <div class="col-sm-4 list-group">
-                                <a class="list-group-item active">인터넷 활동</a>
-                                <a class="list-group-item">속도 만족도</a>
-                                <a class="list-group-item">일정성 만족도</a>
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a data-toggle="tab" href="#overall">전체 통계</a></li>
+                                <li><a data-toggle="tab" href="#internet-conn">연결 불능</a></li>
+                                <li><a data-toggle="tab" href="#internet-slow">느린 인터넷</a></li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div id="overall" class="tab-pane fade in active">
+                                    <p id="number"></p>
+                                </div>
+                                <div id="internet-conn" class="tab-pane fade">
+                                    <h3>Menu 1</h3>
+                                    <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                                </div>
+                                <div id="internet-slow" class="tab-pane fade">
+                                    <p id="bandwidth"></p>
+                                    <div id="application"></div>
+                                    <div id="speed"></div>
+                                    <div id="consistency"></div>
+                                </div>
+                                <div id="menu3" class="tab-pane fade">
+                                    <h3>Menu 3</h3>
+                                    <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                                </div>
                             </div>
-                            <div class="col-sm-8" id="application"></div>
-                            <div class="col-sm-8" id="speed"></div>
-                            <div class="col-sm-8" id="consistency"></div>
                         </div>
                     </div>
                     <div class="row">
