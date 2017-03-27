@@ -563,6 +563,13 @@ footer .social li a:hover {
 }
 
 .loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: 150px;
+    height: 150px;
+    margin: -75px 0 0 -75px;
     border: 16px solid #f3f3f3;
     border-radius: 50%;
     border-top: 16px solid #ff6c40;
@@ -712,6 +719,7 @@ footer {
     width: 30px;
 }
 
+
 /* Issue type select button */
 
 .issue-type span {
@@ -732,4 +740,3 @@ footer {
 .issue-type .btn:hover {
     background: #ff6c40;
 }
-
