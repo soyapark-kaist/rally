@@ -200,6 +200,12 @@ function storePetitionInfo(inPetition) {
         'bldg': inPetition["bldg"]
     });
 
+    // if data collecting phase is passed, hide ads
+    if (getProgress(inPetition["time-line"]) > 1) {
+        $("#on-going").html("<p>충분한 참여자를 모으지 못해, 정보통신팀에 보내지 못하였습니다.</p>");
+        $("#participate-row").toggle();
+    }
+
     if (inPetition["time-line"]["respond"])
         displayRespond(inPetition["time-line"]["respond-msg"]);
 
@@ -209,12 +215,6 @@ function storePetitionInfo(inPetition) {
         lng: inPetition.longitude
     };
     hour_range = parseInt(inPetition["time-range"].split(":")[0]);
-
-    // if data collecting phase is passed, hide ads
-    if (getProgress(inPetition["time-line"]) > 1) {
-        $("#on-going").toggle();
-        $("#participate-row").toggle();
-    }
 
 
     if (!petitionloaded) {

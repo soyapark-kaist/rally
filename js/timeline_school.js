@@ -1,4 +1,4 @@
-var openDate = 1; // How many date is allowed before sending to 정보통신팀
+var openDate = 2; // How many date is allowed before sending to 정보통신팀
 var maploaded = false,
     petitionloaded = false;
 var petition, petitionID, hour_range;
