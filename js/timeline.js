@@ -196,7 +196,8 @@ function storePetitionInfo(inPetition) {
     displayPetition({
         'title': inPetition.title,
         'content': inPetition.content,
-        'time-range': inPetition["time-range"]
+        'time-range': inPetition["time-range"],
+        'bldg': inPetition["bldg"]
     });
 
     if (inPetition["time-line"]["respond"])
@@ -226,6 +227,7 @@ function displayPetition(inResponse) {
     $("#title").text(inResponse['title'] + " (case #: " + petitionID + ")");
     $('#content').text(inResponse['content']);
     $('#time-range').text(TIME_RANGE_MSG[parseInt(inResponse['time-range'])]);
+    $('#bldg').text(inResponse['bldg']);
 }
 
 function displayRespond(inResponse) {
