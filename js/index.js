@@ -17,7 +17,7 @@ function initMap() {
     infoWindow.close();
 
     // Attach an asynchronous callback to read the data at our posts reference
-    playersRef.on("value", function(snapshot) {
+    playersRef.once("value").then(function(snapshot) {
             var users = snapshot.val();
             var datas = {},
                 download = [],
