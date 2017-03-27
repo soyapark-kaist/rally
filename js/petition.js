@@ -17,7 +17,6 @@ $(function() {
                 $("#ui-id-1").append('<li class="ui-menu-item" role="presentation"><a class="ui-corner-all" tabindex="-1" onclick="clearSearch()">찾는 건물이 없으면 지도에서 장소를 클릭하세요</a></li>');
             },
             select: function(event, ui) {
-                debugger;
                 if (ui) //then center on map
                     $('#map').locationpicker({
                     location: {
