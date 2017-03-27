@@ -7,7 +7,7 @@ var isReceiving = false,
 var users;
 
 function initPetition() {
-    toggleLoading("#timeline");
+    toggleLoading(".loading");
     initDB();
 
     var params = window.location.search.substring(1).split("&");
@@ -112,7 +112,7 @@ function initTimeline(inTimeline) {
     var timeline = new vis.Timeline(container, items, groups, options);
 
     timeline.on('click', function(inEvent) {
-        toggleLoading(".loading");
+        // toggleLoading(".loading");
 
         $("#petition").css("display", "none");
         $("#receive").css("display", "none");
@@ -140,10 +140,10 @@ function initTimeline(inTimeline) {
 
         }
 
-        toggleLoading(".loading");
+        // toggleLoading(".loading");
     });
 
-    toggleLoading("#timeline");
+    toggleLoading(".loading");
 }
 
 /* Fetch petitions. */
