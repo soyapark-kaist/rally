@@ -7,7 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="author" content="kixlab">
+    <meta property="og:image" content="img/rally_brand.png" />
+    <meta property="og:description" content="30초 안에 welcome_kaist 빠르게 하기" />
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
@@ -15,7 +17,7 @@
     <meta name="HandheldFriendly" content="true" />
     <meta name="apple-mobile-web-app-capable" content="YES" />
 
-    <title>Rally</title>
+    <title>아, 쫌! 인터넷</title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css" />
@@ -50,7 +52,6 @@
         #petition,
         #receive,
         #respond,
-        #stat,
         #adminOnly {
             margin-top: 30px;
             display: none;
@@ -179,18 +180,21 @@
                                     </div>
                                     <div class="col-sm-8">
                                         <p style="margin-top:20px;" id="number"></p>
-                                        <div id="progress-quorum">
-                                            <div class="progress">
-                                                <div class="progress-bar active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%">
+                                        <div id="on-going">
+                                            <div id="progress-quorum">
+                                                <div class="progress">
+                                                    <div class="progress-bar active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%">
+                                                    </div>
                                                 </div>
+                                                <p>
+                                                    <span id="leftQuorum"></span><span>명이 더 참여하면, 정보통신팀에 보내집니다.</span>
+                                                </p>
                                             </div>
-                                            <p>
-                                                <span id="leftQuorum"></span><span>명이 더 참여하면, 정보통신팀에 보내집니다.</span>
-                                            </p>
+                                            <!-- SNS share button -->
+                                            <p style="margin-bottom:30px;">더 많은 목소리가 모일수록 강해집니다.</p>
+                                            <img class="fb-share" src="img/fb.png" />
                                         </div>
-                                        <!-- SNS share button -->
-                                        <p style="margin-bottom:30px;">더 많은 목소리가 모일수록 강해집니다.</p>
-                                        <img class="fb-share" src="img/fb.png" />
+
 
                                     </div>
                                 </div>
@@ -263,7 +267,7 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row" id="participate-row">
                     <h4 style="margin-top: 30px;">문제에 공감하시나요? 30초를 투자해 이 제보에 힘을 실어주세요!</h4>
                     <div style="color: gray"><i class="fa fa-map-marker" aria-hidden="true"></i> 민원 지역에 있는지 확인하기 위해 위치정보를 묻습니다</div>
                     <div style="text-align:center; margin-top:20px;">

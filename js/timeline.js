@@ -210,6 +210,13 @@ function storePetitionInfo(inPetition) {
     };
     hour_range = parseInt(inPetition["time-range"].split(":")[0]);
 
+    // if data collecting phase is passed, hide ads
+    if (getProgress(inPetition["time-line"]) > 1) {
+        $("#on-going").toggle();
+        $("#participate-row").toggle();
+    }
+
+
     if (!petitionloaded) {
         petitionloaded = true;
         initTimeline(inPetition["time-line"]);

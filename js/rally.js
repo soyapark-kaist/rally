@@ -344,7 +344,6 @@ function filterSignature(inTargetHour, inTargetLoc, inQuorum) {
         $("#stat").css("display", "block");
     } else {
         $("#number").text("해당 범위에 아직 참여한 사람이 없습니다. 친구들에게 홍보해 더 많은 힘을 모아보세요!");
-        $("#stat").css("display", "none");
     }
 
     if (conn["cnt"] + slow["cnt"] >= inQuorum) $("#progress-quorum").toggle();
