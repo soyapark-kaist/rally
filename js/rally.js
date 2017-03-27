@@ -55,7 +55,7 @@ function markMap(inUserID) {
                             'lng': users[o][u].longitude
                         })
 
-                        activities.push(u.includes("conn") ? "conn" : users[o][u].activity);
+                        activities.push(u.indexOf("conn") != -1 ? "conn" : users[o][u].activity);
                         // console.log("here");
                         if (inUserID == u) {
                             infoWindow = new google.maps.InfoWindow({ content: "내 서명", map: map });
@@ -268,7 +268,7 @@ function filterSignature(inTargetHour, inTargetLoc, inQuorum) {
             if ((Math.abs(inTargetLoc.lat - lat) <= 0.00056) && (Math.abs(inTargetLoc.lng - lng) <= 0.00056)) {
                 //if ((Math.abs($('#map').locationpicker("location").latitude - lat) <= 0.00056) && (Math.abs($('#map').locationpicker("location").longitude - lng) <= 0.00056)) {
                 // then include the signature
-                if (u.includes("conn")) {
+                if (u.indexOf("conn") != -1) {
                     // Get welcome kaist strength
                     conn["strength"][100 / parseInt(users[o][u]["welcome_kaist"])]++;
                     conn["cnt"]++;
