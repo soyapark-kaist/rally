@@ -103,17 +103,17 @@
             width: 100%;
             margin-top: 10px;
         }
-        
+
         textarea {
             width: 70%;
         }
-        
+
         .tooltipContainer {
             position: relative;
             display: inline-block;
             border-bottom: 1px dotted black;
         }
-        
+
         .tooltipContainer .tooltiptext {
             visibility: hidden;
             width: 120px;
@@ -130,7 +130,7 @@
             opacity: 0;
             transition: opacity 1s;
         }
-        
+
         .tooltipContainer .tooltiptext::after {
             content: "";
             position: absolute;
@@ -141,7 +141,7 @@
             border-style: solid;
             border-color: #555 transparent transparent transparent;
         }
-        
+
         .tooltipContainer:hover .tooltiptext {
             visibility: visible;
             opacity: 1;
@@ -226,7 +226,7 @@
                 </form>
 
                 <!--현재 위치-->
-                <h4>어떤 건물에 있나요? *</h4>
+                <h4>어떤 건물에서 문제가 발생했나요?*</h4>
                 <!--<h6>마커를 움직여 선택해주세요</h6>-->
                 <button onclick="displayBldgList()" class="btn btn-default">내 위치 검색</button>
                 <div style="color: gray"><i class="fa fa-map-marker" aria-hidden="true"></i> 위치정보 수집</div>
@@ -246,7 +246,7 @@
 
     <div id="exTab1">
         <div class="container post issue-question">
-            <h4>현재 선택하신 인터넷 유형에 연결이 되었나요? *</h4>
+            <h4>현재 선택하신 인터넷에 연결이 되었나요? *</h4>
             <form autocomplete="off">
                 <ul class="nav btn-group inline question-type issue-type">
                     <li><a type="submit" onclick="return pickIssueType(true);" class="btn active" href="#1a" data-toggle="tab"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> YES<br><span> . </span></a>
@@ -409,10 +409,10 @@
                             <h4 id="question-speed">인터넷 응답이 얼마나 느린가요?</h4>
                             <input type="radio" name="speed" value="1" description="즉각적이다 (0~0.1s)" checked> 즉각적이다 (0~0.1s)<br>
                             <input type="radio" name="speed" value="2" description="지연을 느끼지만, 사용에 지장은 없다 (0.1~1s)"> 지연을 느끼지만, 사용에 지장은 없다 (0.1~1s)<br>
-                            <input type="radio" name="speed" value="3" description="지연으로 인해 원하는만큼 사용하지 못하고 있다 (1~10s)"> 지연으로 인해 원하는만큼 사용하지 못하고 있다 (1~10s)<br>
+                            <input type="radio" name="speed" value="3" description="지연으로 인해 원하는 만큼 사용하지 못하고 있다 (1~10s)"> 지연으로 인해 원하는 만큼 사용하지 못하고 있다 (1~10s)<br>
                             <input type="radio" name="speed" value="3" description="응답하지 않는다 (10s~)"> 응답하지 않는다 (10s~)<br>
 
-                            <h4 id="question-consistency" style="margin-top: 30px;">인터넷 속도의 일정함</h4>
+                            <h4 id="question-consistency" style="margin-top: 30px;">인터넷 속도가 일정한가요?</h4>
                             <input type="radio" name="consistency" value="1" description="일정한 속도를 유지한다" checked> 일정한 속도를 유지한다<br>
                             <input type="radio" name="consistency" value="2" description="속도가 일정치 않아서 신경쓰이긴 하지만 쓸만하다"> 속도가 일정치 않아서 신경쓰이긴 하지만 쓸만하다<br>
                             <input type="radio" name="consistency" value="3" description="종잡을 수 없다"> 종잡을 수 없다<br>
