@@ -154,59 +154,20 @@ function initTimeline(inTimeline) {
 
 /* Fetch petitions. */
 function fetchPetiton(inReceiving) {
-    var exist = false;
-
-    var playersRef = firebase.database().ref('petition-meta/');
+    var playersRef = firebase.database().ref('campaign/' + petitionID);
     // Attach an asynchronous callback to read the data at our posts reference
     playersRef.once("value").then(function(snapshot) {
-        var metas = snapshot.val();
-        for (var i in metas) {
-            if (metas[i] == petitionID) {
-                BLDG_INDEX = parseInt(i);
-                $("#bldgName").text(BLDG[BLDG_INDEX].name);
-                exist = true;
-                break;
-            }
-        }
-
-        if (!exist) {
-            alert("존재하지 않는 링크입니다!");
+        var p = snapshot.val();
+        if (!p) {
+            alert("존재하지 않은 캠페인입니다!")
             return;
         }
 
+        BLDG_INDEX = parseInt(p.bldg);
+        displayPetition(p.content);
+
         selectSignature();
     });
-
-    // Attach an asynchronous callback to read the data at our posts reference
-    // playersRef.once("value").then(function(snapshot) {
-    //     var users = snapshot.val();
-
-    //     if (!users[petitionID]) {
-    //         alert("존재하지 않은 탄원서입니다!")
-    //         return;
-    //     }
-
-    //     // if receive is not yet operated, then update the time-line.
-    //     if (inReceiving && !users[petitionID]["time-line"]["receive"]) {
-    //         var pRef = firebase.database().ref("petition/" + petitionID);
-    //         pRef.update({
-    //             "time-line": {
-    //                 "submit": users[petitionID]["time-line"]["submit"],
-    //                 "receive": new Date().toString()
-    //             }
-    //         }, function(error) {
-    //             if (error) {
-    //                 console.log(error);
-    //             } else {
-
-    //                 // when post to DB is successful 
-    //                 routeToTimeline(petitionID, isAdmin);
-    //             }
-    //         });
-    //     } else
-    //         storePetitionInfo(users[petitionID]);
-
-    // });
 }
 
 function isSlow(inQuorum) {
@@ -258,11 +219,9 @@ function displayType(inResponse) {
         $("#internetConn").css("display", "block");
 }
 
-function displayPetition(inResponse) {
-    $("#title").text(inResponse['title'] + " (case #: " + petitionID + ")");
-    $('#content').text(inResponse['content']);
-    $('#time-range').text(TIME_RANGE_MSG[parseInt(inResponse['time-range'])]);
-    $('#bldg').text(inResponse['bldg']);
+function displayPetition(inContent) {
+    $("#bldgName").text(BLDG[BLDG_INDEX].name);
+    $('#content').text(inContent);
 }
 
 function displayRespond(inResponse) {

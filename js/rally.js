@@ -4,7 +4,7 @@ var kaist = {
 };
 var map, center;
 var infoWindow;
-var viewDate = 40; // Set how many dates for
+var viewDate = 1; // Set how many dates for
 
 // Data storing for drawing charts.
 var APPLICATIONS = [],

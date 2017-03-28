@@ -3,6 +3,7 @@ var apiKey = 'AIzaSyD9v41gd511lFHseGqCXwNyfpQyArNgZLQ';
 
 function initMap() {
     toggleLoading("#loading");
+    $("#today").text($("#today").text() + "(" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + ")");
     createMap();
     initLegend();
     initDB();
