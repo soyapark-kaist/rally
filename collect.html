@@ -224,21 +224,24 @@
                         </li>
                     </ul>
                 </form>
+            </div>
 
-                <!--현재 위치-->
-                <h4>어떤 건물에서 문제가 발생했나요?*</h4>
-                <!--<h6>마커를 움직여 선택해주세요</h6>-->
-                <button onclick="displayBldgList()" class="btn btn-default">내 위치 검색</button>
-                <div style="color: gray"><i class="fa fa-map-marker" aria-hidden="true"></i> 위치정보 수집</div>
-                <!--<input id="buildingSearch" type="text" class="form-control" placeholder="건물명 검색">-->
-                <div id="loading"></div>
-                <div class="col-sm-8">
-                    <div id="map"></div>
-                </div>
+            <div class="post row">
                 <div class="col-sm-4">
-                    <table class="building-list table table-hover">
+                    <!--현재 위치-->
+                    <h4>어떤 건물에서 문제가 발생했나요?*</h4>
+                    <!--<h6>마커를 움직여 선택해주세요</h6>-->
+                    <button onclick="displayBldgList()" class="btn btn-default btn-block">내 위치 검색</button>
+                    <div style="color: gray"><i class="fa fa-map-marker" aria-hidden="true"></i> 위치정보 수집</div>
+                    <!--<input id="buildingSearch" type="text" class="form-control" placeholder="건물명 검색">-->
+                    <div id="loading"></div>
+
+                    <table class="building-list table table-hover" style="margin-top: 15px;">
                         <tbody></tbody>
                     </table>
+                </div>
+                <div class="col-sm-8">
+                    <div id="map"></div>
                 </div>
             </div>
         </div>
@@ -249,11 +252,14 @@
             <h4>현재 선택하신 인터넷에 연결이 되었나요? *</h4>
             <form autocomplete="off">
                 <ul class="nav btn-group inline question-type issue-type">
-                    <li><a type="submit" onclick="return pickIssueType(true);" class="btn active" href="#1a" data-toggle="tab"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> YES<br><span> . </span></a>
-                    </li>
-                    <li>
-                        <a type="submit" onclick="return pickIssueType(false);" class="btn" href="#conn" data-toggle="tab"><i class="fa fa-chain-broken" aria-hidden="true"></i> NO<br><span>연결조차 불가(테더링, 3G, LTE 사용 중)</span></a>
-                    </li>
+                    <li><a type="submit" onclick="return pickIssueType(true);" class="btn active" href="#1a" data-toggle="tab">
+                        <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                        YES<br><span>연결되었다</span>
+                    </a></li>
+                    <li><a type="submit" onclick="return pickIssueType(false);" class="btn" href="#conn" data-toggle="tab">
+                        <i class="fa fa-chain-broken" aria-hidden="true"></i>
+                        NO<br><span>테더링, 3G, LTE 사용 중)</span>
+                    </a></li>
                 </ul>
             </form>
         </div>
