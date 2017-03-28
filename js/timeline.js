@@ -6,6 +6,8 @@ var isReceiving = false,
     isAdmin = false;
 var users;
 
+var BLDG_INDEX;
+
 function initPetition() {
     toggleLoading(".loading");
     initDB();
@@ -24,7 +26,11 @@ function initPetition() {
         }
     }
 
-    fetchPetiton(isReceiving);
+    fill_progress_circle(1);
+    fetchPetiton();
+
+
+    // fetchPetiton(isReceiving);
     // initTimeline();
 }
 
@@ -148,37 +154,59 @@ function initTimeline(inTimeline) {
 
 /* Fetch petitions. */
 function fetchPetiton(inReceiving) {
-    var playersRef = firebase.database().ref('petition/');
+    var exist = false;
+
+    var playersRef = firebase.database().ref('petition-meta/');
     // Attach an asynchronous callback to read the data at our posts reference
     playersRef.once("value").then(function(snapshot) {
-        var users = snapshot.val();
+        var metas = snapshot.val();
+        for (var i in metas) {
+            if (metas[i] == petitionID) {
+                BLDG_INDEX = parseInt(i);
+                $("#bldgName").text(BLDG[BLDG_INDEX].name);
+                exist = true;
+                break;
+            }
+        }
 
-        if (!users[petitionID]) {
-            alert("존재하지 않은 탄원서입니다!")
+        if (!exist) {
+            alert("존재하지 않는 링크입니다!");
             return;
         }
 
-        // if receive is not yet operated, then update the time-line.
-        if (inReceiving && !users[petitionID]["time-line"]["receive"]) {
-            var pRef = firebase.database().ref("petition/" + petitionID);
-            pRef.update({
-                "time-line": {
-                    "submit": users[petitionID]["time-line"]["submit"],
-                    "receive": new Date().toString()
-                }
-            }, function(error) {
-                if (error) {
-                    console.log(error);
-                } else {
-
-                    // when post to DB is successful 
-                    routeToTimeline(petitionID, isAdmin);
-                }
-            });
-        } else
-            storePetitionInfo(users[petitionID]);
-
+        selectSignature();
     });
+
+    // Attach an asynchronous callback to read the data at our posts reference
+    // playersRef.once("value").then(function(snapshot) {
+    //     var users = snapshot.val();
+
+    //     if (!users[petitionID]) {
+    //         alert("존재하지 않은 탄원서입니다!")
+    //         return;
+    //     }
+
+    //     // if receive is not yet operated, then update the time-line.
+    //     if (inReceiving && !users[petitionID]["time-line"]["receive"]) {
+    //         var pRef = firebase.database().ref("petition/" + petitionID);
+    //         pRef.update({
+    //             "time-line": {
+    //                 "submit": users[petitionID]["time-line"]["submit"],
+    //                 "receive": new Date().toString()
+    //             }
+    //         }, function(error) {
+    //             if (error) {
+    //                 console.log(error);
+    //             } else {
+
+    //                 // when post to DB is successful 
+    //                 routeToTimeline(petitionID, isAdmin);
+    //             }
+    //         });
+    //     } else
+    //         storePetitionInfo(users[petitionID]);
+
+    // });
 }
 
 function isSlow(inQuorum) {
@@ -260,28 +288,21 @@ function centerMap(inCenter) {
 }
 
 function selectSignature() {
-    var pLat = center.lat,
-        pLng = center.lng;
+    var pLat = BLDG[BLDG_INDEX].lat,
+        pLng = BLDG[BLDG_INDEX].lng;
 
-    if (!users) {
-        var playersRef = firebase.database().ref('users/');
-        // Attach an asynchronous callback to read the data at our posts reference
-        playersRef.once("value").then(function(snapshot) {
-                users = snapshot.val();
+    var playersRef = firebase.database().ref('users/');
+    // Attach an asynchronous callback to read the data at our posts reference
+    playersRef.once("value").then(function(snapshot) {
+            users = snapshot.val();
 
-                filterSignature(hour_range, { "lat": pLat, "lng": pLng }, petition["quorum"]);
-
-            },
-            function(errorObject) {
-                alert("The read failed: " + errorObject.code);
-                // $btn.button('reset');
-            });
-    } //If END, when DB is not yet fetched
-    else {
-        filterSignature(hour_range, { "lat": pLat, "lng": pLng }, petition["quorum"]);
-        //ttt();
-        // $btn.button('reset');
-    } //else END, when DB is already fetched
+            filterSignature(hour_range, { "lat": pLat, "lng": pLng }, 10);
+            toggleLoading(".loading");
+        },
+        function(errorObject) {
+            alert("The read failed: " + errorObject.code);
+            // $btn.button('reset');
+        });
 }
 
 function checkEligibility() {
@@ -362,7 +383,6 @@ function postRespond() {
     return false;
 }
 
-/* Fetch petitions. */
 function filterPetiton(inHour, inLoc, inCallback) {
     var playersRef = firebase.database().ref('petition/');
     // Attach an asynchronous callback to read the data at our posts reference

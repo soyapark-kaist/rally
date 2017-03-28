@@ -103,17 +103,17 @@
             width: 100%;
             margin-top: 10px;
         }
-
+        
         textarea {
             width: 70%;
         }
-
+        
         .tooltipContainer {
             position: relative;
             display: inline-block;
             border-bottom: 1px dotted black;
         }
-
+        
         .tooltipContainer .tooltiptext {
             visibility: hidden;
             width: 120px;
@@ -130,7 +130,7 @@
             opacity: 0;
             transition: opacity 1s;
         }
-
+        
         .tooltipContainer .tooltiptext::after {
             content: "";
             position: absolute;
@@ -141,7 +141,7 @@
             border-style: solid;
             border-color: #555 transparent transparent transparent;
         }
-
+        
         .tooltipContainer:hover .tooltiptext {
             visibility: visible;
             opacity: 1;
@@ -214,13 +214,13 @@
                 <h4>어떤 유형의 인터넷을 사용하던 중이었나요?*</h4>
                 <form autocomplete="off">
                     <ul class="nav btn-group inline question-type internet-type">
-                        <li><a type="submit" onclick="return pickInternetType(0);" class="btn active"><i class="fa fa-wifi" aria-hidden="true"></i> Welcome_kaist<br><span></span></a>
+                        <li><a type="submit" conn-type=0 onclick="return pickInternetType(0);" class="btn active"><i class="fa fa-wifi" aria-hidden="true"></i> Welcome_kaist<br><span></span></a>
                         </li>
                         <li>
-                            <a type="submit" onclick="return pickInternetType(1);" class="btn"><i class="fa fa-wifi" aria-hidden="true"></i> 그 외 와이파이<br><span></span></a>
+                            <a type="submit" conn-type=1 onclick="return pickInternetType(1);" class="btn"><i class="fa fa-wifi" aria-hidden="true"></i> 그 외 와이파이<br><span></span></a>
                         </li>
                         <li>
-                            <a type="submit" onclick="return pickInternetType(2);" class="btn"><i class="fa fa-plug" aria-hidden="true"></i> 랜선<br><span></span></a>
+                            <a type="submit" conn-type=2 onclick="return pickInternetType(2);" class="btn"><i class="fa fa-plug" aria-hidden="true"></i> 랜선<br><span></span></a>
                         </li>
                     </ul>
                 </form>
@@ -229,7 +229,7 @@
             <div class="post row">
                 <div class="col-sm-4">
                     <!--현재 위치-->
-                    <h4>어떤 건물에서 문제가 발생했나요?*</h4>
+                    <h4>어떤 건물에 계신가요?*</h4>
                     <!--<h6>마커를 움직여 선택해주세요</h6>-->
                     <button onclick="displayBldgList()" class="btn btn-default btn-block">내 위치 검색</button>
                     <div style="color: gray"><i class="fa fa-map-marker" aria-hidden="true"></i> 위치정보 수집</div>
@@ -252,14 +252,18 @@
             <h4>현재 선택하신 인터넷에 연결이 되었나요? *</h4>
             <form autocomplete="off">
                 <ul class="nav btn-group inline question-type issue-type">
-                    <li><a type="submit" onclick="return pickIssueType(true);" class="btn active" href="#1a" data-toggle="tab">
-                        <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-                        YES<br><span>연결되었다</span>
-                    </a></li>
-                    <li><a type="submit" onclick="return pickIssueType(false);" class="btn" href="#conn" data-toggle="tab">
-                        <i class="fa fa-chain-broken" aria-hidden="true"></i>
-                        NO<br><span>테더링, 3G, LTE 사용 중)</span>
-                    </a></li>
+                    <li>
+                        <a type="submit" onclick="return pickIssueType(true);" class="btn active" href="#1a" data-toggle="tab">
+                            <i class="fa fa-exclamation-circle" aria-hidden="true"></i> YES
+                            <br><span>연결되었다</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a type="submit" onclick="return pickIssueType(false);" class="btn" href="#conn" data-toggle="tab">
+                            <i class="fa fa-chain-broken" aria-hidden="true"></i> NO
+                            <br><span>테더링, 3G, LTE 사용 중)</span>
+                        </a>
+                    </li>
                 </ul>
             </form>
         </div>
@@ -708,7 +712,7 @@
             <ul class="footer-links right-links">
                 <li><a href="mailto:kixlab.rally@gmail.com">contact</a></li>
                 <li><a href="./privacy.html">privacy</a></li>
-                <li>ver 0.1.17</li>
+                <li>ver 0.3</li>
             </ul>
             <ul class="footer-links">
                 <li>© 2017 KIXLAB</li>

@@ -51,6 +51,8 @@ function initListener() {
         }, 1500);
     })
 
+    fill_progress_circle(0);
+
     createMap();
     map.setCenter(kaist);
 
@@ -89,9 +91,9 @@ function displayBldgList() {
                 for (var l in BLDG) {
                     if (Math.abs(center.lat - BLDG[l].lat) < 0.001 && Math.abs(center.lng - BLDG[l].lng) < 0.001) {
                         $('.building-list tbody').append(
-                            '<tr bldg="' + l + '" onclick="animateMarker(' + (cnt++) + ')">\
+                            '<tr bldg=' + l + ' onclick="animateMarker(' + (cnt++) + ')">\
                                <td>' + alphabet + '</td>\
-                               <td>' + l + '</td>\
+                               <td>' + BLDG[l].name + '</td>\
                                </tr>');
 
                         list.push({ "lat": BLDG[l].lat, "lng": BLDG[l].lng, label: alphabet });
@@ -345,12 +347,12 @@ function postUsers() {
     var userID = generateID(5);
     var type;
 
-    var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + userID);
-    // users/2017-3-6
-
     if (!isIssueConn()) {
+        var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + userID);
+        // users/2017-3-6
+
         playersRef.set({
-            "type": $(".internet-type li.active").index(),
+            "type": $(".internet-type a.active").attr("conn-type"),
             "bldg": $('.building-list tr.warning').attr("bldg"),
             "activity": $(".activity.select img").attr("type"),
             "ip_addr": $(".ip-address ").text(),
@@ -368,13 +370,20 @@ function postUsers() {
             if (error) {
                 console.log(error);
             } else {
-                routeToTimeline(BLDG[$('.building-list tr.warning').attr("bldg")].uid);
+                var playersRef = firebase.database().ref('petition-meta/' + $('.building-list tr.warning').attr("bldg"));
+                // Attach an asynchronous callback to read the data at our posts reference
+                playersRef.once("value").then(function(snapshot) {
+                    routeToTimeline(snapshot.val());
+                });
             }
 
         });
     } else {
+        var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + "conn" + userID);
+        // users/2017-3-6/conn~~
+
         playersRef.set({
-            "type": $(".internet-type li.active").index(),
+            "type": $(".internet-type a.active").attr("conn-type"),
             "bldg": $('.building-list tr.warning').attr("bldg"),
             "room": $("#roomNumber").val(),
             "welcome_kaist": $(".antenna").text(),
@@ -389,7 +398,11 @@ function postUsers() {
             if (error) {
                 console.log(error);
             } else {
-                routeToTimeline(BLDG[$('.building-list tr.warning').attr("bldg")].uid);
+                var playersRef = firebase.database().ref('petition-meta/' + $('.building-list tr.warning').attr("bldg"));
+                // Attach an asynchronous callback to read the data at our posts reference
+                playersRef.once("value").then(function(snapshot) {
+                    routeToTimeline(snapshot.val());
+                });
             }
 
         });

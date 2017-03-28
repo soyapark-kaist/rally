@@ -4,7 +4,7 @@ var kaist = {
 };
 var map, center;
 var infoWindow;
-var viewDate = 15; // Set how many dates for
+var viewDate = 40; // Set how many dates for
 
 // Data storing for drawing charts.
 var APPLICATIONS = [],
@@ -104,7 +104,7 @@ function markMap(inUserID) {
 function initLegend() {
     var legend = document.getElementById('legend');
     var activities = [
-        { name: "등록된 민원", icon: "petition" },
+        { name: "진행중인 캠페인", icon: "petition" },
         { name: "작동 안함", icon: "conn" },
         { name: "웹 컨퍼런싱", icon: "conferencing" },
         { name: "페이스북", icon: "facebook" },
@@ -253,14 +253,12 @@ function filterSignature(inTargetHour, inTargetLoc, inQuorum) {
     for (var o in users) {
         for (var u in users[o]) {
             var hour = new Date(users[o][u].time).getHours();
-            //parseInt($('#timeRange-start').val().split(":")[0]);
-            console.log(u, hour, users[o][u].latitude, users[o][u].longitude);
 
-            var hour_from = TIME_RANGE[inTargetHour].from,
-                hour_to = TIME_RANGE[inTargetHour].to;
-            if (!filterHour(hour_from, hour_to, hour)) {
-                continue;
-            }
+            // var hour_from = TIME_RANGE[inTargetHour].from,
+            //     hour_to = TIME_RANGE[inTargetHour].to;
+            // if (!filterHour(hour_from, hour_to, hour)) {
+            //     continue;
+            // }
 
             var lat = users[o][u].latitude,
                 lng = users[o][u].longitude;
@@ -268,6 +266,8 @@ function filterSignature(inTargetHour, inTargetLoc, inQuorum) {
             if ((Math.abs(inTargetLoc.lat - lat) <= 0.00056) && (Math.abs(inTargetLoc.lng - lng) <= 0.00056)) {
                 //if ((Math.abs($('#map').locationpicker("location").latitude - lat) <= 0.00056) && (Math.abs($('#map').locationpicker("location").longitude - lng) <= 0.00056)) {
                 // then include the signature
+                console.log(u, hour, users[o][u].latitude, users[o][u].longitude);
+
                 if (u.indexOf("conn") != -1) {
                     // Get welcome kaist strength
                     conn["strength"][100 / parseInt(users[o][u]["welcome_kaist"])]++;
