@@ -4,7 +4,7 @@ var kaist = {
 };
 var map, center;
 var infoWindow;
-var viewDate = 1; // Set how many dates for
+var viewDate = 1.1; // Set how many dates for
 
 // Data storing for drawing charts.
 var APPLICATIONS = [],
@@ -44,10 +44,16 @@ function markMap(inUserID) {
 
             for (var o in users) {
                 var year = o.split("-")[0],
-                    month = o.split("-")[1],
-                    day = parseInt(o.split("-")[2]) + 1;
+                    month = parseInt(o.split("-")[1]),
+                    day = parseInt(o.split("-")[2]);
 
-                if (calculateDiffDate(new Date(year, month - 1, day), new Date()) < viewDate) {
+                var today = {
+                    "year": new Date().getFullYear(),
+                    "month": new Date().getMonth() + 1,
+                    "day": parseInt(new Date().toString().split(" ")[2])
+                }
+
+                if (year == today.year && month == today.month && day == today.day) {
                     for (var u in users[o]) {
                         // debugger;
                         locations.push({
@@ -67,6 +73,7 @@ function markMap(inUserID) {
 
                     }
 
+                    break;
                 }
             }
 
@@ -245,7 +252,7 @@ function filterHour(hour_from, hour_to, hour3) {
     }
 }
 
-function filterSignature(inTargetHour, inTargetLoc, inQuorum) {
+function filterSignature(inTargetDate, inTargetLoc, inQuorum) {
     var conn = {
             "strength": [0, 0, 0, 0, 0], // 0, 25 ... 100%
             "cnt": 0
@@ -260,6 +267,20 @@ function filterSignature(inTargetHour, inTargetLoc, inQuorum) {
         }
 
     for (var o in users) {
+        var year = o.split("-")[0],
+            month = parseInt(o.split("-")[1]) - 1,
+            day = parseInt(o.split("-")[2]);
+
+        var date = new Date();
+        date.setFullYear(year);
+        date.setMonth(month);
+        date.setDate(day);
+        console.log(date.toString());
+        if (inTargetDate > date) {
+
+            continue;
+        }
+
         for (var u in users[o]) {
             var hour = new Date(users[o][u].time).getHours();
 
@@ -275,7 +296,6 @@ function filterSignature(inTargetHour, inTargetLoc, inQuorum) {
             if ((Math.abs(inTargetLoc.lat - lat) <= 0.00056) && (Math.abs(inTargetLoc.lng - lng) <= 0.00056)) {
                 //if ((Math.abs($('#map').locationpicker("location").latitude - lat) <= 0.00056) && (Math.abs($('#map').locationpicker("location").longitude - lng) <= 0.00056)) {
                 // then include the signature
-                console.log(u, hour, users[o][u].latitude, users[o][u].longitude);
 
                 if (u.indexOf("conn") != -1) {
                     // Get welcome kaist strength

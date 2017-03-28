@@ -255,8 +255,12 @@ function selectSignature() {
     playersRef.once("value").then(function(snapshot) {
             users = snapshot.val();
 
-            filterSignature(hour_range, { "lat": pLat, "lng": pLng }, 10);
-            toggleLoading(".loading");
+            var openDateRef = firebase.database().ref('opendate/');
+            openDateRef.once("value").then(function(snapshot) {
+                filterSignature(new Date(snapshot.val()), { "lat": pLat, "lng": pLng }, 10);
+                toggleLoading(".loading");
+            });
+
         },
         function(errorObject) {
             alert("The read failed: " + errorObject.code);
