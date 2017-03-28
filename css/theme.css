@@ -16,6 +16,10 @@ body {
     width: auto;
 }
 
+.nav a {
+    color: #263238;
+}
+
 
 /*
  * Main content

@@ -4,7 +4,7 @@ var kaist = {
 };
 var map, center;
 var infoWindow;
-var viewDate = 15; // Set how many dates for
+var viewDate = 1.1; // Set how many dates for
 
 // Data storing for drawing charts.
 var APPLICATIONS = [],
@@ -44,10 +44,16 @@ function markMap(inUserID) {
 
             for (var o in users) {
                 var year = o.split("-")[0],
-                    month = o.split("-")[1],
-                    day = parseInt(o.split("-")[2]) + 1;
+                    month = parseInt(o.split("-")[1]),
+                    day = parseInt(o.split("-")[2]);
 
-                if (calculateDiffDate(new Date(year, month - 1, day), new Date()) < viewDate) {
+                var today = {
+                    "year": new Date().getFullYear(),
+                    "month": new Date().getMonth() + 1,
+                    "day": parseInt(new Date().toString().split(" ")[2])
+                }
+
+                if (year == today.year && month == today.month && day == today.day) {
                     for (var u in users[o]) {
                         // debugger;
                         locations.push({
@@ -55,7 +61,7 @@ function markMap(inUserID) {
                             'lng': users[o][u].longitude
                         })
 
-                        activities.push(u.includes("conn") ? "conn" : users[o][u].activity);
+                        activities.push(u.indexOf("conn") != -1 ? "conn" : users[o][u].activity);
                         // console.log("here");
                         if (inUserID == u) {
                             infoWindow = new google.maps.InfoWindow({ content: "내 서명", map: map });
@@ -67,6 +73,7 @@ function markMap(inUserID) {
 
                     }
 
+                    break;
                 }
             }
 
@@ -104,7 +111,7 @@ function markMap(inUserID) {
 function initLegend() {
     var legend = document.getElementById('legend');
     var activities = [
-        { name: "등록된 민원", icon: "petition" },
+        { name: "진행중인 캠페인", icon: "petition" },
         { name: "작동 안함", icon: "conn" },
         { name: "웹 컨퍼런싱", icon: "conferencing" },
         { name: "페이스북", icon: "facebook" },
@@ -211,6 +218,15 @@ function setProgressbar(inNow, inMax) {
     $("#leftQuorum").text(inMax - inNow);;
 }
 
+function createMarker(inID, inCenter, inTitle) {
+    return new google.maps.Marker({
+        position: new google.maps.LatLng(inCenter.lat, inCenter.lng),
+        map: map,
+        petitionID: inID,
+        title: inTitle
+    });
+}
+
 function createCircle(inID, inCenter, inTitle) {
     return new google.maps.Circle({
         strokeColor: '#FF0000',
@@ -236,7 +252,7 @@ function filterHour(hour_from, hour_to, hour3) {
     }
 }
 
-function filterSignature(inTargetHour, inTargetLoc, inQuorum) {
+function filterSignature(inTargetDate, inTargetLoc, inQuorum) {
     var conn = {
             "strength": [0, 0, 0, 0, 0], // 0, 25 ... 100%
             "cnt": 0
@@ -251,16 +267,28 @@ function filterSignature(inTargetHour, inTargetLoc, inQuorum) {
         }
 
     for (var o in users) {
+        var year = o.split("-")[0],
+            month = parseInt(o.split("-")[1]) - 1,
+            day = parseInt(o.split("-")[2]);
+
+        var date = new Date();
+        date.setFullYear(year);
+        date.setMonth(month);
+        date.setDate(day);
+        console.log(date.toString());
+        if (inTargetDate > date) {
+
+            continue;
+        }
+
         for (var u in users[o]) {
             var hour = new Date(users[o][u].time).getHours();
-            //parseInt($('#timeRange-start').val().split(":")[0]);
-            console.log(u, hour, users[o][u].latitude, users[o][u].longitude);
 
-            var hour_from = TIME_RANGE[inTargetHour].from,
-                hour_to = TIME_RANGE[inTargetHour].to;
-            if (!filterHour(hour_from, hour_to, hour)) {
-                continue;
-            }
+            // var hour_from = TIME_RANGE[inTargetHour].from,
+            //     hour_to = TIME_RANGE[inTargetHour].to;
+            // if (!filterHour(hour_from, hour_to, hour)) {
+            //     continue;
+            // }
 
             var lat = users[o][u].latitude,
                 lng = users[o][u].longitude;
@@ -268,7 +296,8 @@ function filterSignature(inTargetHour, inTargetLoc, inQuorum) {
             if ((Math.abs(inTargetLoc.lat - lat) <= 0.00056) && (Math.abs(inTargetLoc.lng - lng) <= 0.00056)) {
                 //if ((Math.abs($('#map').locationpicker("location").latitude - lat) <= 0.00056) && (Math.abs($('#map').locationpicker("location").longitude - lng) <= 0.00056)) {
                 // then include the signature
-                if (u.includes("conn")) {
+
+                if (u.indexOf("conn") != -1) {
                     // Get welcome kaist strength
                     conn["strength"][100 / parseInt(users[o][u]["welcome_kaist"])]++;
                     conn["cnt"]++;
@@ -344,10 +373,9 @@ function filterSignature(inTargetHour, inTargetLoc, inQuorum) {
         $("#stat").css("display", "block");
     } else {
         $("#number").text("해당 범위에 아직 참여한 사람이 없습니다. 친구들에게 홍보해 더 많은 힘을 모아보세요!");
-        $("#stat").css("display", "none");
     }
 
-    if (conn["cnt"] + slow["cnt"] >= inQuorum) $("#progress-quorum").css("visibility", "hidden");
+    if (conn["cnt"] + slow["cnt"] >= inQuorum) $("#progress-quorum").toggle();
     else
         setProgressbar(conn["cnt"] + slow["cnt"], inQuorum);
     $("#finalStage").css("visibility", "visible");

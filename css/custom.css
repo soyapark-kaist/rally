@@ -7,6 +7,14 @@ body {
     margin-bottom: 50px
 }
 
+h1,
+h2,
+h3,
+h4,
+h5 {
+    font-family: arial, sans-serif;
+}
+
 .icon-bar {
     background-color: #ff6c40;
 }
@@ -563,6 +571,13 @@ footer .social li a:hover {
 }
 
 .loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: 150px;
+    height: 150px;
+    margin: -75px 0 0 -75px;
     border: 16px solid #f3f3f3;
     border-radius: 50%;
     border-top: 16px solid #ff6c40;
@@ -712,24 +727,28 @@ footer {
     width: 30px;
 }
 
+
 /* Issue type select button */
 
-.issue-type span {
+.question-type span {
     color: gray;
 }
 
-.issue-type .btn {
+.question-type .btn {
     border: 3px solid orange;
     background: white;
     margin: 5px;
     border-radius: 5px !important;
 }
 
-.issue-type .btn.active {
+.question-type .btn.active {
     background: #ff6c40;
 }
 
-.issue-type .btn:hover {
+.question-type .btn:hover {
     background: #ff6c40;
 }
 
+.question-type li {
+    display: inline-block;
+}

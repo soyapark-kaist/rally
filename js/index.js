@@ -3,6 +3,7 @@ var apiKey = 'AIzaSyD9v41gd511lFHseGqCXwNyfpQyArNgZLQ';
 
 function initMap() {
     toggleLoading("#loading");
+    $("#today").text($("#today").text() + "(" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + ")");
     createMap();
     initLegend();
     initDB();
@@ -11,43 +12,31 @@ function initMap() {
 
     map.setCenter(kaist);
 
-
-    var playersRef = firebase.database().ref("petition/");
     infoWindow = new google.maps.InfoWindow({ map: map });
     infoWindow.close();
 
+    var playersRef = firebase.database().ref("petition-meta/");
+
     // Attach an asynchronous callback to read the data at our posts reference
-    playersRef.on("value", function(snapshot) {
-            var users = snapshot.val();
-            var datas = {},
-                download = [],
-                upload = [];
+    playersRef.once("value").then(function(snapshot) {
+        var petitions = snapshot.val();
 
-            /* before append, remove previously added rows. */
-            $('.table-inbox tbody').empty()
+        var bounds = new google.maps.LatLngBounds();
+        for (var p in petitions) {
+            p = parseInt(p);
+            // Add the circle for the petition to the map.
+            var marker = createMarker(petitions[p], { lat: BLDG[p].lat, lng: BLDG[p].lng }, BLDG[p].name);
+            bounds.extend({ lat: BLDG[p].lat, lng: BLDG[p].lng });
 
-            for (var o in users) {
-                if (users[o]["time-line"]["erase"]) continue;
-                var submitDate = new Date(users[o]["time-line"]["submit"]);
-                var passed = new Date() > submitDate.setDate(submitDate.getDate() + 1);
+            marker.addListener('click', function(e) {
+                infoWindow.open(map);
+                infoWindow.setContent(this.title + " <a class='btn btn-primary' href='./timeline.html?id=" + this.petitionID + "'>자세히 보기</a>");
+                infoWindow.setPosition(this.getPosition())
+            });
+        }
 
-                var progress = "";
+        map.fitBounds(bounds);
 
-                // Add the circle for the petition to the map.
-                var cityCircle = createCircle(o, { lat: users[o].latitude, lng: users[o].longitude }, users[o].title);
-
-                cityCircle.addListener('click', function(e) {
-                    infoWindow.open(map);
-                    infoWindow.setContent(this.title + " <a class='btn btn-primary' href='./timeline.html?id=" + this.petitionID + "'>자세히 보기</a>");
-                    infoWindow.setPosition(this.getCenter())
-                });
-
-
-            }
-
-            toggleLoading("#loading");
-        },
-        function(errorObject) {
-            alert("The read failed: " + errorObject.code);
-        });
+        toggleLoading("#loading");
+    });
 }

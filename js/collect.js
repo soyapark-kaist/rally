@@ -51,7 +51,111 @@ function initListener() {
         }, 1500);
     })
 
+    fill_progress_circle(0);
+
+    createMap();
+    map.setCenter(kaist);
+
+    initRangeSlider();
+    initGuideImg();
+
     $("#finalStage").css("display", "block");
+}
+
+var markers = [];
+
+function displayBldgList() {
+    // Try HTML5 geolocation.
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+                center = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+
+                // DEBUGGING purpose
+                // center = {
+                //     "lat": 36.373732,
+                //     "lng": 127.358535
+                // };
+
+                function nextChar(c) {
+                    return String.fromCharCode(c.charCodeAt(0) + 1);
+                }
+
+
+                var list = [],
+                    cnt = 0,
+                    alphabet = 'A';
+
+                for (var l in BLDG) {
+                    if (Math.abs(center.lat - BLDG[l].lat) < 0.001 && Math.abs(center.lng - BLDG[l].lng) < 0.001) {
+                        $('.building-list tbody').append(
+                            '<tr bldg=' + l + ' onclick="animateMarker(' + (cnt++) + ')">\
+                               <td>' + alphabet + '</td>\
+                               <td>' + BLDG[l].name + '</td>\
+                               </tr>');
+
+                        list.push({ "lat": BLDG[l].lat, "lng": BLDG[l].lng, label: alphabet });
+
+                        alphabet = nextChar(alphabet);
+                    }
+                }
+
+                var bounds = new google.maps.LatLngBounds();
+                list.forEach(function(data, index, array) {
+                    var marker = new google.maps.Marker({
+                        position: new google.maps.LatLng(list[index].lat, list[index].lng),
+                        map: map,
+                        label: list[index].label
+                    });
+                    markers.push(marker);
+
+                    bounds.extend(marker.position);
+                });
+                map.fitBounds(bounds);
+            },
+            function() { //error callback
+                console.log("Error geolocation");
+                alert('브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.');
+                // handleLocationError(true, infoWindow, map.getCenter());
+            }, {
+                timeout: 10000
+            });
+
+
+    } else {
+        // Browser doesn't support Geolocation
+        console.log("Error geolocation; brower doesn't support");
+        alert('브라우저의 위치정보 수집이 불가합니다. 다른 브라우저에서 다시 시도해주세요.');
+        // handleLocationError(false, infoWindow, map.getCenter());
+    }
+}
+
+var preIndex = -1;
+
+function animateMarker(index) {
+    if (preIndex != -1)
+        markers[preIndex].setAnimation(null);
+
+    $(".building-list tr").removeClass("warning");
+    $(".building-list tr").eq(index).addClass("warning");
+
+    preIndex = index;
+
+    if (markers[index].getAnimation() != google.maps.Animation.BOUNCE) {
+        markers[index].setAnimation(google.maps.Animation.BOUNCE);
+    } else {
+        markers[index].setAnimation(null);
+    }
+}
+
+function pickInternetType(isIndex) {
+    $(".internet-type a").removeClass("active");
+
+    $(".internet-type a").eq(isIndex).addClass("active");
+
+    return false;
 }
 
 function pickIssueType(isSlow) {
@@ -69,8 +173,7 @@ function pickIssueType(isSlow) {
             $("#apRead").val("");
         });
 
-        initRangeSlider();
-        initGuideImg();
+
     }
 
     return false;
@@ -170,21 +273,21 @@ function collectData() {
             "기숙사 방 번호: " + $("#roomNumber").val() +
             "<br> Welcome_KAIST 강도: " + $(".antenna").text() + "%" +
             "<br> Wi-Fi: " + getListWifi() +
-            "<br> IP address: " + $(".ip-address").text() +
+            "<br> IP 주소: " + $(".ip-address").text() +
             "<br> OS: " + $(".operation-system").text() +
             "<br> web: " + $(".browser-name").text());
 
     else
         $("#preview").html(
-            "Speed: " + $("input[name='speed']:checked").attr("description") +
-            "<br>Consistency: " + $("input[name='consistency']:checked").attr("description") +
+            "속도: " + $("input[name='speed']:checked").attr("description") +
+            "<br>일정성: " + $("input[name='consistency']:checked").attr("description") +
             "<br> Download: " + $(".data.download").text() +
             "<br> Upload: " + $(".data.upload").text() +
             "<br> ping: " + $("#speedo-ping .data .time").text() + " ms" +
-            "<br> IP address: " + $(".ip-address").text() +
+            "<br> IP 주소: " + $(".ip-address").text() +
             "<br> OS: " + $(".operation-system").text() +
             "<br> web: " + $(".browser-name").text() +
-            "<br> Activity: " + $(".activity.select img").attr("type"));
+            "<br> 활동: " + $(".activity.select img").attr("type"));
 }
 
 function postSignature() {
@@ -239,88 +342,70 @@ function postUsers() {
     $('#submitSection').html("<i class='fa fa-circle-o-notch fa-spin'></i> Loading...");
     $('#submitSection').addClass('disabled');
 
-    // Try HTML5 geolocation.
-    if ("geolocation" in navigator) {
-        // var location_timeout = setTimeout("alert('브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.');", 10000);
+    // DEBUGGING purpose
+    // center = kaist;
+    var userID = generateID(5);
+    var type;
 
-        navigator.geolocation.getCurrentPosition(function(position) {
-                center = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                };
+    if (!isIssueConn()) {
+        var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + userID);
+        // users/2017-3-6
 
-                // DEBUGGING purpose
-                // center = kaist;
-                var userID = generateID(5);
+        playersRef.set({
+            "type": $(".internet-type a.active").attr("conn-type"),
+            "bldg": $('.building-list tr.warning').attr("bldg"),
+            "activity": $(".activity.select img").attr("type"),
+            "ip_addr": $(".ip-address ").text(),
+            "latitude": center.lat,
+            "longitude": center.lng,
+            "download": $(".data.download").text(),
+            "upload": $(".data.upload").text(),
+            "ping": $("#speedo-ping .data .time").text(),
+            "speed": $("input[name='speed']:checked").val(),
+            "consistency": $("input[name='consistency']:checked").val(),
+            "os": $(".operation-system").text(),
+            "web": $(".browser-name").text(),
+            "time": new Date().toString()
+        }, function(error) {
+            if (error) {
+                console.log(error);
+            } else {
+                var playersRef = firebase.database().ref('petition-meta/' + $('.building-list tr.warning').attr("bldg"));
+                // Attach an asynchronous callback to read the data at our posts reference
+                playersRef.once("value").then(function(snapshot) {
+                    routeToTimeline(snapshot.val());
+                });
+            }
 
-                if (!isIssueConn()) {
-                    var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + userID);
-                    // users/2017-3-6
-
-                    playersRef.set({
-                        "activity": $(".activity.select img").attr("type"),
-                        "ip_addr": $(".ip-address ").text(),
-                        "latitude": center.lat,
-                        "longitude": center.lng,
-                        "download": $(".data.download").text(),
-                        "upload": $(".data.upload").text(),
-                        "ping": $("#speedo-ping .data .time").text(),
-                        "speed": $("input[name='speed']:checked").val(),
-                        "consistency": $("input[name='consistency']:checked").val(),
-                        "os": $(".operation-system").text(),
-                        "web": $(".browser-name").text(),
-                        "time": new Date().toString()
-                    }, function(error) {
-                        if (error) {
-                            console.log(error);
-                        } else {
-                            // when post to DB is successful 
-                            routeToVis(userID);
-                        }
-
-                    });
-                } else {
-                    var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/conn" + userID);
-                    // users/2017-3-6
-
-                    playersRef.set({
-                        "room": $("#roomNumber").val(),
-                        "welcome_kaist": $(".antenna").text(),
-                        "wi-fi": getListWifi(),
-                        "ip_addr": $(".ip-address ").text(),
-                        "latitude": center.lat,
-                        "longitude": center.lng,
-                        "os": $(".operation-system").text(),
-                        "web": $(".browser-name").text(),
-                        "time": new Date().toString()
-                    }, function(error) {
-                        if (error) {
-                            console.log(error);
-                        } else {
-                            // when post to DB is successful 
-                            routeToVis("conn" + userID);
-                        }
-
-                    });
-                }
-
-            },
-            function() { //error callback
-                // clearTimeout(location_timeout);
-                $('#submitSection').text('disabled');
-                console.log("Error geolocation");
-                alert('브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.');
-                // handleLocationError(true, infoWindow, map.getCenter());
-            }, {
-                timeout: 10000
-            });
-
-
+        });
     } else {
-        // Browser doesn't support Geolocation
-        console.log("Error geolocation; brower doesn't support");
-        alert('브라우저의 위치정보 수집이 불가합니다. 다른 브라우저에서 다시 시도해주세요.');
-        // handleLocationError(false, infoWindow, map.getCenter());
+        var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + "conn" + userID);
+        // users/2017-3-6/conn~~
+
+        playersRef.set({
+            "type": $(".internet-type a.active").attr("conn-type"),
+            "bldg": $('.building-list tr.warning').attr("bldg"),
+            "room": $("#roomNumber").val(),
+            "welcome_kaist": $(".antenna").text(),
+            "wi-fi": getListWifi(),
+            "ip_addr": $(".ip-address ").text(),
+            "latitude": center.lat,
+            "longitude": center.lng,
+            "os": $(".operation-system").text(),
+            "web": $(".browser-name").text(),
+            "time": new Date().toString()
+        }, function(error) {
+            if (error) {
+                console.log(error);
+            } else {
+                var playersRef = firebase.database().ref('petition-meta/' + $('.building-list tr.warning').attr("bldg"));
+                // Attach an asynchronous callback to read the data at our posts reference
+                playersRef.once("value").then(function(snapshot) {
+                    routeToTimeline(snapshot.val());
+                });
+            }
+
+        });
     }
 
 }

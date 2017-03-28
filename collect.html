@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru-ru" dir="ltr" class='com_content view-article itemid-347 _speedtest myspeed j34'>
+<html dir="ltr" class='com_content view-article itemid-347 _speedtest myspeed j34'>
 
 <head>
     <meta charset="utf-8">
@@ -85,6 +85,7 @@
     </script>
     <!--<script type="text/javascript" src="js/registerSw.js"></script>-->
 
+    <script type="text/javascript" src="js/conf.js"></script>
     <script type="text/javascript" src="js/rally.js"></script>
     <script type="text/javascript" src="js/collect.js"></script>
 
@@ -173,196 +174,225 @@
 
     <!-- Content -->
     <div class="content">
-        <div class="container">
 
-
-            <!--<div class="post">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="row placeholders">
-                            <div class="col-md-4 col-sm-4 placeholder">
-                                <a href="http://kixlab.org/rally/collect.html">
-                                    <span class="fa-lg">
-                                        <i class="fa fa-circle fa-stack-1x" style="font-size: 10em;color: darkorange;"></i>
-                                        <i class="fa fa-paper-plane fa-stack-1x fa-inverse" style="font-size: 5em;"></i>
-                                    </span>
-                                    <h4 class="steps">1. Collect data</h4>
-                                    <span class="text-muted">인터넷 속도를 제보하세요! 제보한 자료들은 인터넷 속도 개선을 위한 탄원서를 쓰는데 큰 힘이 됩니다!</span>
-                                </a>
-                            </div>
-                            <div class="col-md-4 col-sm-4 placeholder">
-                                <a href="http://kixlab.org/rally/map.html">
-                                    <span class="fa-lg">
-                                    <i class="fa fa-circle fa-stack-1x" style="font-size: 10em;"></i>
-                                    <i class="fa fa-bar-chart fa-stack-1x fa-inverse" style="font-size: 5em;"></i>
-                                </span>
-                                    <h4 class="steps">2. Visualization</h4>
-                                    <span class="text-muted">현재 교내에 제보된 인터넷 경험을 조회할 수 있습니다.</span>
-                                </a>
-                            </div>
-                            <div class="col-md-4 col-sm-4 placeholder">
-                                <a href="http://kixlab.org/rally/petition.html">
-                                    <span class="fa-lg">
-                                    <i class="fa fa-circle fa-stack-1x" style="font-size: 10em;"></i>
-                                    <i class="fa fa-comments-o fa-stack-1x fa-inverse" style="font-size: 5em;"></i>
-                                </span>
-                                    <h4 class="steps">3. Petition</h4>
-                                    <span class=" text-muted">학교에 Rally의 자료를 바탕으로 불편한 인터넷에 대해 개선을 요구하세요!</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>-->
-            <!-- /post -->
-        </div>
-
-        <div class="post">
-            <!--<div class="container page-header">
+        <!--<div class="container page-header">
                 <h2>데이터 서명하기</h2>
             </div>-->
+        <div class="container">
+            <div class="post">
+                <ul class="timeline-progress">
+                    <li><span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="제보 작성">
+                        <i class="fa fa-circle fa-stack-2x"></i>
+                        <i class="fa fa-pencil-square-o fa-stack-1x fa-inverse"></i>
+                    </span></li>
+                    <li><i class="fa fa-chevron-right" aria-hidden="true"></i></li>
+                    <li><span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="목소리 모으기. 48시간 이내에 충분한 서명을 모으지 못하면 정보통신팀에 전송되지 않습니다">
+                        <i class="fa fa-circle fa-stack-2x"></i>
+                        <i class="fa fa-bar-chart fa-stack-1x fa-inverse"></i>
+                    </span></li>
+                    <li><i class="fa fa-chevron-right" aria-hidden="true"></i></li>
+                    <li><span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="정보통신팀 전송">
+                        <i class="fa fa-circle fa-stack-2x"></i>
+                        <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                    </span></li>
+                    <li><i class="fa fa-chevron-right" aria-hidden="true"></i></li>
+                    <li><span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="정보통신팀 답변">
+                        <i class="fa fa-circle fa-stack-2x"></i>
+                        <i class="fa fa-reply fa-stack-1x fa-inverse"></i>
+                    </span></li>
+                    <li><i class="fa fa-chevron-right" aria-hidden="true"></i></li>
+                    <li><span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="민원인 피드백">
+                        <i class="fa fa-circle fa-stack-2x"></i>
+                        <i class="fa fa-comments-o fa-stack-1x fa-inverse"></i>
+                    </span></li>
+                </ul>
+                <p id="current-progress" style="text-align: center;">인터넷 제보하기</p>
+            </div>
 
-            <div id="exTab1">
-                <div class="container post issue-question">
-                    <h4>현재 겪고 있는 인터넷 문제를 선택해주세요 *</h4>
-                    <form autocomplete="off">
-                        <ul class="nav btn-group inline issue-type">
-                            <li><a type="submit" onclick="return pickIssueType(true);" class="btn active" href="#1a" data-toggle="tab"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> 인터넷 느림 문제<br><span>와이파이에 연결은 되지만 느릴 때 선택해주세요</span></a>
-                            </li>
-                            <li>
-                                <a type="submit" onclick="return pickIssueType(false);" class="btn" href="#conn" data-toggle="tab"><i class="fa fa-chain-broken" aria-hidden="true"></i> 인터넷 연결불능 문제<br><span>와이파이에 연결조차 안될 때 선택해주세요</span></a>
-                            </li>
-                        </ul>
-                    </form>
+            <div class="post">
+                <!--연결 타입-->
+                <h4>어떤 유형의 인터넷을 사용하던 중이었나요?*</h4>
+                <form autocomplete="off">
+                    <ul class="nav btn-group inline question-type internet-type">
+                        <li><a type="submit" conn-type=0 onclick="return pickInternetType(0);" class="btn active"><i class="fa fa-wifi" aria-hidden="true"></i> Welcome_kaist<br><span></span></a>
+                        </li>
+                        <li>
+                            <a type="submit" conn-type=1 onclick="return pickInternetType(1);" class="btn"><i class="fa fa-wifi" aria-hidden="true"></i> 그 외 와이파이<br><span></span></a>
+                        </li>
+                        <li>
+                            <a type="submit" conn-type=2 onclick="return pickInternetType(2);" class="btn"><i class="fa fa-plug" aria-hidden="true"></i> 랜선<br><span></span></a>
+                        </li>
+                    </ul>
+                </form>
+            </div>
+
+            <div class="post row">
+                <div class="col-sm-4">
+                    <!--현재 위치-->
+                    <h4>어떤 건물에 계신가요?*</h4>
+                    <!--<h6>마커를 움직여 선택해주세요</h6>-->
+                    <button onclick="displayBldgList()" class="btn btn-default btn-block">내 위치 검색</button>
+                    <div style="color: gray"><i class="fa fa-map-marker" aria-hidden="true"></i> 위치정보 수집</div>
+                    <!--<input id="buildingSearch" type="text" class="form-control" placeholder="건물명 검색">-->
+                    <div id="loading"></div>
+
+                    <table class="building-list table table-hover" style="margin-top: 15px;">
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="col-sm-8">
+                    <div id="map"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="exTab1">
+        <div class="container post issue-question">
+            <h4>현재 선택하신 인터넷에 연결이 되었나요? *</h4>
+            <form autocomplete="off">
+                <ul class="nav btn-group inline question-type issue-type">
+                    <li>
+                        <a type="submit" onclick="return pickIssueType(true);" class="btn active" href="#1a" data-toggle="tab">
+                            <i class="fa fa-exclamation-circle" aria-hidden="true"></i> YES
+                            <br><span>연결되었다</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a type="submit" onclick="return pickIssueType(false);" class="btn" href="#conn" data-toggle="tab">
+                            <i class="fa fa-chain-broken" aria-hidden="true"></i> NO
+                            <br><span>(테더링, 3G, LTE 사용 중)</span>
+                        </a>
+                    </li>
+                </ul>
+            </form>
+        </div>
+
+        <div class="tab-content clearfix">
+            <div class="tab-pane container internet-connection" id="conn">
+                <div class="post">
+                    <!--방번호-->
+                    <h4>방 번호</h4>
+                    <h6>현재 몇 호에서 인터넷을 사용하고 있는지 적어주세요</h6>
+                    <input type="text" class="form-control" id="roomNumber" placeholder="방 번호" required />
+                    <h6>* 와이파이 채널 중첩은 위치한 방에 따라 일어나는 현상일 수 있습니다. 이 정보는 다른 사용자에게 공개되지 않습니다</h6>
                 </div>
 
-                <div class="tab-content clearfix">
-                    <div class="tab-pane container internet-connection" id="conn">
-                        <div class="post">
-                            <!--방번호-->
-                            <h4>방 번호</h4>
-                            <h6>현재 몇 호에서 인터넷을 사용하고 있는지 적어주세요</h6>
-                            <input type="text" class="form-control" id="roomNumber" placeholder="방 번호" required />
-                            <h6>* 와이파이 채널 중첩은 위치한 방에 따라 일어나는 현상일 수 있습니다. 이 정보는 다른 사용자에게 공개되지 않습니다</h6>
-                        </div>
-
-                        <div class="post">
-                            <!-- 안테나 갯수 -->
-                            <h4>WELCOME_KAIST의 안테나 갯수</h4>
-                            <h6>현재 WELCOME_KAIST의 안테나가 얼마나 차 있나요?</h6>
-                            <div class="col-xs-6">전혀 채워져있지 않다</div>
-                            <div class="col-xs-6" style="text-align: right;">전부 채워져있다</div>
-                            <div class="range-slider">
-                                <input class="range-slider__range" type="range" value="50" min="0" max="100" step="25">
-                                <span class="hidden range-slider__value"><span class="antenna">50</span>%</span>
-                            </div>
-                        </div>
-
-                        <div class="post">
-                            <h4>Wi-Fi 공유기
-                                <div class="tooltipContainer">
-                                    <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
-                                    <span class="tooltiptext"><img width="120" src="img/ios.png"/>신호가 강한 순으로 세 개까지 적어주세요.</span>
-                                </div>
-                            </h4>
-                            <h6>잡히는 Wi-Fi 공유기 이름을 적어주세요.</h6>
-                            <div class="input-group">
-                                <input id="apRead" type="text" class="form-control" placeholder="공유기 이름">
-                                <span class="input-group-btn"><button id="addAP" class="btn btn-default" type="button">추가</button></span>
-                            </div>
-
-                            <div id="apList"></div>
-                        </div>
+                <div class="post">
+                    <!-- 안테나 갯수 -->
+                    <h4>WELCOME_KAIST의 안테나 갯수</h4>
+                    <h6>현재 WELCOME_KAIST의 안테나가 얼마나 차 있나요?</h6>
+                    <div class="col-xs-6">전혀 채워져있지 않다</div>
+                    <div class="col-xs-6" style="text-align: right;">전부 채워져있다</div>
+                    <div class="range-slider">
+                        <input class="range-slider__range" type="range" value="50" min="0" max="100" step="25">
+                        <span class="hidden range-slider__value"><span class="antenna">50</span>%</span>
                     </div>
-                    <!-- /tab -->
+                </div>
 
-                    <section id="speedtest" class="speedtest section myspeed" style="overflow: hidden;">
-                        <div class="jumbotron">
-                            <div class="container t3-mainbody">
+                <div class="post">
+                    <h4>Wi-Fi 공유기
+                        <div class="tooltipContainer">
+                            <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                            <span class="tooltiptext"><img width="120" src="img/ios.png"/>신호가 강한 순으로 세 개까지 적어주세요.</span>
+                        </div>
+                    </h4>
+                    <h6>잡히는 Wi-Fi 공유기 이름을 적어주세요.</h6>
+                    <div class="input-group">
+                        <input id="apRead" type="text" class="form-control" placeholder="공유기 이름">
+                        <span class="input-group-btn"><button id="addAP" class="btn btn-default" type="button">추가</button></span>
+                    </div>
+
+                    <div id="apList"></div>
+                </div>
+            </div>
+            <!-- /tab -->
+
+            <section id="speedtest" class="speedtest section myspeed" style="overflow: hidden;">
+                <div class="jumbotron">
+                    <div class="container t3-mainbody">
+                        <div class="row">
+                            <div class="col-md-offset-2 col-md-10">
                                 <div class="row">
-                                    <div class="col-md-offset-2 col-md-10">
-                                        <div class="row">
-                                            <div class="col-md-10">
-                                                <div id="t3-content" class="t3-content">
-                                                    <div class="item-page_speedtest clearfix">
-                                                        <div class="row">
-                                                            <div class="col-sm-7 col-xs-12" id="speedtest-area">
-                                                                <div class="border-1 shadow">
-                                                                    <div class="border-2 wrapp">
-                                                                        <div class="scale wrapp" id="scale"></div>
-                                                                        <img src="img/indicator.png" id="speedo-arrow" class="speedo-arrow" style="transform: rotate(-48.5deg); transform-origin: 50% 50% 0px;">
-                                                                        <div class="content wrapp">
-                                                                            <div class="ready wrapp" id="ready">
-                                                                                <button id="speedo-start" class="button" style="display: none;"><span>인터넷 측정하기</span></button>
-                                                                                <i class="fa fa-spinner fa-spin fa-3x fa-fw" id="acl-indicator"></i>
-                                                                            </div>
-                                                                            <div class="realtime" id="tool-data" style="display:none;">
-                                                                                <div id="tool-status"></div>
-                                                                                <div id="tool-speed"></div>
-                                                                                <div id="tool-metrics"></div>
-                                                                            </div>
-                                                                            <div class="text text-center">
-                                                                                <!--<img class="img-responsive img-logo" src="img/KIXLAB.png">-->
-                                                                            </div>
-                                                                        </div>
+                                    <div class="col-md-10">
+                                        <div id="t3-content" class="t3-content">
+                                            <div class="item-page_speedtest clearfix">
+                                                <div class="row">
+                                                    <div class="col-sm-7 col-xs-12" id="speedtest-area">
+                                                        <div class="border-1 shadow">
+                                                            <div class="border-2 wrapp">
+                                                                <div class="scale wrapp" id="scale"></div>
+                                                                <img src="img/indicator.png" id="speedo-arrow" class="speedo-arrow" style="transform: rotate(-48.5deg); transform-origin: 50% 50% 0px;">
+                                                                <div class="content wrapp">
+                                                                    <div class="ready wrapp" id="ready">
+                                                                        <button id="speedo-start" class="button" style="display: none;"><span>인터넷 측정하기</span></button>
+                                                                        <i class="fa fa-spinner fa-spin fa-3x fa-fw" id="acl-indicator"></i>
                                                                     </div>
-                                                                </div>
-                                                                <div class="row" style="margin-top:22px;margin-bottom:-20px;">
-                                                                    <div id="status-bar" class="col-xs-12 status-bar text-center">
-                                                                        <div class="status" id="progress-bar"></div>
+                                                                    <div class="realtime" id="tool-data" style="display:none;">
+                                                                        <div id="tool-status"></div>
+                                                                        <div id="tool-speed"></div>
+                                                                        <div id="tool-metrics"></div>
+                                                                    </div>
+                                                                    <div class="text text-center">
+                                                                        <!--<img class="img-responsive img-logo" src="img/KIXLAB.png">-->
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-sm-5 col-xs-12">
-                                                                <div class="row">
-                                                                    <div class="col-xs-12">
-                                                                        <div class="result-area">
-                                                                            <div class="results" id="speedo-down">
-                                                                                <div class="row">
-                                                                                    <div class="col-xs-5 header"><i class="fa fa-arrow-circle-down down-icon"></i>Download</div>
-                                                                                    <div class="col-xs-7 text-right">
-                                                                                        <span class="data download">--</span>
-                                                                                        <span>Mbps</span>
-                                                                                    </div>
-                                                                                    <div class="col-xs-12" id="chart-download" style="height:110px;"></div>
-                                                                                </div>
+                                                        </div>
+                                                        <div class="row" style="margin-top:22px;margin-bottom:-20px;">
+                                                            <div id="status-bar" class="col-xs-12 status-bar text-center">
+                                                                <div class="status" id="progress-bar"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-5 col-xs-12">
+                                                        <div class="row">
+                                                            <div class="col-xs-12">
+                                                                <div class="result-area">
+                                                                    <div class="results" id="speedo-down">
+                                                                        <div class="row">
+                                                                            <div class="col-xs-5 header"><i class="fa fa-arrow-circle-down down-icon"></i>Download</div>
+                                                                            <div class="col-xs-7 text-right">
+                                                                                <span class="data download">--</span>
+                                                                                <span>Mbps</span>
                                                                             </div>
-                                                                            <div class="results" id="speedo-up">
-                                                                                <div class="row">
-                                                                                    <div class="col-xs-5 header"><i class="fa fa-arrow-circle-up up-icon"></i>Upload</div>
-                                                                                    <div class="col-xs-7 text-right">
-                                                                                        <span class="data upload">--</span>
-                                                                                        <span>Mbps</span>
-                                                                                    </div>
-                                                                                    <div class="col-xs-12" id="chart-upload" style="height:110px;"></div>
-                                                                                </div>
-                                                                            </div>
+                                                                            <div class="col-xs-12" id="chart-download" style="height:110px;"></div>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col-xs-12" id="info-area">
-                                                                        <div class="element row">
-                                                                            <div class="col-xs-1"><i class="fa fa-arrows-h fa-fw"></i></div>
-                                                                            <div class="col-xs-5" style="border-right: 1px solid #cfd8dc;" id="speedo-ping"><span class="data">--</span> ms</div>
-                                                                            <div class="col-xs-1"><i class="fa fa-globe fa-fw"></i></div>
-                                                                            <div class="col-xs-4 ip-address"></div>
-                                                                        </div>
-                                                                        <div class="element row">
-                                                                            <div class="col-xs-1"><i class="fa fa-desktop fa-fw"></i></div>
-                                                                            <div class="col-xs-10 operation-system"></div>
-                                                                        </div>
-                                                                        <div class="element row">
-                                                                            <div class="col-xs-1"><i class="fa fa-chrome fa-fw"></i></div>
-                                                                            <div class="col-xs-10 browser-name"></div>
-                                                                        </div>
-                                                                        <div class="element row">
-                                                                            <div class="col-xs-1"><i class="fa fa-street-view"></i></div>
-                                                                            <div class="col-xs-10 geo-location"></div>
-                                                                        </div>
-                                                                        <div class="element row">
-                                                                            <div class="col-xs-1"><i class="fa fa-star fa-fw"></i></div>
-                                                                            <div class="col-xs-10 provider-name"></div>
+                                                                    <div class="results" id="speedo-up">
+                                                                        <div class="row">
+                                                                            <div class="col-xs-5 header"><i class="fa fa-arrow-circle-up up-icon"></i>Upload</div>
+                                                                            <div class="col-xs-7 text-right">
+                                                                                <span class="data upload">--</span>
+                                                                                <span>Mbps</span>
+                                                                            </div>
+                                                                            <div class="col-xs-12" id="chart-upload" style="height:110px;"></div>
                                                                         </div>
                                                                     </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-xs-12" id="info-area">
+                                                                <div class="element row">
+                                                                    <div class="col-xs-1"><i class="fa fa-arrows-h fa-fw"></i></div>
+                                                                    <div class="col-xs-5" style="border-right: 1px solid #cfd8dc;" id="speedo-ping"><span class="data">--</span> ms</div>
+                                                                    <div class="col-xs-1"><i class="fa fa-globe fa-fw"></i></div>
+                                                                    <div class="col-xs-4 ip-address"></div>
+                                                                </div>
+                                                                <div class="element row">
+                                                                    <div class="col-xs-1"><i class="fa fa-desktop fa-fw"></i></div>
+                                                                    <div class="col-xs-10 operation-system"></div>
+                                                                </div>
+                                                                <div class="element row">
+                                                                    <div class="col-xs-1"><i class="fa fa-chrome fa-fw"></i></div>
+                                                                    <div class="col-xs-10 browser-name"></div>
+                                                                </div>
+                                                                <div class="element row">
+                                                                    <div class="col-xs-1"><i class="fa fa-street-view"></i></div>
+                                                                    <div class="col-xs-10 geo-location"></div>
+                                                                </div>
+                                                                <div class="element row">
+                                                                    <div class="col-xs-1"><i class="fa fa-star fa-fw"></i></div>
+                                                                    <div class="col-xs-10 provider-name"></div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -374,138 +404,139 @@
                                 </div>
                             </div>
                         </div>
-                    </section>
-
-                    <div class="row tab-pane active container internet-slow" id="1a">
-                        <div class="post">
-                            <h1>인터넷 속도 측정</h1>
-                        </div>
-
-                        <div style="margin-top:0px;" class="post">
-                            <div class="in-content">
-                                <div id="internet-question" class="row">
-                                    <h4 id="question-speed">인터넷 응답이 얼마나 느린가요?</h4>
-                                    <input type="radio" name="speed" value="1" description="즉각적이다 (0~0.1s)" checked> 즉각적이다 (0~0.1s)<br>
-                                    <input type="radio" name="speed" value="2" description="지연을 느끼지만, 사용에 지장은 없다 (0.1~1s)"> 지연을 느끼지만, 사용에 지장은 없다 (0.1~1s)<br>
-                                    <input type="radio" name="speed" value="3" description="지연으로 인해 원하는만큼 사용하지 못하고 있다 (1~10s)"> 지연으로 인해 원하는만큼 사용하지 못하고 있다 (1~10s)<br>
-                                    <input type="radio" name="speed" value="3" description="응답하지 않는다 (10s~)"> 응답하지 않는다 (10s~)<br>
-
-                                    <h4 id="question-consistency" style="margin-top: 30px;">인터넷 속도의 일정함</h4>
-                                    <input type="radio" name="consistency" value="1" description="일정한 속도를 유지한다" checked> 일정한 속도를 유지한다<br>
-                                    <input type="radio" name="consistency" value="2" description="속도가 일정치 않아서 신경쓰이긴 하지만 쓸만하다"> 속도가 일정치 않아서 신경쓰이긴 하지만 쓸만하다<br>
-                                    <input type="radio" name="consistency" value="3" description="종잡을 수 없다"> 종잡을 수 없다<br>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /post -->
-
-                        <!-- Post -->
-                        <div class="post">
-                            <div id="activitySection">
-                                <h1>현재 인터넷으로 하고 있는 활동은?(택 1)</h1>
-                            </div>
-                            <div class="in-content">
-                                <div class="row">
-                                    <div id="kaist" class="activity col-md-4 col-sm-4">
-                                        <p>카이스트 포탈, klms 등</p>
-                                        <img data-toggle="tooltip" data-placement="left" title="카이스트 포탈, KDS 등등" type="kaist" src="img/activity/kaist.png" style="padding-top: 20px;">
-                                    </div>
-                                    <div id="web" class="activity col-md-4 col-sm-4">
-                                        <p>웹 브라우징</p>
-                                        <img data-toggle="tooltip" data-placement="left" title="웹 브라우징" type="web" src="img/activity/web.png" alt="">
-                                    </div>
-                                    <div id="conferencing" class="activity col-md-4 col-sm-4">
-                                        <p>웹 컨퍼런싱(skype, hangout)</p>
-                                        <img data-toggle="tooltip" data-placement="left" title="컨퍼런싱" type="conferencing" src="img/activity/conferencing.png" alt="">
-                                    </div>
-                                    <div id="twitter" class="activity col-md-4 col-sm-4">
-                                        <p>트위터</p>
-                                        <img data-toggle="tooltip" data-placement="left" title="트위터" type="twitter" src="img/activity/twitter.png" alt="">
-                                    </div>
-                                    <div id="facebook" class="activity col-md-4 col-sm-4">
-                                        <p>페이스북</p>
-                                        <img data-toggle="tooltip" data-placement="left" title="페이스북" type="facebook" src="img/activity/facebook.png" alt="">
-                                    </div>
-                                    <div id="file" class="activity col-md-4 col-sm-4">
-                                        <p>파일 업로드/다운로드</p>
-                                        <img data-toggle="tooltip" data-placement="left" title="파일 업로드/다운로드" type="file" src="img/activity/file.png" alt="">
-                                    </div>
-                                    <div id="music" class="activity col-md-4 col-sm-4">
-                                        <p>뮤직 스트리밍</p>
-                                        <img data-toggle="tooltip" data-placement="left" title="뮤직 스트리밍" width="90" type="music" src="img/activity/music.png" alt="">
-                                    </div>
-                                    <div id="video" class="activity col-md-4 col-sm-4">
-                                        <p>비디오 스트리밍</p>
-                                        <img data-toggle="tooltip" data-placement="left" title="비디오 스트리밍" type="video" src="img/activity/video.png" alt="">
-                                    </div>
-                                </div>
-                                <h6>* 정확한 활동 제보는 인터넷이 느린 이유를 분석하는데 많은 도움이 됩니다</h6>
-                            </div>
-                        </div>
-                        <!-- /post -->
                     </div>
-                    <!-- /tab -->
                 </div>
-            </div>
-        </div>
+            </section>
 
-        <div class="container">
-            <!-- Post -->
-            <div class="post">
-                <div class="in-content">
-                    <div class="row">
-                        <form id="finalStage" action="" onsubmit="return postSignature();">
-                            <button onclick="collectData()" class="btn btn-default" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            <div class="row tab-pane active container internet-slow" id="1a">
+                <div class="post">
+                    <h1>인터넷 속도 측정</h1>
+                </div>
+
+                <div style="margin-top:0px;" class="post">
+                    <div class="in-content">
+                        <div id="internet-question" class="row">
+                            <h4 id="question-speed">인터넷 응답이 얼마나 느린가요?</h4>
+                            <input type="radio" name="speed" value="1" description="즉각적이다 (0~0.1s)" checked> 즉각적이다 (0~0.1s)<br>
+                            <input type="radio" name="speed" value="2" description="지연을 느끼지만, 사용에 지장은 없다 (0.1~1s)"> 지연을 느끼지만, 사용에 지장은 없다 (0.1~1s)<br>
+                            <input type="radio" name="speed" value="3" description="지연으로 인해 원하는 만큼 사용하지 못하고 있다 (1~10s)"> 지연으로 인해 원하는 만큼 사용하지 못하고 있다 (1~10s)<br>
+                            <input type="radio" name="speed" value="3" description="응답하지 않는다 (10s~)"> 응답하지 않는다 (10s~)<br>
+
+                            <h4 id="question-consistency" style="margin-top: 30px;">인터넷 속도가 일정한가요?</h4>
+                            <input type="radio" name="consistency" value="1" description="일정한 속도를 유지한다" checked> 일정한 속도를 유지한다<br>
+                            <input type="radio" name="consistency" value="2" description="속도가 일정치 않아서 신경쓰이긴 하지만 쓸만하다"> 속도가 일정치 않아서 신경쓰이긴 하지만 쓸만하다<br>
+                            <input type="radio" name="consistency" value="3" description="종잡을 수 없다"> 종잡을 수 없다<br>
+                        </div>
+                    </div>
+                </div>
+                <!-- /post -->
+
+                <!-- Post -->
+                <div class="post">
+                    <div id="activitySection">
+                        <h1>현재 인터넷으로 하고 있는 활동은?(택 1)</h1>
+                    </div>
+                    <div class="in-content">
+                        <div class="row">
+                            <div id="kaist" class="activity col-md-4 col-sm-4">
+                                <p>카이스트 포탈, klms 등</p>
+                                <img data-toggle="tooltip" data-placement="left" title="카이스트 포탈, KDS 등등" type="kaist" src="img/activity/kaist.png" style="padding-top: 20px;">
+                            </div>
+                            <div id="web" class="activity col-md-4 col-sm-4">
+                                <p>웹 브라우징</p>
+                                <img data-toggle="tooltip" data-placement="left" title="웹 브라우징" type="web" src="img/activity/web.png" alt="">
+                            </div>
+                            <div id="conferencing" class="activity col-md-4 col-sm-4">
+                                <p>웹 컨퍼런싱(skype, hangout)</p>
+                                <img data-toggle="tooltip" data-placement="left" title="컨퍼런싱" type="conferencing" src="img/activity/conferencing.png" alt="">
+                            </div>
+                            <div id="twitter" class="activity col-md-4 col-sm-4">
+                                <p>트위터</p>
+                                <img data-toggle="tooltip" data-placement="left" title="트위터" type="twitter" src="img/activity/twitter.png" alt="">
+                            </div>
+                            <div id="facebook" class="activity col-md-4 col-sm-4">
+                                <p>페이스북</p>
+                                <img data-toggle="tooltip" data-placement="left" title="페이스북" type="facebook" src="img/activity/facebook.png" alt="">
+                            </div>
+                            <div id="file" class="activity col-md-4 col-sm-4">
+                                <p>파일 업로드/다운로드</p>
+                                <img data-toggle="tooltip" data-placement="left" title="파일 업로드/다운로드" type="file" src="img/activity/file.png" alt="">
+                            </div>
+                            <div id="music" class="activity col-md-4 col-sm-4">
+                                <p>뮤직 스트리밍</p>
+                                <img data-toggle="tooltip" data-placement="left" title="뮤직 스트리밍" width="90" type="music" src="img/activity/music.png" alt="">
+                            </div>
+                            <div id="video" class="activity col-md-4 col-sm-4">
+                                <p>비디오 스트리밍</p>
+                                <img data-toggle="tooltip" data-placement="left" title="비디오 스트리밍" type="video" src="img/activity/video.png" alt="">
+                            </div>
+                        </div>
+                        <h6>* 정확한 활동 제보는 인터넷이 느린 이유를 분석하는데 많은 도움이 됩니다</h6>
+                    </div>
+                </div>
+                <!-- /post -->
+            </div>
+            <!-- /tab -->
+        </div>
+    </div>
+
+
+    <div class="container">
+        <!-- Post -->
+        <div class="post">
+            <div class="in-content">
+                <div class="row">
+                    <form id="finalStage" action="" onsubmit="return postSignature();">
+                        <button onclick="collectData()" class="btn btn-default" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                             미리보기</button>
-                            <button type="submit" id="submitSection" class="btn btn-primary" data-loading-text="Loading...">제출</button>
-                        </form>
+                        <button type="submit" id="submitSection" class="btn btn-primary" data-loading-text="Loading...">제출</button>
+                    </form>
 
-                        <div class="collapse" id="collapseExample">
-                            <div class="well" id="preview">
-                                est
-                            </div>
+                    <div class="collapse" id="collapseExample">
+                        <div class="well" id="preview">
+                            est
                         </div>
+                    </div>
 
-                        <div class="form-alert alert alert-warning" id="form-speed" role="alert">
-                            <strong>"인터넷 속도의 빠르기"를 선택해 주세요.</strong> <a id="move-speed">이동하기</a>
-                        </div>
-                        <div class="form-alert alert alert-warning" id="form-consistency" role="alert">
-                            <strong>"인터넷 속도의 일정함"을 선택해 주세요.</strong> <a id="move-consistency">이동하기</a>
-                        </div>
-                        <div class="form-alert alert alert-warning" id="form-test" role="alert">
-                            <strong>"인터넷 속도 측정"을 해주세요.</strong> <a id="move-test">이동하기</a>
-                        </div>
-                        <div class="form-alert alert alert-warning" id="form-activity" role="alert">
-                            <strong>"인터넷 활동"을 선택해 주세요.</strong> <a id="move-activity">이동하기</a>
-                        </div>
-                        <div class="form-alert alert alert-warning" id="form-roomNumber" role="alert">
-                            <strong>"기숙사 방 번호"를 입력해 주세요.</strong>
-                        </div>
-                        <div class="form-alert alert alert-warning" id="form-wifi" role="alert">
-                            <strong>"와이파이 공유기 이름"을 하나 이상 입력해 주세요.</strong>
-                        </div>
+                    <div class="form-alert alert alert-warning" id="form-speed" role="alert">
+                        <strong>"인터넷 속도의 빠르기"를 선택해 주세요.</strong> <a id="move-speed">이동하기</a>
+                    </div>
+                    <div class="form-alert alert alert-warning" id="form-consistency" role="alert">
+                        <strong>"인터넷 속도의 일정함"을 선택해 주세요.</strong> <a id="move-consistency">이동하기</a>
+                    </div>
+                    <div class="form-alert alert alert-warning" id="form-test" role="alert">
+                        <strong>"인터넷 속도 측정"을 해주세요.</strong> <a id="move-test">이동하기</a>
+                    </div>
+                    <div class="form-alert alert alert-warning" id="form-activity" role="alert">
+                        <strong>"인터넷 활동"을 선택해 주세요.</strong> <a id="move-activity">이동하기</a>
+                    </div>
+                    <div class="form-alert alert alert-warning" id="form-roomNumber" role="alert">
+                        <strong>"기숙사 방 번호"를 입력해 주세요.</strong>
+                    </div>
+                    <div class="form-alert alert alert-warning" id="form-wifi" role="alert">
+                        <strong>"와이파이 공유기 이름"을 하나 이상 입력해 주세요.</strong>
                     </div>
                 </div>
             </div>
-            <!-- /post -->
-
-            <div style="color: gray"><i class="fa fa-map-marker" aria-hidden="true"></i> 위치정보 수집</div>
-            <a style="color: gray" href="#compose-modal" data-toggle="modal" id="compose-button">
-                <i class="fa fa-shield" aria-hidden="true"></i> 제출하신 자료는 관리자와 정보통신팀 외에 공개되지 않습니다(개인정보보호방침 보기)</a>
         </div>
+        <!-- /post -->
 
-        <div class="modal fade" id="compose-modal" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <a style="color: gray" href="#compose-modal" data-toggle="modal" id="compose-button">
+            <i class="fa fa-shield" aria-hidden="true"></i> 제출하신 자료는 관리자와 정보통신팀 외에 공개되지 않습니다(개인정보보호방침 보기)</a>
+    </div>
+
+    <div class="modal fade" id="compose-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">개인정보보호방침</h4>
-                    </div>
+                    <h4 class="modal-title">개인정보보호방침</h4>
+                </div>
 
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <textarea class="form-control" id="compose-message" rows="10">('kixlab.org/rally'이하 'rally')은(는) 개인정보보호법에 따라 이용자의 개인정보 보호 및 권익을 보호하고 개인정보와 관련한 이용자의 고충을 원활하게 처리할 수 있도록 다음과 같은 처리방침을 두고 있습니다.
+                <div class="modal-body">
+                    <div class="form-group">
+                        <textarea class="form-control" id="compose-message" rows="10">('kixlab.org/rally'이하 'rally')은(는) 개인정보보호법에 따라 이용자의 개인정보 보호 및 권익을 보호하고 개인정보와 관련한 이용자의 고충을 원활하게 처리할 수 있도록 다음과 같은 처리방침을 두고 있습니다.
 
 ('rally') 은(는) 회사는 개인정보처리방침을 개정하는 경우 웹사이트 공지사항(또는 개별공지)을 통하여 공지할 것입니다.
 
@@ -665,15 +696,15 @@
 12. 개인정보 처리방침 변경
 
 ①이 개인정보처리방침은 시행일로부터 적용되며, 법령 및 방침에 따른 변경내용의 추가, 삭제 및 정정이 있는 경우에는 변경사항의 시행 7일 전부터 공지사항을 통하여 고지할 것입니다.</textarea>
-                        </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-
                 </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+
             </div>
         </div>
+    </div>
     </div>
 
     <footer>
@@ -681,7 +712,7 @@
             <ul class="footer-links right-links">
                 <li><a href="mailto:kixlab.rally@gmail.com">contact</a></li>
                 <li><a href="./privacy.html">privacy</a></li>
-                <li>ver 0.1.17</li>
+                <li>ver 0.3</li>
             </ul>
             <ul class="footer-links">
                 <li>© 2017 KIXLAB</li>
