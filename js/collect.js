@@ -27,6 +27,12 @@ function initListener() {
         }, 2000);
     })
 
+    $("#move-bldg").click(function(e) {
+        $("html, body").animate({
+            scrollTop: $("#map").position().top
+        }, 1500);
+    })
+
     $("#move-speed").click(function(e) {
         $("html, body").animate({
             scrollTop: $("#question-speed").position().top
@@ -292,9 +298,16 @@ function collectData() {
 
 function postSignature() {
     $(".form-alert").css("display", "none");
+
+    var isValid = true;
+
+    if ($('.building-list tr.warning').length == 0) {
+        $("#form-bldg").css("display", "block");
+        isValid = false;
+    }
+
     if (isIssueConn()) {
         /* Check whether all the question are filled. */
-        var isValid = true;
 
         if ($("#roomNumber").val() == "") {
             $("#form-roomNumber").css("display", "block");
@@ -314,7 +327,6 @@ function postSignature() {
         }
     } else {
         /* Check whether all the question are filled. */
-        var isValid = true;
 
         if ($(".data.download").text() == "--") {
             $("#form-test").css("display", "block");
