@@ -24,13 +24,13 @@ function initMap() {
         for (var p in petitions) {
             p = parseInt(p);
             // Add the circle for the petition to the map.
-            var cityCircle = createCircle(petitions[p], { lat: BLDG[p].lat, lng: BLDG[p].lng }, BLDG[p].name);
+            var marker = createMarker(petitions[p], { lat: BLDG[p].lat, lng: BLDG[p].lng }, BLDG[p].name);
             bounds.extend({ lat: BLDG[p].lat, lng: BLDG[p].lng });
 
-            cityCircle.addListener('click', function(e) {
+            marker.addListener('click', function(e) {
                 infoWindow.open(map);
                 infoWindow.setContent(this.title + " <a class='btn btn-primary' href='./timeline.html?id=" + this.petitionID + "'>자세히 보기</a>");
-                infoWindow.setPosition(this.getCenter())
+                infoWindow.setPosition(this.getPosition())
             });
         }
 

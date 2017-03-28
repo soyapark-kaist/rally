@@ -211,6 +211,15 @@ function setProgressbar(inNow, inMax) {
     $("#leftQuorum").text(inMax - inNow);;
 }
 
+function createMarker(inID, inCenter, inTitle) {
+    return new google.maps.Marker({
+        position: new google.maps.LatLng(inCenter.lat, inCenter.lng),
+        map: map,
+        petitionID: inID,
+        title: inTitle
+    });
+}
+
 function createCircle(inID, inCenter, inTitle) {
     return new google.maps.Circle({
         strokeColor: '#FF0000',
