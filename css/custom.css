@@ -748,3 +748,7 @@ footer {
 .question-type .btn:hover {
     background: #ff6c40;
 }
+
+.question-type li {
+    display: inline-block;
+}
