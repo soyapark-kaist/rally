@@ -345,11 +345,10 @@ function postUsers() {
     var userID = generateID(5);
     var type;
 
+    var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + userID);
+    // users/2017-3-6
 
     if (!isIssueConn()) {
-        var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + userID);
-        // users/2017-3-6
-
         playersRef.set({
             "type": $(".internet-type li.active").index(),
             "bldg": $('.building-list tr.warning').attr("bldg"),
@@ -369,15 +368,11 @@ function postUsers() {
             if (error) {
                 console.log(error);
             } else {
-                // when post to DB is successful 
-                routeToTimeline(userID);
+                routeToTimeline(BLDG[$('.building-list tr.warning').attr("bldg")].uid);
             }
 
         });
     } else {
-        var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/conn" + userID);
-        // users/2017-3-6
-
         playersRef.set({
             "type": $(".internet-type li.active").index(),
             "bldg": $('.building-list tr.warning').attr("bldg"),
@@ -394,8 +389,7 @@ function postUsers() {
             if (error) {
                 console.log(error);
             } else {
-                // when post to DB is successful 
-                routeToTimeline("conn" + userID);
+                routeToTimeline(BLDG[$('.building-list tr.warning').attr("bldg")].uid);
             }
 
         });
