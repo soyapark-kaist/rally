@@ -3,44 +3,47 @@ var pos;
 
 function initVis() {
     toggleLoading("#loading");
-    var playersReff = firebase.database().ref("petition/");
     infoWindow = new google.maps.InfoWindow({ map: map });
     infoWindow.close();
 
-    var playersRef = firebase.database().ref("petition-meta/");
 
+
+    var bldgRef = firebase.database().ref("bldg/");
     // Attach an asynchronous callback to read the data at our posts reference
-    playersRef.once("value").then(function(snapshot) {
-        var petitions = snapshot.val();
+    bldgRef.once("value").then(function(snapshot) {
+        var bldgs = snapshot.val();
 
-        /* before append, remove previously added rows. */
-        $('.table-inbox tbody').empty()
+        var playersRef = firebase.database().ref("petition-meta/");
 
-        var bounds = new google.maps.LatLngBounds();
-        for (var p in petitions) {
-            p = parseInt(p);
+        // Attach an asynchronous callback to read the data at our posts reference
+        playersRef.once("value").then(function(snapshot) {
+            var petitions = snapshot.val();
+            var bounds = new google.maps.LatLngBounds();
 
-            $('.table-inbox tbody').append(
-                '<tr onclick="window.document.location=\'./timeline.html?id=' + petitions[p] + '\';">\
-            <td>' + BLDG[p].name + '</td>\
+            for (var p in petitions) {
+                p = parseInt(p);
+
+                $('.table-inbox tbody').append(
+                    '<tr onclick="window.document.location=\'./timeline.html?id=' + petitions[p] + '\';">\
+            <td>' + bldgs[p].name + '</td>\
           </tr>'
-            );
+                );
 
+                // Add the circle for the petition to the map.
+                var marker = createMarker(petitions[p], { lat: bldgs[p].lat, lng: bldgs[p].lng }, bldgs[p].name);
+                bounds.extend({ lat: bldgs[p].lat, lng: bldgs[p].lng });
 
-            // Add the circle for the petition to the map.
-            var marker = createMarker(petitions[p], { lat: BLDG[p].lat, lng: BLDG[p].lng }, BLDG[p].name);
-            bounds.extend({ lat: BLDG[p].lat, lng: BLDG[p].lng });
+                marker.addListener('click', function(e) {
+                    infoWindow.open(map);
+                    infoWindow.setContent(this.title + " <a class='btn btn-primary' href='./timeline.html?id=" + this.petitionID + "'>자세히 보기</a>");
+                    infoWindow.setPosition(this.getPosition())
+                });
+            }
 
-            marker.addListener('click', function(e) {
-                infoWindow.open(map);
-                infoWindow.setContent(this.title + " <a class='btn btn-primary' href='./timeline.html?id=" + this.petitionID + "'>자세히 보기</a>");
-                infoWindow.setPosition(this.getPosition())
-            });
-        }
+            map.fitBounds(bounds);
 
-        map.fitBounds(bounds);
-
-        toggleLoading("#loading");
+            toggleLoading("#loading");
+        });
     });
 
 }

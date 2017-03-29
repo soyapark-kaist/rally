@@ -389,10 +389,10 @@ function postUsers() {
                 if (error) {
                     console.log(error);
                 } else {
-                    var playersRef = firebase.database().ref('petition-meta/' + $('.building-list tr.warning').attr("bldg"));
+                    var playersRef = firebase.database().ref('bldg/' + $('.building-list tr.warning').attr("bldg"));
                     // Attach an asynchronous callback to read the data at our posts reference
                     playersRef.once("value").then(function(snapshot) {
-                        routeToTimeline(snapshot.val());
+                        routeToTimeline(snapshot.val().url);
                     });
                 }
 
@@ -418,10 +418,11 @@ function postUsers() {
                 if (error) {
                     console.log(error);
                 } else {
-                    var playersRef = firebase.database().ref('petition-meta/' + $('.building-list tr.warning').attr("bldg"));
+                    var playersRef = firebase.database().ref('bldg/' + $('.building-list tr.warning').attr("bldg"));
                     // Attach an asynchronous callback to read the data at our posts reference
                     playersRef.once("value").then(function(snapshot) {
-                        routeToTimeline(snapshot.val());
+                        routeToTimeline(snapshot.val().url);
+
                     });
                 }
 

@@ -375,7 +375,7 @@ function filterSignature(inTargetDate, inTargetLoc, inQuorum) {
 
         $("#stat").css("display", "block");
     } else {
-        $("#number").text("해당 건물 켐페인에 아직 참여한 사람이 없습니다. 친구들에게 홍보해 더 많은 힘을 모아보세요!");
+        $("#number").text("해당 건물에 아직 제보한 사람이 없습니다. 친구들에게 홍보해 더 많은 힘을 모아보세요!");
     }
 
     if (conn["cnt"] + slow["cnt"] >= inQuorum) $("#progress-quorum").toggle();

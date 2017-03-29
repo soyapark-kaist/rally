@@ -40,7 +40,7 @@ function initMap() {
                 });
             }
 
-            map.fitBounds(bounds);
+            // map.fitBounds(bounds);
 
             toggleLoading("#loading");
         });

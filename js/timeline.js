@@ -26,7 +26,7 @@ function initPetition() {
         }
     }
 
-    fill_progress_circle(1);
+
     fetchPetiton();
 
 
@@ -164,59 +164,19 @@ function fetchPetiton(inReceiving) {
         }
 
         BLDG_INDEX = parseInt(p.bldg);
-        displayPetition(p.content);
 
+        if (p.content) { // when campaign is opened.
+            fill_progress_circle(2);
+            $("#current-progress").text("인터넷 캠페인 진행 중");
+        } else fill_progress_circle(1);
+
+        displayPetition(p.content);
         selectSignature();
     });
 }
 
 function isSlow(inQuorum) {
     return inQuorum == SLOW_TOTAL;
-}
-
-function storePetitionInfo(inPetition) {
-    petition = inPetition;
-
-    $("#map").attr("src", "https://maps.googleapis.com/maps/api/staticmap?zoom=16&size=250x250&maptype=roadmap &key=AIzaSyCVL-xlMCOT_zSGT4VLpQcWe1sTlDocZeo" +
-        "&markers=color:red%7Clabel:S%7C" + inPetition.latitude + "," + inPetition.longitude);
-
-    fill_progress_circle(getProgress(inPetition["time-line"]));
-
-    displayPetition({
-        'title': inPetition.title,
-        'content': inPetition.content,
-        'time-range': inPetition["time-range"],
-        'bldg': inPetition["bldg"]
-    });
-
-    // if data collecting phase is passed, hide ads
-    if (getProgress(inPetition["time-line"]) > 1) {
-        $("#on-going").html("<p>충분한 참여자를 모으지 못해, 정보통신팀에 보내지 못하였습니다.</p>");
-        $("#participate-row").toggle();
-    }
-
-    if (inPetition["time-line"]["respond"])
-        displayRespond(inPetition["time-line"]["respond-msg"]);
-
-
-    center = {
-        lat: inPetition.latitude,
-        lng: inPetition.longitude
-    };
-    hour_range = parseInt(inPetition["time-range"].split(":")[0]);
-
-
-    if (!petitionloaded) {
-        petitionloaded = true;
-        initTimeline(inPetition["time-line"]);
-    }
-}
-
-function displayType(inResponse) {
-    if (inResponse)
-        $("#internetSlow").css("display", "block");
-    else
-        $("#internetConn").css("display", "block");
 }
 
 function displayPetition(inContent) {

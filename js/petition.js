@@ -5,44 +5,52 @@ var filteredCnt = 0; // # of signature filtered
 var petitionID = generateID(8);
 
 $(function() {
-        $('[data-toggle="tooltip"]').tooltip();
-        $('#petitionForm').submit(function(event) {
-            event.preventDefault();
-            postPetition();
-        });
-    })
-    /*
-        var selectedLoc = {
-            "lat": $('#map').locationpicker("location").latitude,
-            "lng": $('#map').locationpicker("location").longitude
-        };
-
-        var bldg = [];
-        for (var l in BLDG) {
-            if (Math.abs(selectedLoc.lat - BLDG[l].lat) < 0.002 && Math.abs(selectedLoc.lng - BLDG[l].lng) < 0.002) {
-                bldg.push(l);
-            }
-        }
-        console.log(bldg);
-        $('#location select').remove();
-        if (bldg.length > 0) {
-            var s = $('<select />');
-
-            $('<option />', { value: -1, text: "혹시 이 건물에 계신가요?" }).appendTo(s);
-            for (var val in bldg) {
-                $('<option />', { value: val, text: bldg[val] }).appendTo(s);
-            }
-
-            s.appendTo('#location'); // or wherever it should be
-        }*/
-
-function initListener() {
     toggleLoading("#loading");
 
-    fill_progress_circle(0);
-
     initDB();
-}
+
+    $('[data-toggle="tooltip"]').tooltip();
+    $('#petitionForm').submit(function(event) {
+        event.preventDefault();
+        postPetition();
+    });
+
+    var bldgRef = firebase.database().ref("bldg/");
+    // Attach an asynchronous callback to read the data at our posts reference
+    bldgRef.once("value").then(function(snapshot) {
+        var BLDG = snapshot.val();
+
+        var bldgsName = [];
+        for (var b in BLDG) {
+            bldgsName.push(BLDG[b].name);
+        }
+
+        $("#buildingSearch").autocomplete({
+            source: bldgsName,
+            open: function() {
+                $("#ui-id-1").append('<li class="ui-menu-item" role="presentation"><a class="ui-corner-all" tabindex="-1" onclick="clearSearch()">찾는 건물이 없으면 지도에서 장소를 클릭하세요</a></li>');
+            },
+            select: function(event, ui) {
+                if (ui) { //then center on map 
+                    for (var b in BLDG) {
+                        if (BLDG[b].name == ui.item.value) {
+                            $('#map').locationpicker({
+                                location: {
+                                    latitude: BLDG[b].lat,
+                                    longitude: BLDG[b].lng
+                                },
+                                radius: 70
+                            });
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+    });
+
+
+})
 
 function initMap() {
     createMap();
@@ -179,8 +187,8 @@ function postPetition() {
         playersRef.set({
                 "title": $("#title").val(),
                 "content": $("#content").val(),
-                "latitude": lat,
-                "longitude": lng,
+                "latitude": $('#map').locationpicker("location").latitude,
+                "longitude": $('#map').locationpicker("location").longitude,
                 "bldg": $("#buildingSearch").val(),
                 "time-range": $("input[name='time-range']:checked").val(),
                 "day-range": $("input[name='day-range']:checked").val(),
@@ -195,7 +203,8 @@ function postPetition() {
                     console.log(error);
                 } else {
                     // when post to DB is successful 
-                    routeToTimeline(petitionID);
+                    alert("제출되었습니다. 관리자 승인 후 캠페인이 시작됩니다.");
+                    window.location.replace("./others.html");
                 }
 
             });
@@ -204,16 +213,16 @@ function postPetition() {
     else {
         //then route to login page(login.html)
         //route to login.html
+        localStorage.setItem("petition", "true");
         localStorage.setItem("petitionID", petitionID);
         localStorage.setItem("title", $("#title").val());
         localStorage.setItem("content", $("#content").val());
-        localStorage.setItem("latitude", lat);
-        localStorage.setItem("longitude", lng);
+        localStorage.setItem("latitude", $('#map').locationpicker("location").latitude);
+        localStorage.setItem("longitude", $('#map').locationpicker("location").longitude);
         localStorage.setItem("bldg", $("#buildingSearch").val());
         localStorage.setItem("time-range", $("input[name='time-range']:checked").val());
         localStorage.setItem("day-range", $("input[name='day-range']:checked").val());
         localStorage.setItem("submit", new Date().toString());
-        localStorage.setItem("quorum", SLOW_TOTAL);
 
         window.location.replace("./login.html");
         return false;
