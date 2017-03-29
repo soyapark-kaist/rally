@@ -8,7 +8,7 @@ var TIME_RANGE = [
 
 var TIME_RANGE_MSG = ["새벽", "아침", "점심", "오후", "저녁"];
 
-var WIFI_STRENGTH_MSG = ["전혀 차 있지않다", "1개", "2개", "3개", "모두 차 있다"];
+var WIFI_STRENGTH_MSG = ["전혀 차 있지않다", "거의 채워져 있지 않다", "절반", "대부분 차 있다", "모두 차 있다"];
 var WIFI_TYPE_MSG = ["Welcome_KAIST", "그외 와이파이", "랜선"];
 
 var MSG_PROGRESS = ["제출", "데이터 모집 중", "검증 중", "답변 대기 중", "정보통신팀 답변 도착"];
@@ -71,7 +71,7 @@ var BLDG = [{
     {
         "name": "희망관",
         "lat": 36.368,
-        "lng": 127.356
+        "lng": 127.356951
     },
     {
         "name": "아름관",
