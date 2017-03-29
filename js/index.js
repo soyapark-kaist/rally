@@ -15,28 +15,36 @@ function initMap() {
     infoWindow = new google.maps.InfoWindow({ map: map });
     infoWindow.close();
 
-    var playersRef = firebase.database().ref("petition-meta/");
-
+    var bldgRef = firebase.database().ref("bldg/");
     // Attach an asynchronous callback to read the data at our posts reference
-    playersRef.once("value").then(function(snapshot) {
-        var petitions = snapshot.val();
+    bldgRef.once("value").then(function(snapshot) {
+        var bldgs = snapshot.val();
 
-        var bounds = new google.maps.LatLngBounds();
-        for (var p in petitions) {
-            p = parseInt(p);
-            // Add the circle for the petition to the map.
-            var marker = createMarker(petitions[p], { lat: BLDG[p].lat, lng: BLDG[p].lng }, BLDG[p].name);
-            bounds.extend({ lat: BLDG[p].lat, lng: BLDG[p].lng });
+        var playersRef = firebase.database().ref("petition-meta/");
 
-            marker.addListener('click', function(e) {
-                infoWindow.open(map);
-                infoWindow.setContent(this.title + " <a class='btn btn-primary' href='./timeline.html?id=" + this.petitionID + "'>자세히 보기</a>");
-                infoWindow.setPosition(this.getPosition())
-            });
-        }
+        // Attach an asynchronous callback to read the data at our posts reference
+        playersRef.once("value").then(function(snapshot) {
+            var petitions = snapshot.val();
 
-        map.fitBounds(bounds);
+            var bounds = new google.maps.LatLngBounds();
+            for (var p in petitions) {
+                p = parseInt(p);
+                // Add the circle for the petition to the map.
+                var marker = createMarker(petitions[p], { lat: bldgs[p].lat, lng: bldgs[p].lng }, bldgs[p].name);
+                bounds.extend({ lat: bldgs[p].lat, lng: bldgs[p].lng });
 
-        toggleLoading("#loading");
+                marker.addListener('click', function(e) {
+                    infoWindow.open(map);
+                    infoWindow.setContent(this.title + " <a class='btn btn-primary' href='./timeline.html?id=" + this.petitionID + "'>자세히 보기</a>");
+                    infoWindow.setPosition(this.getPosition())
+                });
+            }
+
+            map.fitBounds(bounds);
+
+            toggleLoading("#loading");
+        });
     });
+
+
 }
