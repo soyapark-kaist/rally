@@ -27,6 +27,12 @@ function initListener() {
         }, 2000);
     })
 
+    $("#move-bldg").click(function(e) {
+        $("html, body").animate({
+            scrollTop: $("#map").position().top
+        }, 1500);
+    })
+
     $("#move-speed").click(function(e) {
         $("html, body").animate({
             scrollTop: $("#question-speed").position().top
@@ -292,9 +298,16 @@ function collectData() {
 
 function postSignature() {
     $(".form-alert").css("display", "none");
+
+    var isValid = true;
+
+    if ($('.building-list tr.warning').length == 0) {
+        $("#form-bldg").css("display", "block");
+        isValid = false;
+    }
+
     if (isIssueConn()) {
         /* Check whether all the question are filled. */
-        var isValid = true;
 
         if ($("#roomNumber").val() == "") {
             $("#form-roomNumber").css("display", "block");
@@ -314,7 +327,6 @@ function postSignature() {
         }
     } else {
         /* Check whether all the question are filled. */
-        var isValid = true;
 
         if ($(".data.download").text() == "--") {
             $("#form-test").css("display", "block");
@@ -347,65 +359,103 @@ function postUsers() {
     var userID = generateID(5);
     var type;
 
-    if (!isIssueConn()) {
-        var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + userID);
-        // users/2017-3-6
+    // Check whether the user is authenticated
+    var user = firebase.auth().currentUser;
 
-        playersRef.set({
-            "type": $(".internet-type a.active").attr("conn-type"),
-            "bldg": $('.building-list tr.warning').attr("bldg"),
-            "activity": $(".activity.select img").attr("type"),
-            "ip_addr": $(".ip-address ").text(),
-            "latitude": center.lat,
-            "longitude": center.lng,
-            "download": $(".data.download").text(),
-            "upload": $(".data.upload").text(),
-            "ping": $("#speedo-ping .data .time").text(),
-            "speed": $("input[name='speed']:checked").val(),
-            "consistency": $("input[name='consistency']:checked").val(),
-            "os": $(".operation-system").text(),
-            "web": $(".browser-name").text(),
-            "time": new Date().toString()
-        }, function(error) {
-            if (error) {
-                console.log(error);
-            } else {
-                var playersRef = firebase.database().ref('petition-meta/' + $('.building-list tr.warning').attr("bldg"));
-                // Attach an asynchronous callback to read the data at our posts reference
-                playersRef.once("value").then(function(snapshot) {
-                    routeToTimeline(snapshot.val());
-                });
-            }
+    // User is signed in.
+    if (user) {
+        if (!isIssueConn()) {
+            var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + userID);
+            // users/2017-3-6
 
-        });
-    } else {
-        var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + "conn" + userID);
-        // users/2017-3-6/conn~~
+            playersRef.set({
+                "type": $(".internet-type a.active").attr("conn-type"),
+                "bldg": $('.building-list tr.warning').attr("bldg"),
+                "activity": $(".activity.select img").attr("type"),
+                "ip_addr": $(".ip-address ").text(),
+                "latitude": center.lat,
+                "longitude": center.lng,
+                "download": $(".data.download").text(),
+                "upload": $(".data.upload").text(),
+                "ping": $("#speedo-ping .data .time").text(),
+                "speed": $("input[name='speed']:checked").val(),
+                "consistency": $("input[name='consistency']:checked").val(),
+                "os": $(".operation-system").text(),
+                "web": $(".browser-name").text(),
+                "time": new Date().toString(),
+                "email": user.email
+            }, function(error) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    var playersRef = firebase.database().ref('petition-meta/' + $('.building-list tr.warning').attr("bldg"));
+                    // Attach an asynchronous callback to read the data at our posts reference
+                    playersRef.once("value").then(function(snapshot) {
+                        routeToTimeline(snapshot.val());
+                    });
+                }
 
-        playersRef.set({
-            "type": $(".internet-type a.active").attr("conn-type"),
-            "bldg": $('.building-list tr.warning').attr("bldg"),
-            "room": $("#roomNumber").val(),
-            "welcome_kaist": $(".antenna").text(),
-            "wi-fi": getListWifi(),
-            "ip_addr": $(".ip-address ").text(),
-            "latitude": center.lat,
-            "longitude": center.lng,
-            "os": $(".operation-system").text(),
-            "web": $(".browser-name").text(),
-            "time": new Date().toString()
-        }, function(error) {
-            if (error) {
-                console.log(error);
-            } else {
-                var playersRef = firebase.database().ref('petition-meta/' + $('.building-list tr.warning').attr("bldg"));
-                // Attach an asynchronous callback to read the data at our posts reference
-                playersRef.once("value").then(function(snapshot) {
-                    routeToTimeline(snapshot.val());
-                });
-            }
+            });
+        } else {
+            var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + "conn" + userID);
+            // users/2017-3-6/conn~~
 
-        });
+            playersRef.set({
+                "type": $(".internet-type a.active").attr("conn-type"),
+                "bldg": $('.building-list tr.warning').attr("bldg"),
+                "room": $("#roomNumber").val(),
+                "welcome_kaist": $(".antenna").text(),
+                "wi-fi": getListWifi(),
+                "ip_addr": $(".ip-address ").text(),
+                "latitude": center.lat,
+                "longitude": center.lng,
+                "os": $(".operation-system").text(),
+                "web": $(".browser-name").text(),
+                "time": new Date().toString(),
+                "email": user.email
+            }, function(error) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    var playersRef = firebase.database().ref('petition-meta/' + $('.building-list tr.warning').attr("bldg"));
+                    // Attach an asynchronous callback to read the data at our posts reference
+                    playersRef.once("value").then(function(snapshot) {
+                        routeToTimeline(snapshot.val());
+                    });
+                }
+
+            });
+        }
     }
+    // No user is signed in.
+    else {
+        localStorage.setItem("type", $(".internet-type a.active").attr("conn-type"));
+        localStorage.setItem("bldg", $('.building-list tr.warning').attr("bldg"));
+        localStorage.setItem("latitude", center.lat);
+        localStorage.setItem("longitude", center.lng);
+        localStorage.setItem("ip_addr", $(".ip-address ").text());
+        localStorage.setItem("os", $(".operation-system").text());
+        localStorage.setItem("web", $(".browser-name").text());
+        localStorage.setItem("time", new Date().toString());
 
+        //then route to login page(login.html)
+        //route to login.html
+        if (!isIssueConn()) {
+            localStorage.setItem("conn", false);
+            localStorage.setItem("activity", $(".activity.select img").attr("type"));
+            localStorage.setItem("download", $(".data.download").text());
+            localStorage.setItem("upload", $(".data.upload").text());
+            localStorage.setItem("ping", $("#speedo-ping .data .time").text());
+            localStorage.setItem("speed", $("input[name='speed']:checked").val());
+            localStorage.setItem("consistency", $("input[name='consistency']:checked").val());
+        } else {
+            localStorage.setItem("conn", true);
+            localStorage.setItem("room", $("#roomNumber").val());
+            localStorage.setItem("welcome_kaist", $(".antenna").text());
+            localStorage.setItem("wi-fi", getListWifi());
+        }
+
+        window.location.replace("./login.html");
+        return false;
+    }
 }
