@@ -59,6 +59,7 @@ function initListener() {
 
     fill_progress_circle(0);
 
+    initDB();
     createMap();
     map.setCenter(kaist);
 
@@ -80,10 +81,10 @@ function displayBldgList() {
                 };
 
                 // DEBUGGING purpose
-                // center = {
-                //     "lat": 36.373732,
-                //     "lng": 127.358535
-                // };
+                center = {
+                    "lat": 36.373732,
+                    "lng": 127.358535
+                };
 
                 function nextChar(c) {
                     return String.fromCharCode(c.charCodeAt(0) + 1);
@@ -94,32 +95,41 @@ function displayBldgList() {
                     cnt = 0,
                     alphabet = 'A';
 
-                for (var l in BLDG) {
-                    if (Math.abs(center.lat - BLDG[l].lat) < 0.001 && Math.abs(center.lng - BLDG[l].lng) < 0.001) {
-                        $('.building-list tbody').append(
-                            '<tr bldg=' + l + ' onclick="animateMarker(' + (cnt++) + ')">\
+                var bldgRef = firebase.database().ref("bldg/");
+                // Attach an asynchronous callback to read the data at our posts reference
+                bldgRef.once("value").then(function(snapshot) {
+                    var BLDG = snapshot.val();
+
+                    for (var l in BLDG) {
+                        if (Math.abs(center.lat - BLDG[l].lat) < 0.001 && Math.abs(center.lng - BLDG[l].lng) < 0.001) {
+                            $('.building-list tbody').append(
+                                '<tr bldg=' + l + ' onclick="animateMarker(' + (cnt++) + ')">\
                                <td>' + alphabet + '</td>\
                                <td>' + BLDG[l].name + '</td>\
                                </tr>');
 
-                        list.push({ "lat": BLDG[l].lat, "lng": BLDG[l].lng, label: alphabet });
+                            list.push({ "lat": BLDG[l].lat, "lng": BLDG[l].lng, label: alphabet });
 
-                        alphabet = nextChar(alphabet);
+                            alphabet = nextChar(alphabet);
+                        }
                     }
-                }
 
-                var bounds = new google.maps.LatLngBounds();
-                list.forEach(function(data, index, array) {
-                    var marker = new google.maps.Marker({
-                        position: new google.maps.LatLng(list[index].lat, list[index].lng),
-                        map: map,
-                        label: list[index].label
+                    var bounds = new google.maps.LatLngBounds();
+                    list.forEach(function(data, index, array) {
+                        var marker = new google.maps.Marker({
+                            position: new google.maps.LatLng(list[index].lat, list[index].lng),
+                            map: map,
+                            label: list[index].label
+                        });
+                        markers.push(marker);
+
+                        bounds.extend(marker.position);
                     });
-                    markers.push(marker);
+                    map.fitBounds(bounds);
 
-                    bounds.extend(marker.position);
                 });
-                map.fitBounds(bounds);
+
+
             },
             function() { //error callback
                 console.log("Error geolocation");
@@ -319,12 +329,7 @@ function postSignature() {
             isValid = false;
         }
 
-        if (isValid) {
-            // createMap();
-            initDB();
-            // fetchMap();
-            postUsers();
-        }
+
     } else {
         /* Check whether all the question are filled. */
 
@@ -337,14 +342,10 @@ function postSignature() {
             $("#form-activity").css("display", "block");
             isValid = false;
         }
+    }
 
-        if (isValid) {
-            // createMap();
-            initDB();
-            // fetchMap();
-            postUsers();
-        }
-
+    if (isValid) {
+        postUsers();
     }
 
     return false;
@@ -456,6 +457,8 @@ function postUsers() {
         }
 
         window.location.replace("./login.html");
-        return false;
+
     }
+
+    return false;
 }
