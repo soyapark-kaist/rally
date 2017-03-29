@@ -81,10 +81,10 @@ function displayBldgList() {
                 };
 
                 // DEBUGGING purpose
-                center = {
-                    "lat": 36.373732,
-                    "lng": 127.358535
-                };
+                // center = {
+                //     "lat": 36.373732,
+                //     "lng": 127.358535
+                // };
 
                 function nextChar(c) {
                     return String.fromCharCode(c.charCodeAt(0) + 1);

@@ -12,7 +12,7 @@ var uiConfig = {
                 window.close();
                 return false;
             } else {
-                if (!localStorage.getItem("conn")) {
+                if (localStorage.getItem("conn") == "false") {
                     var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + generateID(5));
                     // users/2017-3-6
 
