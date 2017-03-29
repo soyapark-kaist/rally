@@ -66,10 +66,10 @@ var uiConfig = {
                                     console.log(error);
                                 } else {
                                     // when post to DB is successful 
-                                    var pRef = firebase.database().ref('petition-meta/' + localStorage.getItem("bldg"));
+                                    var playersRef = firebase.database().ref('bldg/' + localStorage.getItem("bldg"));
                                     // Attach an asynchronous callback to read the data at our posts reference
-                                    pRef.once("value").then(function(snapshot) {
-                                        routeToTimeline(snapshot.val());
+                                    playersRef.once("value").then(function(snapshot) {
+                                        routeToTimeline(snapshot.val().url);
                                     });
                                 }
 
@@ -99,10 +99,10 @@ var uiConfig = {
                                     console.log(error);
                                 } else {
                                     // when post to DB is successful 
-                                    var pRef = firebase.database().ref('petition-meta/' + localStorage.getItem("bldg"));
+                                    var playersRef = firebase.database().ref('bldg/' + localStorage.getItem("bldg"));
                                     // Attach an asynchronous callback to read the data at our posts reference
-                                    pRef.once("value").then(function(snapshot) {
-                                        routeToTimeline(snapshot.val());
+                                    playersRef.once("value").then(function(snapshot) {
+                                        routeToTimeline(snapshot.val().url);
                                     });
                                 }
 
