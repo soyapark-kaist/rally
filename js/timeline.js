@@ -168,9 +168,16 @@ function fetchPetiton(inReceiving) {
         if (p.content) { // when campaign is opened.
             fill_progress_circle(2);
             $("#current-progress").text("인터넷 캠페인 진행 중");
-        } else fill_progress_circle(1);
 
-        displayPetition(p.content);
+            displayPetition(p.content);
+        } else {
+            fill_progress_circle(1);
+            $('#content').html("아직 캠페인이 시작되지 않았습니다. 누구나 시작할 수 있습니다 <a class='btn btn-default' href='./petition.html'>시작하기</a>");
+        }
+
+        $("#bldgName").text(BLDG[BLDG_INDEX].name);
+
+
         selectSignature();
     });
 }
@@ -180,9 +187,9 @@ function isSlow(inQuorum) {
 }
 
 function displayPetition(inContent) {
-    $("#bldgName").text(BLDG[BLDG_INDEX].name);
     $('#content').text(inContent);
 }
+
 
 function displayRespond(inResponse) {
     $('#respond p').text(inResponse);
