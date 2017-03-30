@@ -95,13 +95,6 @@ function markMap(inUserID) {
                 });
             });
 
-            // Add a marker clusterer to manage the markers.
-            // var markerCluster = new MarkerClusterer(map, markers, {
-            //     imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
-            // });
-
-            // // markerCluster.clearMarkers();
-            // // // markerCluster.refresh();
             for (var i = 0; i < markers.length; i++) {
                 markers[i].setOptions({ map: map, visible: true });
             }
@@ -221,12 +214,13 @@ function setProgressbar(inNow, inMax) {
     $("#leftQuorum").text(inMax - inNow);
 }
 
-function createMarker(inID, inCenter, inTitle) {
+function createMarker(inID, inCenter, inTitle, inRate) {
     return new google.maps.Marker({
         position: new google.maps.LatLng(inCenter.lat, inCenter.lng),
         map: map,
         petitionID: inID,
-        title: inTitle
+        title: inTitle,
+        rate: inRate
     });
 }
 
@@ -286,12 +280,6 @@ function filterSignature(inTargetDate, inTargetLoc, inQuorum) {
 
         for (var u in users[o]) {
             var hour = new Date(users[o][u].time).getHours();
-
-            // var hour_from = TIME_RANGE[inTargetHour].from,
-            //     hour_to = TIME_RANGE[inTargetHour].to;
-            // if (!filterHour(hour_from, hour_to, hour)) {
-            //     continue;
-            // }
 
             var lat = users[o][u].latitude,
                 lng = users[o][u].longitude;
