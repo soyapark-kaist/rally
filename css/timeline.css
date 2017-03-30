@@ -1,0 +1,56 @@
+.vis-item.vis-background.negative {
+    background-color: rgba(255, 0, 0, 0.2);
+}
+
+.vis-item.vis-background.positive {
+    background-color: rgba(105, 255, 98, 0.20);
+}
+
+.vis-item.marker {
+    border-left: 2px solid green;
+}
+
+#receive,
+#respond,
+#adminOnly {
+    margin-top: 30px;
+    display: none;
+}
+
+.issue-type {
+    display: none;
+}
+
+.tab-pane p {
+    margin-top: 20px;
+}
+
+.button-group {
+    margin-bottom: 20px;
+}
+
+.counter {
+    display: inline;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 10px;
+}
+
+.comments {
+    clear: both;
+    list-style: none;
+    padding-left: 0;
+    width: 100%;
+}
+
+.comments li {
+    background-color: #fff;
+    border: 1px solid #d8d8d8;
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    word-wrap: break-word;
+    min-height: 42px;
+}

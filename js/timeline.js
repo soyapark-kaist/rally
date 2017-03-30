@@ -8,10 +8,39 @@ var users;
 
 var BLDG_INDEX;
 
-function initPetition() {
+$(function() {
     toggleLoading(".loading");
     initDB();
 
+    initParams();
+
+    fetchPetiton();
+
+    // comment event handler
+    $('.comments-post').click(function() {
+        var post = $('.status-box').val();
+        $('<li>').text(post).prependTo('.comments');
+        $('.status-box').val('');
+        $('.counter').text('140');
+        $('.comments-post').addClass('disabled');
+    });
+
+    $('.status-box').keyup(function() {
+        var postLength = $(this).val().length;
+        var charactersLeft = 140 - postLength;
+        $('.counter').text(charactersLeft);
+
+        if (charactersLeft < 0) {
+            $('.comments-post').addClass('disabled');
+        } else if (charactersLeft == 140) {
+            $('.comments-post').addClass('disabled');
+        } else {
+            $('.comments-post').removeClass('disabled');
+        }
+    });
+})
+
+function initParams() {
     var params = window.location.search.substring(1).split("&");
     for (var p in params) {
         if (params[p].split("=")[0] == "id")
@@ -25,13 +54,6 @@ function initPetition() {
             isAdmin = true; //the user is admin. 
         }
     }
-
-
-    fetchPetiton();
-
-
-    // fetchPetiton(isReceiving);
-    // initTimeline();
 }
 
 function initTimeline(inTimeline) {
