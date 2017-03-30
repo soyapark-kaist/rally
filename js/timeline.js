@@ -189,7 +189,7 @@ function fetchPetiton(inReceiving) {
 
         fill_progress_circle(1);
         $("#current-progress").text("인터넷 캠페인 진행 중");
-        displayPetition(p.content);
+        if (p.content) displayPetition(p.content);
 
         var bldgRef = firebase.database().ref('bldg/' + p.bldg);
         bldgRef.once("value").then(function(snapshot) {

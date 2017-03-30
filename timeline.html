@@ -117,13 +117,13 @@
                 <div id="timeline"></div>
 
                 <div id="petition">
-                    <p id="content"></p>
                     <p id="signature"></p>
 
                     <div id="stat">
                         <div class="row">
                             <ul class="nav nav-tabs">
                                 <li class="active"><a data-toggle="tab" href="#overall">제보 현황</a></li>
+                                <li><a data-toggle="tab" href="#contents">민원 내용</a></li>
                                 <li><a data-toggle="tab" href="#internet-conn">연결 불능</a></li>
                                 <li><a data-toggle="tab" href="#internet-slow">느린 인터넷</a></li>
                             </ul>
@@ -157,6 +157,23 @@
                                         </div>
 
 
+                                    </div>
+                                </div>
+                                <div id="contents" class="tab-pane fade">
+                                    <p id="content">내용없음.</p>
+                                    <div class="row">
+                                        <form style="margin-top: 30px;">
+                                            <div class="form-group">
+                                                <textarea class="form-control status-box" rows="2" placeholder="첨언하기"></textarea>
+                                            </div>
+                                        </form>
+                                        <div class="button-group pull-right">
+                                            <p class="counter">140</p>
+                                            <a class="btn btn-primary comments-post disabled">Post</a>
+                                        </div>
+
+                                        <ul class="comments">
+                                        </ul>
                                     </div>
                                 </div>
                                 <div id="internet-conn" class="tab-pane fade">
@@ -234,21 +251,6 @@
                     <div style="text-align:center; margin-top:20px;">
                         <a id="participate" href="./collect.html" class="btn btn-success btn-lg">동참하기</a>
                     </div>
-                </div>
-
-                <div class="row">
-                    <form style="margin-top: 30px;">
-                        <div class="form-group">
-                            <textarea class="form-control status-box" rows="2" placeholder="첨언하기"></textarea>
-                        </div>
-                    </form>
-                    <div class="button-group pull-right">
-                        <p class="counter">140</p>
-                        <a class="btn btn-primary comments-post disabled">Post</a>
-                    </div>
-
-                    <ul class="comments">
-                    </ul>
                 </div>
 
                 <div class="modal fade" id="available-modal" tabindex="-1" role="dialog">
