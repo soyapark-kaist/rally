@@ -197,21 +197,21 @@ function fetchPetiton(inReceiving) {
             $('#content').html("아직 캠페인이 시작되지 않았습니다. 누구나 시작할 수 있습니다 <a class='btn btn-default' href='./petition.html'>시작하기</a>");
         }
 
-        $("#bldgName").text(BLDG[BLDG_INDEX].name);
+        var bldgRef = firebase.database().ref('bldg/' + p.bldg);
+        bldgRef.once("value").then(function(snapshot) {
+            var b = snapshot.val();
+            // Building name
+            $("#bldgName").text(b.name);
 
-
-        selectSignature();
+            // signature & progress bar 
+            selectSignature(b.lat, b.lng, b.headcnt);
+        });
     });
-}
-
-function isSlow(inQuorum) {
-    return inQuorum == SLOW_TOTAL;
 }
 
 function displayPetition(inContent) {
     $('#content').text(inContent);
 }
-
 
 function displayRespond(inResponse) {
     $('#respond p').text(inResponse);
@@ -235,10 +235,7 @@ function centerMap(inCenter) {
     map.setCenter(inCenter);
 }
 
-function selectSignature() {
-    var pLat = BLDG[BLDG_INDEX].lat,
-        pLng = BLDG[BLDG_INDEX].lng;
-
+function selectSignature(pLat, pLng, pHeadCount) {
     var playersRef = firebase.database().ref('users/');
     // Attach an asynchronous callback to read the data at our posts reference
     playersRef.once("value").then(function(snapshot) {
@@ -246,10 +243,9 @@ function selectSignature() {
 
             var openDateRef = firebase.database().ref('opendate/');
             openDateRef.once("value").then(function(snapshot) {
-                filterSignature(new Date(snapshot.val()), { "lat": pLat, "lng": pLng }, 10);
+                filterSignature(new Date(snapshot.val()), { "lat": pLat, "lng": pLng }, pHeadCount);
                 toggleLoading(".loading");
             });
-
         },
         function(errorObject) {
             alert("The read failed: " + errorObject.code);

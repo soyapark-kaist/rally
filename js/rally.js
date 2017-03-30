@@ -218,7 +218,7 @@ function setProgressbar(inNow, inMax) {
     $(".progress-bar").css("width", (inNow / inMax * 100) + "%").attr("aria-valuenow", inNow);
     $(".progress-bar").attr("aria-valuemax", inMax);
 
-    $("#leftQuorum").text(inMax - inNow);;
+    $("#leftQuorum").text(inMax - inNow);
 }
 
 function createMarker(inID, inCenter, inTitle) {
