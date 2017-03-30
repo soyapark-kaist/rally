@@ -111,7 +111,22 @@ var uiConfig = {
                             });
                     }
                 } else { // from timeline.html for comments
+                    var now = new Date().toISOString().split(".")[0];
 
+                    var pRef = firebase.database().ref("campaign/" + petitionID + "/comments/" + now);
+                    pRef.set({
+                            "email": firebase.auth().currentUser.email,
+                            "content": localStorage.getItem("comment")
+                        },
+                        function(error) {
+                            if (error) {
+                                console.log(error);
+                            } else {
+                                // when post to DB is successful
+                                window.location.replace(localStorage.getItem("callback"));
+
+                            }
+                        });
                 }
 
                 // The widget has been used in redirect mode, so we redirect to the signInSuccessUrl.

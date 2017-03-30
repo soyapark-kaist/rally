@@ -18,11 +18,30 @@ $(function() {
 
     // comment event handler
     $('.comments-post').click(function() {
-        var post = $('.status-box').val();
-        $('<li>').text(post).prependTo('.comments');
-        $('.status-box').val('');
-        $('.counter').text('140');
-        $('.comments-post').addClass('disabled');
+        var cnt = 0;
+        if (firebase.auth().currentUser) {
+            $(".comments li").each(function(index) {
+                if ($(this).text().indexOf(firebase.auth().currentUser.email.substring(0, 4))) {
+                    cnt++;
+                }
+
+            });
+
+            if (cnt > 1) {
+                alert("단시간에 많은 댓글을 입력하실 수 없습니다. 다음에 다시 입력해주세요");
+                return;
+            }
+
+            var post = $('.status-box').val();
+            $('.comments').append('<li><i class="fa fa-user" aria-hidden="true"></i> ' + firebase.auth().currentUser.email.substring(0, 4) + "** : " + post + '</li>');
+            $('.status-box').val('');
+            $('.counter').text('140');
+            $('.comments-post').addClass('disabled');
+        }
+
+
+
+        postComment(post);
     });
 
     $('.status-box').keyup(function() {
@@ -301,6 +320,37 @@ function checkEligibility() {
         alert('브라우저의 위치정보 수집이 불가합니다. 다른 브라우저에서 다시 시도해주세요.');
         $("#participate").button('reset')
             // handleLocationError(false, infoWindow, map.getCenter());
+    }
+}
+
+function postComment(inPost) {
+    // Check whether the user is authenticated
+    var user = firebase.auth().currentUser;
+
+    // User is signed in.
+    if (user) {
+        var now = new Date().toISOString().split(".")[0];
+
+        var pRef = firebase.database().ref("campaign/" + petitionID + "/comments/" + now);
+
+        pRef.set({
+                "email": user.email,
+                "content": inPost
+            },
+            function(error) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    // when post to DB is successful
+                }
+            });
+    } else {
+        localStorage.setItem("code", "2");
+        localStorage.setItem("comment", inPost);
+        localStorage.setItem("petitionID", petitionID);
+        localStorage.setItem("callback", window.location.href);
+
+        window.location.replace("./login.html");
     }
 }
 
