@@ -392,7 +392,7 @@ function postUsers() {
                     var playersRef = firebase.database().ref('bldg/' + $('.building-list tr.warning').attr("bldg"));
                     // Attach an asynchronous callback to read the data at our posts reference
                     playersRef.once("value").then(function(snapshot) {
-                        localStorage.setItem("participate", "0")
+                        localStorage.setItem("participate", "1")
                         routeToTimeline(snapshot.val().url);
                     });
                 }
@@ -422,7 +422,7 @@ function postUsers() {
                     var playersRef = firebase.database().ref('bldg/' + $('.building-list tr.warning').attr("bldg"));
                     // Attach an asynchronous callback to read the data at our posts reference
                     playersRef.once("value").then(function(snapshot) {
-                        localStorage.setItem("participate", "0")
+                        localStorage.setItem("participate", "1")
                         routeToTimeline(snapshot.val().url);
 
                     });
