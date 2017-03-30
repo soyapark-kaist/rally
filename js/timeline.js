@@ -187,15 +187,9 @@ function fetchPetiton(inReceiving) {
 
         BLDG_INDEX = parseInt(p.bldg);
 
-        if (p.content) { // when campaign is opened.
-            fill_progress_circle(2);
-            $("#current-progress").text("인터넷 캠페인 진행 중");
-
-            displayPetition(p.content);
-        } else {
-            fill_progress_circle(1);
-            $('#content').html("아직 캠페인이 시작되지 않았습니다. 누구나 시작할 수 있습니다 <a class='btn btn-default' href='./petition.html'>시작하기</a>");
-        }
+        fill_progress_circle(1);
+        $("#current-progress").text("인터넷 캠페인 진행 중");
+        displayPetition(p.content);
 
         var bldgRef = firebase.database().ref('bldg/' + p.bldg);
         bldgRef.once("value").then(function(snapshot) {
@@ -204,7 +198,7 @@ function fetchPetiton(inReceiving) {
             $("#bldgName").text(b.name);
 
             // signature & progress bar 
-            selectSignature(b.lat, b.lng, b.headcnt);
+            selectSignature(b.lat, b.lng, b.headcnt ? b.headcnt : 100);
         });
     });
 }
