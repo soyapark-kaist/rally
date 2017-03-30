@@ -71,6 +71,11 @@ function initParams() {
             isAdmin = true; //the user is admin. 
         }
     }
+
+    if (localStorage.getItem("participate") == "1") {
+        localStorage.setItem("participate", "0")
+        $(".participate-row").toggle();
+    }
 }
 
 function initTimeline(inTimeline) {
