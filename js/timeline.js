@@ -33,13 +33,11 @@ $(function() {
             }
 
             var post = $('.status-box').val();
-            $('.comments').append('<li><i class="fa fa-user" aria-hidden="true"></i> ' + firebase.auth().currentUser.email.substring(0, 4) + "** : " + post + '</li>');
+            $('.comments').prepend('<li><i class="fa fa-user" aria-hidden="true"></i> ' + firebase.auth().currentUser.email.substring(0, 4) + "** : " + post + '</li>');
             $('.status-box').val('');
             $('.counter').text('140');
             $('.comments-post').addClass('disabled');
         }
-
-
 
         postComment(post);
     });
@@ -209,6 +207,7 @@ function fetchPetiton(inReceiving) {
         fill_progress_circle(1);
         $("#current-progress").text("인터넷 캠페인 진행 중");
         if (p.content) displayPetition(p.content);
+        if (p.comments) displayComments(p.comments);
 
         var bldgRef = firebase.database().ref('bldg/' + p.bldg);
         bldgRef.once("value").then(function(snapshot) {
@@ -224,6 +223,15 @@ function fetchPetiton(inReceiving) {
 
 function displayPetition(inContent) {
     $('#content').text(inContent);
+}
+
+function displayComments(inComment) {
+    var cnt = 0;
+    for (var c in inComment) {
+
+        $('.comments').prepend('<li><i class="fa fa-user" aria-hidden="true"></i> ' + inComment[c].email.substring(0, 4) + "** : " + inComment[c].content + ' (' + (new Date(c)) + ')</li>');
+        if (++cnt == 3) return;
+    }
 }
 
 function displayRespond(inResponse) {
