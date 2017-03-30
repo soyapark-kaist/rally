@@ -392,6 +392,7 @@ function postUsers() {
                     var playersRef = firebase.database().ref('bldg/' + $('.building-list tr.warning').attr("bldg"));
                     // Attach an asynchronous callback to read the data at our posts reference
                     playersRef.once("value").then(function(snapshot) {
+                        localStorage.setItem("participate", "1")
                         routeToTimeline(snapshot.val().url);
                     });
                 }
@@ -421,6 +422,7 @@ function postUsers() {
                     var playersRef = firebase.database().ref('bldg/' + $('.building-list tr.warning').attr("bldg"));
                     // Attach an asynchronous callback to read the data at our posts reference
                     playersRef.once("value").then(function(snapshot) {
+                        localStorage.setItem("participate", "1")
                         routeToTimeline(snapshot.val().url);
 
                     });
@@ -431,6 +433,7 @@ function postUsers() {
     }
     // No user is signed in.
     else {
+        localStorage.setItem("code", "1");
         localStorage.setItem("type", $(".internet-type a.active").attr("conn-type"));
         localStorage.setItem("bldg", $('.building-list tr.warning').attr("bldg"));
         localStorage.setItem("latitude", center.lat);
@@ -456,6 +459,7 @@ function postUsers() {
             localStorage.setItem("welcome_kaist", $(".antenna").text());
             localStorage.setItem("wi-fi", getListWifi());
         }
+        localStorage.setItem("participate", "1")
 
         window.location.replace("./login.html");
 

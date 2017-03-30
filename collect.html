@@ -107,46 +107,6 @@
         textarea {
             width: 70%;
         }
-        
-        .tooltipContainer {
-            position: relative;
-            display: inline-block;
-            border-bottom: 1px dotted black;
-        }
-        
-        .tooltipContainer .tooltiptext {
-            visibility: hidden;
-            width: 120px;
-            background-color: #555;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 5px 0;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -60px;
-            opacity: 0;
-            transition: opacity 1s;
-        }
-        
-        .tooltipContainer .tooltiptext::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: #555 transparent transparent transparent;
-        }
-        
-        .tooltipContainer:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-            z-index: 999;
-        }
     </style>
 </head>
 
@@ -254,7 +214,7 @@
                 <ul class="nav btn-group inline question-type issue-type">
                     <li>
                         <a type="submit" onclick="return pickIssueType(true);" class="btn active" href="#1a" data-toggle="tab">
-                            <i class="fa fa-exclamation-circle" aria-hidden="true"></i> YES
+                            <i class="fa fa-link" aria-hidden="true"></i> YES
                             <br><span>연결되었다</span>
                         </a>
                     </li>

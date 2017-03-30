@@ -12,7 +12,9 @@ var uiConfig = {
                 window.close();
                 return false;
             } else {
-                if (localStorage.getItem("petition") == "true") {
+                // code : 0 - login from petition.html / 1 - collect.html / else - comments
+
+                if (localStorage.getItem("code") == "0") {
                     var playersRef = firebase.database().ref("petition/" + localStorage.getItem("petitionID"));
 
                     playersRef.set({
@@ -38,7 +40,7 @@ var uiConfig = {
 
                         });
 
-                } else {
+                } else if (localStorage.getItem("code") == "1") {
                     if (localStorage.getItem("conn") == "false") {
                         var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + generateID(5));
                         // users/2017-3-6
@@ -108,6 +110,23 @@ var uiConfig = {
 
                             });
                     }
+                } else { // from timeline.html for comments
+                    var now = new Date().toISOString().split(".")[0];
+
+                    var pRef = firebase.database().ref("campaign/" + petitionID + "/comments/" + now);
+                    pRef.set({
+                            "email": firebase.auth().currentUser.email,
+                            "content": localStorage.getItem("comment")
+                        },
+                        function(error) {
+                            if (error) {
+                                console.log(error);
+                            } else {
+                                // when post to DB is successful
+                                window.location.replace(localStorage.getItem("callback"));
+
+                            }
+                        });
                 }
 
                 // The widget has been used in redirect mode, so we redirect to the signInSuccessUrl.

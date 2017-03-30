@@ -18,11 +18,28 @@ $(function() {
 
     // comment event handler
     $('.comments-post').click(function() {
-        var post = $('.status-box').val();
-        $('<li>').text(post).prependTo('.comments');
-        $('.status-box').val('');
-        $('.counter').text('140');
-        $('.comments-post').addClass('disabled');
+        var cnt = 0;
+        if (firebase.auth().currentUser) {
+            $(".comments li").each(function(index) {
+                if ($(this).text().indexOf(firebase.auth().currentUser.email.substring(0, 4))) {
+                    cnt++;
+                }
+
+            });
+
+            if (cnt > 1) {
+                alert("단시간에 많은 댓글을 입력하실 수 없습니다. 다음에 다시 입력해주세요");
+                return;
+            }
+
+            var post = $('.status-box').val();
+            $('.comments').prepend('<li><i class="fa fa-user" aria-hidden="true"></i> ' + firebase.auth().currentUser.email.substring(0, 4) + "** : " + post + '</li>');
+            $('.status-box').val('');
+            $('.counter').text('140');
+            $('.comments-post').addClass('disabled');
+        }
+
+        postComment(post);
     });
 
     $('.status-box').keyup(function() {
@@ -53,6 +70,11 @@ function initParams() {
         if (params[p].split("=")[0] == "adn") {
             isAdmin = true; //the user is admin. 
         }
+    }
+
+    if (localStorage.getItem("participate") == "1") {
+        localStorage.setItem("participate", "0")
+        $(".participate-row").toggle();
     }
 }
 
@@ -187,31 +209,35 @@ function fetchPetiton(inReceiving) {
 
         BLDG_INDEX = parseInt(p.bldg);
 
-        if (p.content) { // when campaign is opened.
-            fill_progress_circle(2);
-            $("#current-progress").text("인터넷 캠페인 진행 중");
+        fill_progress_circle(1);
+        $("#current-progress").text("인터넷 캠페인 진행 중");
+        if (p.content) displayPetition(p.content);
+        if (p.comments) displayComments(p.comments);
 
-            displayPetition(p.content);
-        } else {
-            fill_progress_circle(1);
-            $('#content').html("아직 캠페인이 시작되지 않았습니다. 누구나 시작할 수 있습니다 <a class='btn btn-default' href='./petition.html'>시작하기</a>");
-        }
+        var bldgRef = firebase.database().ref('bldg/' + p.bldg);
+        bldgRef.once("value").then(function(snapshot) {
+            var b = snapshot.val();
+            // Building name
+            $("#bldgName").text(b.name);
 
-        $("#bldgName").text(BLDG[BLDG_INDEX].name);
-
-
-        selectSignature();
+            // signature & progress bar 
+            selectSignature(b.lat, b.lng, b.headcnt ? b.headcnt : 100);
+        });
     });
-}
-
-function isSlow(inQuorum) {
-    return inQuorum == SLOW_TOTAL;
 }
 
 function displayPetition(inContent) {
     $('#content').text(inContent);
 }
 
+function displayComments(inComment) {
+    var cnt = 0;
+    for (var c in inComment) {
+
+        $('.comments').prepend('<li><i class="fa fa-user" aria-hidden="true"></i> ' + inComment[c].email.substring(0, 4) + "** : " + inComment[c].content + ' (' + (new Date(c)) + ')</li>');
+        if (++cnt == 3) return;
+    }
+}
 
 function displayRespond(inResponse) {
     $('#respond p').text(inResponse);
@@ -235,10 +261,7 @@ function centerMap(inCenter) {
     map.setCenter(inCenter);
 }
 
-function selectSignature() {
-    var pLat = BLDG[BLDG_INDEX].lat,
-        pLng = BLDG[BLDG_INDEX].lng;
-
+function selectSignature(pLat, pLng, pHeadCount) {
     var playersRef = firebase.database().ref('users/');
     // Attach an asynchronous callback to read the data at our posts reference
     playersRef.once("value").then(function(snapshot) {
@@ -246,10 +269,9 @@ function selectSignature() {
 
             var openDateRef = firebase.database().ref('opendate/');
             openDateRef.once("value").then(function(snapshot) {
-                filterSignature(new Date(snapshot.val()), { "lat": pLat, "lng": pLng }, 10);
+                filterSignature(new Date(snapshot.val()), { "lat": pLat, "lng": pLng }, pHeadCount);
                 toggleLoading(".loading");
             });
-
         },
         function(errorObject) {
             alert("The read failed: " + errorObject.code);
@@ -311,6 +333,37 @@ function checkEligibility() {
         alert('브라우저의 위치정보 수집이 불가합니다. 다른 브라우저에서 다시 시도해주세요.');
         $("#participate").button('reset')
             // handleLocationError(false, infoWindow, map.getCenter());
+    }
+}
+
+function postComment(inPost) {
+    // Check whether the user is authenticated
+    var user = firebase.auth().currentUser;
+
+    // User is signed in.
+    if (user) {
+        var now = new Date().toISOString().split(".")[0];
+
+        var pRef = firebase.database().ref("campaign/" + petitionID + "/comments/" + now);
+
+        pRef.set({
+                "email": user.email,
+                "content": inPost
+            },
+            function(error) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    // when post to DB is successful
+                }
+            });
+    } else {
+        localStorage.setItem("code", "2");
+        localStorage.setItem("comment", inPost);
+        localStorage.setItem("petitionID", petitionID);
+        localStorage.setItem("callback", window.location.href);
+
+        window.location.replace("./login.html");
     }
 }
 
