@@ -431,6 +431,7 @@ function postUsers() {
     }
     // No user is signed in.
     else {
+        localStorage.setItem("code", "1");
         localStorage.setItem("type", $(".internet-type a.active").attr("conn-type"));
         localStorage.setItem("bldg", $('.building-list tr.warning').attr("bldg"));
         localStorage.setItem("latitude", center.lat);

@@ -213,7 +213,7 @@ function postPetition() {
     else {
         //then route to login page(login.html)
         //route to login.html
-        localStorage.setItem("petition", "true");
+        localStorage.setItem("code", "0");
         localStorage.setItem("petitionID", petitionID);
         localStorage.setItem("title", $("#title").val());
         localStorage.setItem("content", $("#content").val());

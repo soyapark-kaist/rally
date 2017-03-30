@@ -12,7 +12,9 @@ var uiConfig = {
                 window.close();
                 return false;
             } else {
-                if (localStorage.getItem("petition") == "true") {
+                // code : 0 - login from petition.html / 1 - collect.html / else - comments
+
+                if (localStorage.getItem("code") == "0") {
                     var playersRef = firebase.database().ref("petition/" + localStorage.getItem("petitionID"));
 
                     playersRef.set({
@@ -38,7 +40,7 @@ var uiConfig = {
 
                         });
 
-                } else {
+                } else if (localStorage.getItem("code") == "1") {
                     if (localStorage.getItem("conn") == "false") {
                         var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + generateID(5));
                         // users/2017-3-6
@@ -108,6 +110,8 @@ var uiConfig = {
 
                             });
                     }
+                } else { // from timeline.html for comments
+
                 }
 
                 // The widget has been used in redirect mode, so we redirect to the signInSuccessUrl.
