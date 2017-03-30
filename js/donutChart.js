@@ -1,5 +1,5 @@
 function drawChart(inSelector, inData) {
-    // $(inSelector + " svg").remove();
+    $(inSelector).text("");
     // $(inSelector).css("display", "block");
 
     var width = 160,

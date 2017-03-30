@@ -8,10 +8,39 @@ var users;
 
 var BLDG_INDEX;
 
-function initPetition() {
+$(function() {
     toggleLoading(".loading");
     initDB();
 
+    initParams();
+
+    fetchPetiton();
+
+    // comment event handler
+    $('.comments-post').click(function() {
+        var post = $('.status-box').val();
+        $('<li>').text(post).prependTo('.comments');
+        $('.status-box').val('');
+        $('.counter').text('140');
+        $('.comments-post').addClass('disabled');
+    });
+
+    $('.status-box').keyup(function() {
+        var postLength = $(this).val().length;
+        var charactersLeft = 140 - postLength;
+        $('.counter').text(charactersLeft);
+
+        if (charactersLeft < 0) {
+            $('.comments-post').addClass('disabled');
+        } else if (charactersLeft == 140) {
+            $('.comments-post').addClass('disabled');
+        } else {
+            $('.comments-post').removeClass('disabled');
+        }
+    });
+})
+
+function initParams() {
     var params = window.location.search.substring(1).split("&");
     for (var p in params) {
         if (params[p].split("=")[0] == "id")
@@ -25,13 +54,6 @@ function initPetition() {
             isAdmin = true; //the user is admin. 
         }
     }
-
-    fill_progress_circle(1);
-    fetchPetiton();
-
-
-    // fetchPetiton(isReceiving);
-    // initTimeline();
 }
 
 function initTimeline(inTimeline) {
@@ -164,7 +186,19 @@ function fetchPetiton(inReceiving) {
         }
 
         BLDG_INDEX = parseInt(p.bldg);
-        displayPetition(p.content);
+
+        if (p.content) { // when campaign is opened.
+            fill_progress_circle(2);
+            $("#current-progress").text("인터넷 캠페인 진행 중");
+
+            displayPetition(p.content);
+        } else {
+            fill_progress_circle(1);
+            $('#content').html("아직 캠페인이 시작되지 않았습니다. 누구나 시작할 수 있습니다 <a class='btn btn-default' href='./petition.html'>시작하기</a>");
+        }
+
+        $("#bldgName").text(BLDG[BLDG_INDEX].name);
+
 
         selectSignature();
     });
@@ -174,55 +208,10 @@ function isSlow(inQuorum) {
     return inQuorum == SLOW_TOTAL;
 }
 
-function storePetitionInfo(inPetition) {
-    petition = inPetition;
-
-    $("#map").attr("src", "https://maps.googleapis.com/maps/api/staticmap?zoom=16&size=250x250&maptype=roadmap &key=AIzaSyCVL-xlMCOT_zSGT4VLpQcWe1sTlDocZeo" +
-        "&markers=color:red%7Clabel:S%7C" + inPetition.latitude + "," + inPetition.longitude);
-
-    fill_progress_circle(getProgress(inPetition["time-line"]));
-
-    displayPetition({
-        'title': inPetition.title,
-        'content': inPetition.content,
-        'time-range': inPetition["time-range"],
-        'bldg': inPetition["bldg"]
-    });
-
-    // if data collecting phase is passed, hide ads
-    if (getProgress(inPetition["time-line"]) > 1) {
-        $("#on-going").html("<p>충분한 참여자를 모으지 못해, 정보통신팀에 보내지 못하였습니다.</p>");
-        $("#participate-row").toggle();
-    }
-
-    if (inPetition["time-line"]["respond"])
-        displayRespond(inPetition["time-line"]["respond-msg"]);
-
-
-    center = {
-        lat: inPetition.latitude,
-        lng: inPetition.longitude
-    };
-    hour_range = parseInt(inPetition["time-range"].split(":")[0]);
-
-
-    if (!petitionloaded) {
-        petitionloaded = true;
-        initTimeline(inPetition["time-line"]);
-    }
-}
-
-function displayType(inResponse) {
-    if (inResponse)
-        $("#internetSlow").css("display", "block");
-    else
-        $("#internetConn").css("display", "block");
-}
-
 function displayPetition(inContent) {
-    $("#bldgName").text(BLDG[BLDG_INDEX].name);
     $('#content').text(inContent);
 }
+
 
 function displayRespond(inResponse) {
     $('#respond p').text(inResponse);

@@ -19,31 +19,25 @@ function initMap() {
     // Attach an asynchronous callback to read the data at our posts reference
     bldgRef.once("value").then(function(snapshot) {
         var bldgs = snapshot.val();
+        var bounds = new google.maps.LatLngBounds();
 
-        var playersRef = firebase.database().ref("petition-meta/");
+        for (var p in bldgs) {
+            p = parseInt(p);
 
-        // Attach an asynchronous callback to read the data at our posts reference
-        playersRef.once("value").then(function(snapshot) {
-            var petitions = snapshot.val();
+            // Add the circle for the petition to the map.
+            var marker = createMarker(bldgs[p].url, { lat: bldgs[p].lat, lng: bldgs[p].lng }, bldgs[p].name);
+            bounds.extend({ lat: bldgs[p].lat, lng: bldgs[p].lng });
 
-            var bounds = new google.maps.LatLngBounds();
-            for (var p in petitions) {
-                p = parseInt(p);
-                // Add the circle for the petition to the map.
-                var marker = createMarker(petitions[p], { lat: bldgs[p].lat, lng: bldgs[p].lng }, bldgs[p].name);
-                bounds.extend({ lat: bldgs[p].lat, lng: bldgs[p].lng });
+            marker.addListener('click', function(e) {
+                infoWindow.open(map);
+                infoWindow.setContent(this.title + " <a class='btn btn-primary' href='./timeline.html?id=" + this.petitionID + "'>자세히 보기</a>");
+                infoWindow.setPosition(this.getPosition())
+            });
+        }
 
-                marker.addListener('click', function(e) {
-                    infoWindow.open(map);
-                    infoWindow.setContent(this.title + " <a class='btn btn-primary' href='./timeline.html?id=" + this.petitionID + "'>자세히 보기</a>");
-                    infoWindow.setPosition(this.getPosition())
-                });
-            }
+        map.fitBounds(bounds);
 
-            map.fitBounds(bounds);
-
-            toggleLoading("#loading");
-        });
+        toggleLoading("#loading");
     });
 
 
