@@ -469,7 +469,8 @@ function postUsers() {
     else {
         localStorage.setItem("code", "1");
         localStorage.setItem("type", $(".internet-type a.active").attr("conn-type"));
-        localStorage.setItem("bldg", BLDG[$('.building-list tr.warning').attr("bldg")].url);
+        localStorage.setItem("bldg", $('.building-list tr.warning').attr("bldg"));
+        localStorage.setItem("callback", BLDG[$('.building-list tr.warning').attr("bldg")].url);
         localStorage.setItem("latitude", center.lat);
         localStorage.setItem("longitude", center.lng);
         localStorage.setItem("ip_addr", $(".ip-address ").text());
