@@ -1,3 +1,5 @@
+var BLDG;
+
 function initListener() {
     /* INTERNET */
     /* Scroll to activity section */
@@ -72,6 +74,7 @@ function initListener() {
 var markers = [];
 
 function displayBldgList() {
+    toggleLoading("#loading");
     // Try HTML5 geolocation.
     if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(function(position) {
@@ -86,54 +89,14 @@ function displayBldgList() {
                 //     "lng": 127.358535
                 // };
 
-                function nextChar(c) {
-                    return String.fromCharCode(c.charCodeAt(0) + 1);
-                }
-
-
-                var list = [],
-                    cnt = 0,
-                    alphabet = 'A';
-
-                var bldgRef = firebase.database().ref("bldg/");
-                // Attach an asynchronous callback to read the data at our posts reference
-                bldgRef.once("value").then(function(snapshot) {
-                    var BLDG = snapshot.val();
-
-                    for (var l in BLDG) {
-                        if (Math.abs(center.lat - BLDG[l].lat) < 0.001 && Math.abs(center.lng - BLDG[l].lng) < 0.001) {
-                            $('.building-list tbody').append(
-                                '<tr bldg=' + l + ' onclick="animateMarker(' + (cnt++) + ')">\
-                               <td>' + alphabet + '</td>\
-                               <td>' + BLDG[l].name + '</td>\
-                               </tr>');
-
-                            list.push({ "lat": BLDG[l].lat, "lng": BLDG[l].lng, label: alphabet });
-
-                            alphabet = nextChar(alphabet);
-                        }
-                    }
-
-                    var bounds = new google.maps.LatLngBounds();
-                    list.forEach(function(data, index, array) {
-                        var marker = new google.maps.Marker({
-                            position: new google.maps.LatLng(list[index].lat, list[index].lng),
-                            map: map,
-                            label: list[index].label
-                        });
-                        markers.push(marker);
-
-                        bounds.extend(marker.position);
-                    });
-                    map.fitBounds(bounds);
-
-                });
-
+                fetchBldgList(center);
 
             },
             function() { //error callback
                 console.log("Error geolocation");
                 alert('브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.');
+                $("#loc-msg").text("위치 검색이 불가해 자동으로 현재 건물을 찾을 수 없습니다. 현재 위치한 건물을 선택해주세요.");
+                fetchBldgList();
                 // handleLocationError(true, infoWindow, map.getCenter());
             }, {
                 timeout: 10000
@@ -144,8 +107,70 @@ function displayBldgList() {
         // Browser doesn't support Geolocation
         console.log("Error geolocation; brower doesn't support");
         alert('브라우저의 위치정보 수집이 불가합니다. 다른 브라우저에서 다시 시도해주세요.');
+        $("#loc-msg").text("위치 검색이 불가해 자동으로 현재 건물을 찾을 수 없습니다. 현재 위치한 건물을 선택해주세요.");
+
+        fetchBldgList();
         // handleLocationError(false, infoWindow, map.getCenter());
     }
+}
+
+function fetchBldgList(inCenter) {
+    function nextChar(c) {
+        return String.fromCharCode(c.charCodeAt(0) + 1);
+    }
+
+
+    var list = [],
+        cnt = 0,
+        alphabet = 'A';
+
+    var bldgRef = firebase.database().ref("bldg/");
+    // Attach an asynchronous callback to read the data at our posts reference
+    bldgRef.once("value").then(function(snapshot) {
+        BLDG = snapshot.val();
+        BLDG = BLDG.sort(function(a, b) { return (a.name > b.name) ? 1 : ((b.name < a.name) ? -1 : 0); });
+
+        for (var l in BLDG) {
+            if (center) {
+                if (Math.abs(center.lat - BLDG[l].lat) < 0.001 && Math.abs(center.lng - BLDG[l].lng) < 0.001) {
+                    $('.building-list tbody').append(
+                        '<tr bldg=' + l + ' onclick="animateMarker(' + (cnt++) + ')">\
+                               <td>' + alphabet + '</td>\
+                               <td>' + BLDG[l].name + '</td>\
+                               </tr>');
+
+                    list.push({ "lat": BLDG[l].lat, "lng": BLDG[l].lng, label: alphabet });
+
+                    alphabet = nextChar(alphabet);
+                }
+            } else {
+                $('.building-list tbody').append(
+                    '<tr bldg=' + l + ' onclick="animateMarker(' + (cnt++) + ')">\
+                               <td>' + alphabet + '</td>\
+                               <td>' + BLDG[l].name + '</td>\
+                               </tr>');
+
+                list.push({ "lat": BLDG[l].lat, "lng": BLDG[l].lng, label: alphabet });
+
+                alphabet = nextChar(alphabet);
+            }
+        }
+
+        var bounds = new google.maps.LatLngBounds();
+        list.forEach(function(data, index, array) {
+            var marker = new google.maps.Marker({
+                position: new google.maps.LatLng(list[index].lat, list[index].lng),
+                map: map,
+                label: list[index].label
+            });
+            markers.push(marker);
+
+            bounds.extend(marker.position);
+        });
+        map.fitBounds(bounds);
+
+        toggleLoading("#loading");
+    });
 }
 
 var preIndex = -1;
