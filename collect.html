@@ -191,12 +191,13 @@
                     <!--<h6>마커를 움직여 선택해주세요</h6>-->
                     <button onclick="displayBldgList()" class="btn btn-default btn-block">내 위치 검색</button>
                     <div style="color: gray"><i class="fa fa-map-marker" aria-hidden="true"></i> 위치정보 수집</div>
-                    <!--<input id="buildingSearch" type="text" class="form-control" placeholder="건물명 검색">-->
+                    <p id="loc-msg"></p>
                     <div id="loading"></div>
-
-                    <table class="building-list table table-hover" style="margin-top: 15px;">
-                        <tbody></tbody>
-                    </table>
+                    <div class="building-list-container">
+                        <table class="building-list table table-hover" style="margin-top: 15px;">
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="col-sm-8">
                     <div id="map"></div>
