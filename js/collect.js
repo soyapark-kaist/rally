@@ -94,7 +94,7 @@ function displayBldgList() {
             },
             function() { //error callback
                 console.log("Error geolocation");
-                alert('브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.');
+                // alert('브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.');
                 $("#loc-msg").text("위치 검색이 불가해 자동으로 현재 건물을 찾을 수 없습니다. 현재 위치한 건물을 선택해주세요.");
                 fetchBldgList();
                 // handleLocationError(true, infoWindow, map.getCenter());
@@ -106,7 +106,7 @@ function displayBldgList() {
     } else {
         // Browser doesn't support Geolocation
         console.log("Error geolocation; brower doesn't support");
-        alert('브라우저의 위치정보 수집이 불가합니다. 다른 브라우저에서 다시 시도해주세요.');
+        // alert('브라우저의 위치정보 수집이 불가합니다. 다른 브라우저에서 다시 시도해주세요.');
         $("#loc-msg").text("위치 검색이 불가해 자동으로 현재 건물을 찾을 수 없습니다. 현재 위치한 건물을 선택해주세요.");
 
         fetchBldgList();
@@ -139,30 +139,44 @@ function fetchBldgList(inCenter) {
                                <td>' + BLDG[l].name + '</td>\
                                </tr>');
 
-                    list.push({ "lat": BLDG[l].lat, "lng": BLDG[l].lng, label: alphabet });
+                    list.push({ "lat": BLDG[l].lat, "lng": BLDG[l].lng, label: alphabet, name: BLDG[l].name });
 
                     alphabet = nextChar(alphabet);
                 }
             } else {
                 $('.building-list tbody').append(
-                    '<tr bldg=' + l + ' onclick="animateMarker(' + (cnt++) + ')">\
+                    '<tr bldg=' + l + '>\
                                <td>' + alphabet + '</td>\
-                               <td>' + BLDG[l].name + '</td>\
-                               </tr>');
+                               <td>' + BLDG[l].name + '</td> \
+                               <td><button onclick="animateMarker(' + (cnt++) + ')">선택</button></td> \
+                        </tr>');
 
-                list.push({ "lat": BLDG[l].lat, "lng": BLDG[l].lng, label: alphabet });
+                list.push({ "lat": BLDG[l].lat, "lng": BLDG[l].lng, label: alphabet, name: BLDG[l].name });
 
                 alphabet = nextChar(alphabet);
             }
         }
+
+        infoWindow = new google.maps.InfoWindow({ map: map });
+        infoWindow.close();
 
         var bounds = new google.maps.LatLngBounds();
         list.forEach(function(data, index, array) {
             var marker = new google.maps.Marker({
                 position: new google.maps.LatLng(list[index].lat, list[index].lng),
                 map: map,
-                label: list[index].label
+                label: list[index].label,
+                index: index,
+                name: list[index].name
             });
+
+            marker.addListener('click', function(e) {
+                infoWindow.open(map);
+                infoWindow.setContent(this.name);
+                animateMarker(this.index);
+                infoWindow.setPosition(this.getPosition())
+            });
+
             markers.push(marker);
 
             bounds.extend(marker.position);
@@ -190,6 +204,11 @@ function animateMarker(index) {
         markers[index].setAnimation(null);
     }
 }
+
+// function highlightBldgRow(inIndex) {
+//     $(".building-list tr").removeClass("warning");
+//     $(".building-list tr").eq(index).addClass("warning");
+// }
 
 function pickInternetType(isIndex) {
     $(".internet-type a").removeClass("active");
