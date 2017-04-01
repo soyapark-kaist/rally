@@ -211,13 +211,19 @@ function fetchPetiton(inReceiving) {
 
         BLDG_INDEX = parseInt(p.bldg);
 
-        fill_progress_circle(1);
-        $("#current-progress").text("인터넷 캠페인 진행 중");
+
+        if (p.sent) { // If it's sent to school
+            fill_progress_circle(2);
+            $("#current-progress").text("정보통신팀에 전송");
+
+            $('.opened-case').toggle();
+        } else {
+            fill_progress_circle(1);
+        }
+
         if (p.content) displayPetition(p.content);
         if (p.comments) displayComments(p.comments);
-        if (p.sent) { // If it's sent to school
-            // $('opened-case').toggle();
-        }
+
 
         var bldgRef = firebase.database().ref('bldg/' + p.bldg);
         bldgRef.once("value").then(function(snapshot) {
@@ -238,9 +244,11 @@ function displayPetition(inContent) {
 function displayComments(inComment) {
     var cnt = 0;
     for (var c in inComment) {
-
-        $('.comments').prepend('<li><i class="fa fa-user" aria-hidden="true"></i> ' + inComment[c].email.substring(0, 3) + "** : " + inComment[c].content + ' (' + (new Date(c)) + ')</li>');
-        if (++cnt == 3) return;
+        if (inComment[c].accepted) {
+            $("#accepted-comments").prepend('<div class="alert alert-success" role="alert"><strong><i class="fa fa-check-square-o" aria-hidden="true"></i></strong>' + inComment[c].email.substring(0, 3) + "** : " + inComment[c].content + '</div>');
+        } else
+            $('.comments').prepend('<li><i class="fa fa-user" aria-hidden="true"></i> ' + inComment[c].email.substring(0, 3) + "** : " + inComment[c].content + ' (' + (new Date(c)) + ')</li>');
+        if (++cnt == 3) return; // show upto three comments
     }
 }
 

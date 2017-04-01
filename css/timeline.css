@@ -54,3 +54,8 @@
     word-wrap: break-word;
     min-height: 42px;
 }
+
+.alert {
+    margin-bottom: 0px;
+    margin-top: 20px;
+}
