@@ -249,7 +249,7 @@ function filterHour(hour_from, hour_to, hour3) {
     }
 }
 
-function filterSignature(inBldgIdx, inQuorum) {
+function filterSignature(inTargetDate, inBldgIdx, inQuorum) {
     var conn = {
             "strength": [0, 0, 0, 0, 0], // 0, 25 ... 100%
             "cnt": 0
