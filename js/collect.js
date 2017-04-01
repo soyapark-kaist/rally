@@ -128,7 +128,6 @@ function fetchBldgList(inCenter) {
     // Attach an asynchronous callback to read the data at our posts reference
     bldgRef.once("value").then(function(snapshot) {
         BLDG = snapshot.val();
-        BLDG = BLDG.sort(function(a, b) { return (a.name > b.name) ? 1 : ((b.name < a.name) ? -1 : 0); });
 
         for (var l in BLDG) {
             if (center) {
@@ -433,12 +432,8 @@ function postUsers() {
                 if (error) {
                     console.log(error);
                 } else {
-                    var playersRef = firebase.database().ref('bldg/' + $('.building-list tr.warning').attr("bldg"));
-                    // Attach an asynchronous callback to read the data at our posts reference
-                    playersRef.once("value").then(function(snapshot) {
-                        localStorage.setItem("participate", "1")
-                        routeToTimeline(snapshot.val().url);
-                    });
+                    localStorage.setItem("participate", "1")
+                    routeToTimeline(BLDG[$('.building-list tr.warning').attr("bldg")].url);
                 }
 
             });
@@ -463,13 +458,8 @@ function postUsers() {
                 if (error) {
                     console.log(error);
                 } else {
-                    var playersRef = firebase.database().ref('bldg/' + $('.building-list tr.warning').attr("bldg"));
-                    // Attach an asynchronous callback to read the data at our posts reference
-                    playersRef.once("value").then(function(snapshot) {
-                        localStorage.setItem("participate", "1")
-                        routeToTimeline(snapshot.val().url);
-
-                    });
+                    localStorage.setItem("participate", "1")
+                    routeToTimeline(BLDG[$('.building-list tr.warning').attr("bldg")].url);
                 }
 
             });
@@ -479,7 +469,7 @@ function postUsers() {
     else {
         localStorage.setItem("code", "1");
         localStorage.setItem("type", $(".internet-type a.active").attr("conn-type"));
-        localStorage.setItem("bldg", $('.building-list tr.warning').attr("bldg"));
+        localStorage.setItem("bldg", BLDG[$('.building-list tr.warning').attr("bldg")].url);
         localStorage.setItem("latitude", center.lat);
         localStorage.setItem("longitude", center.lng);
         localStorage.setItem("ip_addr", $(".ip-address ").text());
