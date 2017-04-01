@@ -38,7 +38,7 @@ function initDB() {
 
 /* Fetch data points from DB & Push markers on the map. */
 function markMap(inUserID) {
-    var playersRef = firebase.database().ref('users/');
+    var playersRef = firebase.database().ref('users/' + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-"));
     // Attach an asynchronous callback to read the data at our posts reference
     playersRef.once("value").then(function(snapshot) {
             var users = snapshot.val();
@@ -46,37 +46,19 @@ function markMap(inUserID) {
             var activities = [];
 
             for (var o in users) {
-                var year = o.split("-")[0],
-                    month = parseInt(o.split("-")[1]),
-                    day = parseInt(o.split("-")[2]);
+                locations.push({
+                    'lat': users[o].latitude,
+                    'lng': users[o].longitude
+                })
 
-                var today = {
-                    "year": new Date().getFullYear(),
-                    "month": new Date().getMonth() + 1,
-                    "day": parseInt(new Date().toString().split(" ")[2])
-                }
-
-                if (year == today.year && month == today.month && day == today.day) {
-                    for (var u in users[o]) {
-                        // debugger;
-                        locations.push({
-                            'lat': users[o][u].latitude,
-                            'lng': users[o][u].longitude
-                        })
-
-                        activities.push(u.indexOf("conn") != -1 ? "conn" : users[o][u].activity);
-                        // console.log("here");
-                        if (inUserID == u) {
-                            infoWindow = new google.maps.InfoWindow({ content: "내 서명", map: map });
-                            infoWindow.setPosition({
-                                'lat': users[o][u].latitude + 0.001,
-                                'lng': users[o][u].longitude
-                            });
-                        }
-
-                    }
-
-                    break;
+                activities.push(o.indexOf("conn") != -1 ? "conn" : users[o].activity);
+                // console.log("here");
+                if (inUserID == o) {
+                    infoWindow = new google.maps.InfoWindow({ content: "내 서명", map: map });
+                    infoWindow.setPosition({
+                        'lat': users[o].latitude + 0.001,
+                        'lng': users[o].longitude
+                    });
                 }
             }
 
@@ -249,133 +231,136 @@ function filterHour(hour_from, hour_to, hour3) {
     }
 }
 
+var conn = {
+        "strength": [0, 0, 0, 0, 0], // 0, 25 ... 100%
+        "cnt": 0
+    },
+    slow = {
+        "apps": {},
+        "speed": [0, 0, 0, 0],
+        "cons": [0, 0, 0, 0],
+        "download": [],
+        "upload": [],
+        "cnt": 0
+    }
+
 function filterSignature(inTargetDate, inBldgIdx, inQuorum) {
-    var conn = {
-            "strength": [0, 0, 0, 0, 0], // 0, 25 ... 100%
-            "cnt": 0
-        },
-        slow = {
-            "apps": {},
-            "speed": [0, 0, 0, 0],
-            "cons": [0, 0, 0, 0],
-            "download": [],
-            "upload": [],
-            "cnt": 0
+    var now = new Date();
+    var dateRange = [];
+
+    for (var d = inTargetDate; d <= now; d.setDate(d.getDate() + 1)) {
+        // console.log([d.getFullYear(), d.getMonth() + 1, d.getDate()].join("-"));
+        dateRange.push([d.getFullYear(), d.getMonth() + 1, d.getDate()].join("-"));
+    }
+
+    fetchSignature(0, dateRange, inBldgIdx, inQuorum);
+}
+
+function fetchSignature(inDateIndex, inDateRange, inBldgIdx, inQuorum) {
+    if (inDateIndex == inDateRange.length) {
+        if (conn["cnt"] + slow["cnt"] > 0) {
+            drawChart("#issue-chart", [{ "label": "느린 인터넷", "population": slow["cnt"] },
+                { "label": "연결 불능", "population": conn["cnt"] }
+            ]);
+
+            APPLICATIONS = [], SPEED = [], CONSISTENCY = [];
+
+            if (conn["cnt"] > 0) {
+                var c = [];
+                for (var i = 0; i < conn["strength"].length; i++) {
+                    c.push({ "label": WIFI_STRENGTH_MSG[i], "population": conn["strength"][i] });
+                }
+
+                drawChart("#strength-chart", c);
+            }
+            if (slow["cnt"] > 0) {
+                /* Data preparation for application pie chart. */
+                for (var d in slow["apps"]) {
+                    APPLICATIONS.push({ "label": d, "population": slow["apps"][d] });
+                }
+
+                SPEED.push({ "label": "즉각적이다", "population": slow["speed"][0] });
+                SPEED.push({ "label": "지연을 느낌", "population": slow["speed"][1] });
+                SPEED.push({ "label": "원하는만큼 못 사용", "population": slow["speed"][2] });
+                SPEED.push({ "label": "응답없음", "population": slow["speed"][3] });
+
+                CONSISTENCY.push({ "label": "일정함", "population": slow["cons"][0] });
+                CONSISTENCY.push({ "label": "쓸만함", "population": slow["cons"][1] });
+                CONSISTENCY.push({ "label": "불안정", "population": slow["cons"][2] });
+
+                // Add event handler for stat navbars, call this function after data are prepared.
+                var selectors = [];
+                selectors.push("#application"), selectors.push("#speed"), selectors.push("#consistency");
+                var datas = [];
+                datas.push(APPLICATIONS), datas.push(SPEED), datas.push(CONSISTENCY);
+                drawChart("#application", APPLICATIONS);
+                drawChart("#speed", SPEED);
+                drawChart("#consistency", CONSISTENCY);
+                // initStat("#stat", selectors, datas);
+
+                var sum = slow["download"].reduce(function(a, b) { return a + b; });
+                var downAvg = sum / slow["download"].length;
+
+                var sum = slow["upload"].reduce(function(a, b) { return a + b; });
+                var upAvg = sum / slow["upload"].length;
+
+                $("#bandwidth").text("평균 download / upload : " + downAvg.toFixed(2) + " / " + upAvg.toFixed(2) + "Mbps");
+            }
+
+            $("#number").text("제보 총 " + (conn["cnt"] + slow["cnt"]) + "개");
+
+            $("#stat").css("display", "block");
+        } else {
+            $("#number").text("해당 건물에 아직 제보한 사람이 없습니다. 친구들에게 홍보해 더 많은 힘을 모아보세요!");
         }
 
-    var playersRef = firebase.database().ref('users/');
+        if (conn["cnt"] + slow["cnt"] >= inQuorum) $("#progress-quorum").toggle();
+        else
+            setProgressbar(conn["cnt"] + slow["cnt"], inQuorum);
+        $("#finalStage").css("visibility", "visible");
+
+        return;
+    }
+
+    var playersRef = firebase.database().ref('users/' + inDateRange[inDateIndex]);
     // Attach an asynchronous callback to read the data at our posts reference
     playersRef.once("value").then(function(snapshot) {
             var users = snapshot.val();
 
             for (var o in users) {
-                var year = o.split("-")[0],
-                    month = parseInt(o.split("-")[1]) - 1,
-                    day = parseInt(o.split("-")[2]);
+                var loc = users[o].bldg;
 
-                var date = new Date();
-                date.setFullYear(year);
-                date.setMonth(month);
-                date.setDate(day);
+                if (inBldgIdx == loc) {
+                    //if ((Math.abs($('#map').locationpicker("location").latitude - lat) <= 0.00056) && (Math.abs($('#map').locationpicker("location").longitude - lng) <= 0.00056)) {
+                    // then include the signature
 
-                if (inTargetDate > date) {
-                    continue;
-                }
+                    if (o.indexOf("conn") != -1) {
+                        // Get welcome kaist strength
+                        conn["strength"][parseInt(users[o]["welcome_kaist"]) / 25]++;
+                        conn["cnt"]++;
+                    } else {
+                        var act = users[o].activity;
+                        if (slow["apps"][act]) slow["apps"][act] += 1;
+                        else
+                            slow["apps"][act] = 1;
 
-                for (var u in users[o]) {
-                    var loc = users[o][u].bldg;
+                        slow["speed"][parseInt(users[o].speed) - 1]++;
+                        slow["cons"][parseInt(users[o].consistency) - 1]++;
 
-                    if (inBldgIdx == loc) {
-                        //if ((Math.abs($('#map').locationpicker("location").latitude - lat) <= 0.00056) && (Math.abs($('#map').locationpicker("location").longitude - lng) <= 0.00056)) {
-                        // then include the signature
-
-                        if (u.indexOf("conn") != -1) {
-                            // Get welcome kaist strength
-                            conn["strength"][parseInt(users[o][u]["welcome_kaist"]) / 25]++;
-                            conn["cnt"]++;
-                        } else {
-                            var act = users[o][u].activity;
-                            if (slow["apps"][act]) slow["apps"][act] += 1;
-                            else
-                                slow["apps"][act] = 1;
-
-                            slow["speed"][parseInt(users[o][u].speed) - 1]++;
-                            slow["cons"][parseInt(users[o][u].consistency) - 1]++;
-
-                            slow["download"].push(parseFloat(users[o][u].download));
-                            slow["upload"].push(parseFloat(users[o][u].upload));
-                            slow["cnt"]++;
-                        }
+                        slow["download"].push(parseFloat(users[o].download));
+                        slow["upload"].push(parseFloat(users[o].upload));
+                        slow["cnt"]++;
                     }
-
                 }
             }
 
-            if (conn["cnt"] + slow["cnt"] > 0) {
-                drawChart("#issue-chart", [{ "label": "느린 인터넷", "population": slow["cnt"] },
-                    { "label": "연결 불능", "population": conn["cnt"] }
-                ]);
-
-                APPLICATIONS = [], SPEED = [], CONSISTENCY = [];
-
-                if (conn["cnt"] > 0) {
-                    var c = [];
-                    for (var i = 0; i < conn["strength"].length; i++) {
-                        c.push({ "label": WIFI_STRENGTH_MSG[i], "population": conn["strength"][i] });
-                    }
-
-                    drawChart("#strength-chart", c);
-                }
-                if (slow["cnt"] > 0) {
-                    /* Data preparation for application pie chart. */
-                    for (var d in slow["apps"]) {
-                        APPLICATIONS.push({ "label": d, "population": slow["apps"][d] });
-                    }
-
-                    SPEED.push({ "label": "즉각적이다", "population": slow["speed"][0] });
-                    SPEED.push({ "label": "지연을 느낌", "population": slow["speed"][1] });
-                    SPEED.push({ "label": "원하는만큼 못 사용", "population": slow["speed"][2] });
-                    SPEED.push({ "label": "응답없음", "population": slow["speed"][3] });
-
-                    CONSISTENCY.push({ "label": "일정함", "population": slow["cons"][0] });
-                    CONSISTENCY.push({ "label": "쓸만함", "population": slow["cons"][1] });
-                    CONSISTENCY.push({ "label": "불안정", "population": slow["cons"][2] });
-
-                    // Add event handler for stat navbars, call this function after data are prepared.
-                    var selectors = [];
-                    selectors.push("#application"), selectors.push("#speed"), selectors.push("#consistency");
-                    var datas = [];
-                    datas.push(APPLICATIONS), datas.push(SPEED), datas.push(CONSISTENCY);
-                    drawChart("#application", APPLICATIONS);
-                    drawChart("#speed", SPEED);
-                    drawChart("#consistency", CONSISTENCY);
-                    // initStat("#stat", selectors, datas);
-
-                    var sum = slow["download"].reduce(function(a, b) { return a + b; });
-                    var downAvg = sum / slow["download"].length;
-
-                    var sum = slow["upload"].reduce(function(a, b) { return a + b; });
-                    var upAvg = sum / slow["upload"].length;
-
-                    $("#bandwidth").text("평균 download / upload : " + downAvg.toFixed(2) + " / " + upAvg.toFixed(2) + "Mbps");
-                }
-
-                $("#number").text("제보 총 " + (conn["cnt"] + slow["cnt"]) + "개");
-
-                $("#stat").css("display", "block");
-            } else {
-                $("#number").text("해당 건물에 아직 제보한 사람이 없습니다. 친구들에게 홍보해 더 많은 힘을 모아보세요!");
-            }
-
-            if (conn["cnt"] + slow["cnt"] >= inQuorum) $("#progress-quorum").toggle();
-            else
-                setProgressbar(conn["cnt"] + slow["cnt"], inQuorum);
-            $("#finalStage").css("visibility", "visible");
+            fetchSignature(++inDateIndex, inDateRange, inBldgIdx, inQuorum);
         },
         function(errorObject) {
             alert("The read failed: " + errorObject.code);
             // $btn.button('reset');
         });
+
 
 }
 

@@ -213,6 +213,9 @@ function fetchPetiton(inReceiving) {
         $("#current-progress").text("인터넷 캠페인 진행 중");
         if (p.content) displayPetition(p.content);
         if (p.comments) displayComments(p.comments);
+        if (p.closed) { // If it's sent to school
+
+        }
 
         var bldgRef = firebase.database().ref('bldg/' + p.bldg);
         bldgRef.once("value").then(function(snapshot) {
