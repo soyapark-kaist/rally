@@ -80,7 +80,7 @@
                         <i class="fa fa-pencil-square-o fa-stack-1x fa-inverse"></i>
                     </span></li>
                     <li><i class="fa fa-chevron-right" aria-hidden="true"></i></li>
-                    <li><span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="우리 건물에 다른 학우들은 어떤 제보를 했는지 볼 수 있습니다">
+                    <li><span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="우리 건물에 충분한 제보가 쌓이면 개선을 요구하기 위해 정보통신팀에 민원이 보내집니다.">
                         <i class="fa fa-circle fa-stack-2x"></i>
                         <i class="fa fa-bar-chart fa-stack-1x fa-inverse"></i>
                     </span></li>
@@ -95,7 +95,7 @@
                         <i class="fa fa-reply fa-stack-1x fa-inverse"></i>
                     </span></li>
                 </ul>
-                <p id="current-progress" style="text-align: center;">우리 건물에 있는 제보 보기</p>
+                <p id="current-progress" style="text-align: center;">민원 준비 중</p>
 
                 <div class="loading"></div>
 
@@ -104,16 +104,6 @@
                         <i class="fa fa-building-o fa-2x" aria-hidden="true"></i> <span id="bldgName"></span>
                     </h2>
                 </div>
-
-                <div class="row">
-                    <div style="float:right;">
-                        <div id="internetSlow" class="issue-type"><i class="fa fa-exclamation-circle" aria-hidden="true"> 분류: 인터넷 느림현상</i></div>
-                        <div id="internetConn" class="issue-type"><i class="fa fa-chain-broken" aria-hidden="true"> 분류: 인터넷 연결불능</i>
-                        </div>
-                    </div>
-                </div>
-
-                <!--<h6>아래 블록을 클릭하면 더 자세한 내용을 보실 수 있습니다</h6>-->
 
                 <div id="timeline"></div>
 
@@ -134,7 +124,7 @@
                                     <div class="col-sm-4">
                                         <div id="issue-chart"></div>
                                     </div>
-                                    <div class="col-sm-8">
+                                    <div class="col-sm-8 opened-case">
                                         <p style="margin-top:20px;" id="number"></p>
                                         <div id="on-going">
                                             <h4>달성율
@@ -161,11 +151,12 @@
                                     </div>
                                 </div>
                                 <div id="contents" class="tab-pane fade">
-                                    <p id="content">내용없음.</p>
-                                    <div class="row">
+                                    <p id="content">아직 내용이 없습니다.</p>
+                                    <div class="opened-case" id="accepted-comments"></div>
+                                    <div class="row opened-case">
                                         <form style="margin-top: 30px;">
                                             <div class="form-group">
-                                                <textarea class="form-control status-box" rows="2" placeholder="첨언하기"></textarea>
+                                                <textarea class="form-control status-box" rows="2" placeholder="인터넷을 사용하면서 느끼는 불편함과 현상을 댓글로 달아주면 민원내용에 포함됩니다!"></textarea>
                                             </div>
                                         </form>
                                         <div class="button-group pull-right">
@@ -247,7 +238,7 @@
                     </div>
                 </div>
 
-                <div class="row participate-row">
+                <div class="row participate-row opened-case">
                     <h4 style="margin-top: 30px;">문제에 공감하시나요? 1분을 투자해 이 캠페인에 힘을 실어주세요!</h4>
                     <div style="text-align:center; margin-top:20px;">
                         <a id="participate" href="./collect.html" class="btn btn-success btn-lg">동참하기</a>
