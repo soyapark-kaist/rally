@@ -221,7 +221,7 @@ function fetchPetiton(inReceiving) {
             $("#bldgName").text(b.name);
 
             // signature & progress bar 
-            selectSignature(b.lat, b.lng, b.headcnt ? b.headcnt : 100);
+            selectSignature(BLDG_INDEX, b.headcnt ? b.headcnt : 100);
         });
     });
 }
@@ -261,22 +261,12 @@ function centerMap(inCenter) {
     map.setCenter(inCenter);
 }
 
-function selectSignature(pLat, pLng, pHeadCount) {
-    var playersRef = firebase.database().ref('users/');
-    // Attach an asynchronous callback to read the data at our posts reference
-    playersRef.once("value").then(function(snapshot) {
-            users = snapshot.val();
-
-            var openDateRef = firebase.database().ref('opendate/');
-            openDateRef.once("value").then(function(snapshot) {
-                filterSignature(new Date(snapshot.val()), { "lat": pLat, "lng": pLng }, pHeadCount);
-                toggleLoading(".loading");
-            });
-        },
-        function(errorObject) {
-            alert("The read failed: " + errorObject.code);
-            // $btn.button('reset');
-        });
+function selectSignature(pBldgIdx, pHeadCount) {
+    var openDateRef = firebase.database().ref('opendate/');
+    openDateRef.once("value").then(function(snapshot) {
+        filterSignature(new Date(snapshot.val()), pBldgIdx, pHeadCount);
+        toggleLoading(".loading");
+    });
 }
 
 function checkEligibility() {

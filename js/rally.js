@@ -249,7 +249,7 @@ function filterHour(hour_from, hour_to, hour3) {
     }
 }
 
-function filterSignature(inTargetDate, inTargetLoc, inQuorum) {
+function filterSignature(inTargetDate, inBldgIdx, inQuorum) {
     var conn = {
             "strength": [0, 0, 0, 0, 0], // 0, 25 ... 100%
             "cnt": 0
@@ -263,113 +263,120 @@ function filterSignature(inTargetDate, inTargetLoc, inQuorum) {
             "cnt": 0
         }
 
-    for (var o in users) {
-        var year = o.split("-")[0],
-            month = parseInt(o.split("-")[1]) - 1,
-            day = parseInt(o.split("-")[2]);
+    var playersRef = firebase.database().ref('users/');
+    // Attach an asynchronous callback to read the data at our posts reference
+    playersRef.once("value").then(function(snapshot) {
+            var users = snapshot.val();
 
-        var date = new Date();
-        date.setFullYear(year);
-        date.setMonth(month);
-        date.setDate(day);
+            for (var o in users) {
+                var year = o.split("-")[0],
+                    month = parseInt(o.split("-")[1]) - 1,
+                    day = parseInt(o.split("-")[2]);
 
-        if (inTargetDate > date) {
+                var date = new Date();
+                date.setFullYear(year);
+                date.setMonth(month);
+                date.setDate(day);
 
-            continue;
-        }
+                if (inTargetDate > date) {
+                    continue;
+                }
 
-        for (var u in users[o]) {
-            var hour = new Date(users[o][u].time).getHours();
+                for (var u in users[o]) {
+                    var loc = users[o][u].bldg;
 
-            var lat = users[o][u].latitude,
-                lng = users[o][u].longitude;
+                    if (inBldgIdx == loc) {
+                        //if ((Math.abs($('#map').locationpicker("location").latitude - lat) <= 0.00056) && (Math.abs($('#map').locationpicker("location").longitude - lng) <= 0.00056)) {
+                        // then include the signature
 
-            if ((Math.abs(inTargetLoc.lat - lat) <= 0.00056) && (Math.abs(inTargetLoc.lng - lng) <= 0.00056)) {
-                //if ((Math.abs($('#map').locationpicker("location").latitude - lat) <= 0.00056) && (Math.abs($('#map').locationpicker("location").longitude - lng) <= 0.00056)) {
-                // then include the signature
+                        if (u.indexOf("conn") != -1) {
+                            // Get welcome kaist strength
+                            conn["strength"][parseInt(users[o][u]["welcome_kaist"]) / 25]++;
+                            conn["cnt"]++;
+                        } else {
+                            var act = users[o][u].activity;
+                            if (slow["apps"][act]) slow["apps"][act] += 1;
+                            else
+                                slow["apps"][act] = 1;
 
-                if (u.indexOf("conn") != -1) {
-                    // Get welcome kaist strength
-                    conn["strength"][parseInt(users[o][u]["welcome_kaist"]) / 25]++;
-                    conn["cnt"]++;
-                } else {
-                    var act = users[o][u].activity;
-                    if (slow["apps"][act]) slow["apps"][act] += 1;
-                    else
-                        slow["apps"][act] = 1;
+                            slow["speed"][parseInt(users[o][u].speed) - 1]++;
+                            slow["cons"][parseInt(users[o][u].consistency) - 1]++;
 
-                    slow["speed"][parseInt(users[o][u].speed) - 1]++;
-                    slow["cons"][parseInt(users[o][u].consistency) - 1]++;
+                            slow["download"].push(parseFloat(users[o][u].download));
+                            slow["upload"].push(parseFloat(users[o][u].upload));
+                            slow["cnt"]++;
+                        }
+                    }
 
-                    slow["download"].push(parseFloat(users[o][u].download));
-                    slow["upload"].push(parseFloat(users[o][u].upload));
-                    slow["cnt"]++;
                 }
             }
 
-        }
-    }
+            if (conn["cnt"] + slow["cnt"] > 0) {
+                drawChart("#issue-chart", [{ "label": "느린 인터넷", "population": slow["cnt"] },
+                    { "label": "연결 불능", "population": conn["cnt"] }
+                ]);
 
-    if (conn["cnt"] + slow["cnt"] > 0) {
-        drawChart("#issue-chart", [{ "label": "느린 인터넷", "population": slow["cnt"] },
-            { "label": "연결 불능", "population": conn["cnt"] }
-        ]);
+                APPLICATIONS = [], SPEED = [], CONSISTENCY = [];
 
-        APPLICATIONS = [], SPEED = [], CONSISTENCY = [];
+                if (conn["cnt"] > 0) {
+                    var c = [];
+                    for (var i = 0; i < conn["strength"].length; i++) {
+                        c.push({ "label": WIFI_STRENGTH_MSG[i], "population": conn["strength"][i] });
+                    }
 
-        if (conn["cnt"] > 0) {
-            var c = [];
-            for (var i = 0; i < conn["strength"].length; i++) {
-                c.push({ "label": WIFI_STRENGTH_MSG[i], "population": conn["strength"][i] });
+                    drawChart("#strength-chart", c);
+                }
+                if (slow["cnt"] > 0) {
+                    /* Data preparation for application pie chart. */
+                    for (var d in slow["apps"]) {
+                        APPLICATIONS.push({ "label": d, "population": slow["apps"][d] });
+                    }
+
+                    SPEED.push({ "label": "즉각적이다", "population": slow["speed"][0] });
+                    SPEED.push({ "label": "지연을 느낌", "population": slow["speed"][1] });
+                    SPEED.push({ "label": "원하는만큼 못 사용", "population": slow["speed"][2] });
+                    SPEED.push({ "label": "응답없음", "population": slow["speed"][3] });
+
+                    CONSISTENCY.push({ "label": "일정함", "population": slow["cons"][0] });
+                    CONSISTENCY.push({ "label": "쓸만함", "population": slow["cons"][1] });
+                    CONSISTENCY.push({ "label": "불안정", "population": slow["cons"][2] });
+
+                    // Add event handler for stat navbars, call this function after data are prepared.
+                    var selectors = [];
+                    selectors.push("#application"), selectors.push("#speed"), selectors.push("#consistency");
+                    var datas = [];
+                    datas.push(APPLICATIONS), datas.push(SPEED), datas.push(CONSISTENCY);
+                    drawChart("#application", APPLICATIONS);
+                    drawChart("#speed", SPEED);
+                    drawChart("#consistency", CONSISTENCY);
+                    // initStat("#stat", selectors, datas);
+
+                    var sum = slow["download"].reduce(function(a, b) { return a + b; });
+                    var downAvg = sum / slow["download"].length;
+
+                    var sum = slow["upload"].reduce(function(a, b) { return a + b; });
+                    var upAvg = sum / slow["upload"].length;
+
+                    $("#bandwidth").text("평균 download / upload : " + downAvg.toFixed(2) + " / " + upAvg.toFixed(2) + "Mbps");
+                }
+
+                $("#number").text("제보 총 " + (conn["cnt"] + slow["cnt"]) + "개");
+
+                $("#stat").css("display", "block");
+            } else {
+                $("#number").text("해당 건물에 아직 제보한 사람이 없습니다. 친구들에게 홍보해 더 많은 힘을 모아보세요!");
             }
 
-            drawChart("#strength-chart", c);
-        }
-        if (slow["cnt"] > 0) {
-            /* Data preparation for application pie chart. */
-            for (var d in slow["apps"]) {
-                APPLICATIONS.push({ "label": d, "population": slow["apps"][d] });
-            }
+            if (conn["cnt"] + slow["cnt"] >= inQuorum) $("#progress-quorum").toggle();
+            else
+                setProgressbar(conn["cnt"] + slow["cnt"], inQuorum);
+            $("#finalStage").css("visibility", "visible");
+        },
+        function(errorObject) {
+            alert("The read failed: " + errorObject.code);
+            // $btn.button('reset');
+        });
 
-            SPEED.push({ "label": "즉각적이다", "population": slow["speed"][0] });
-            SPEED.push({ "label": "지연을 느낌", "population": slow["speed"][1] });
-            SPEED.push({ "label": "원하는만큼 못 사용", "population": slow["speed"][2] });
-            SPEED.push({ "label": "응답없음", "population": slow["speed"][3] });
-
-            CONSISTENCY.push({ "label": "일정함", "population": slow["cons"][0] });
-            CONSISTENCY.push({ "label": "쓸만함", "population": slow["cons"][1] });
-            CONSISTENCY.push({ "label": "불안정", "population": slow["cons"][2] });
-
-            // Add event handler for stat navbars, call this function after data are prepared.
-            var selectors = [];
-            selectors.push("#application"), selectors.push("#speed"), selectors.push("#consistency");
-            var datas = [];
-            datas.push(APPLICATIONS), datas.push(SPEED), datas.push(CONSISTENCY);
-            drawChart("#application", APPLICATIONS);
-            drawChart("#speed", SPEED);
-            drawChart("#consistency", CONSISTENCY);
-            // initStat("#stat", selectors, datas);
-
-            var sum = slow["download"].reduce(function(a, b) { return a + b; });
-            var downAvg = sum / slow["download"].length;
-
-            var sum = slow["upload"].reduce(function(a, b) { return a + b; });
-            var upAvg = sum / slow["upload"].length;
-
-            $("#bandwidth").text("평균 download / upload : " + downAvg.toFixed(2) + " / " + upAvg.toFixed(2) + "Mbps");
-        }
-
-        $("#number").text("제보 총 " + (conn["cnt"] + slow["cnt"]) + "개");
-
-        $("#stat").css("display", "block");
-    } else {
-        $("#number").text("해당 건물에 아직 제보한 사람이 없습니다. 친구들에게 홍보해 더 많은 힘을 모아보세요!");
-    }
-
-    if (conn["cnt"] + slow["cnt"] >= inQuorum) $("#progress-quorum").toggle();
-    else
-        setProgressbar(conn["cnt"] + slow["cnt"], inQuorum);
-    $("#finalStage").css("visibility", "visible");
 }
 
 function initStat(inSelector, inSelectorList, inDataList) {
