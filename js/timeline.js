@@ -23,7 +23,7 @@ $(function() {
 
         if (firebase.auth().currentUser) {
             $(".comments li").each(function(index) {
-                if ($(this).text().indexOf(firebase.auth().currentUser.email.substring(0, 4))) {
+                if ($(this).text().indexOf(firebase.auth().currentUser.email.substring(0, 3))) {
                     cnt++;
                 }
 
@@ -35,7 +35,7 @@ $(function() {
             }
 
 
-            $('.comments').prepend('<li><i class="fa fa-user" aria-hidden="true"></i> ' + firebase.auth().currentUser.email.substring(0, 4) + "** : " + post + '</li>');
+            $('.comments').prepend('<li><i class="fa fa-user" aria-hidden="true"></i> ' + firebase.auth().currentUser.email.substring(0, 3) + "** : " + post + '</li>');
             $('.status-box').val('');
             $('.counter').text('140');
             $('.comments-post').addClass('disabled');
@@ -239,7 +239,7 @@ function displayComments(inComment) {
     var cnt = 0;
     for (var c in inComment) {
 
-        $('.comments').prepend('<li><i class="fa fa-user" aria-hidden="true"></i> ' + inComment[c].email.substring(0, 4) + "** : " + inComment[c].content + ' (' + (new Date(c)) + ')</li>');
+        $('.comments').prepend('<li><i class="fa fa-user" aria-hidden="true"></i> ' + inComment[c].email.substring(0, 3) + "** : " + inComment[c].content + ' (' + (new Date(c)) + ')</li>');
         if (++cnt == 3) return;
     }
 }
