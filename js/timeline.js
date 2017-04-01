@@ -19,6 +19,8 @@ $(function() {
     // comment event handler
     $('.comments-post').click(function() {
         var cnt = 0;
+        var post = $('.status-box').val();
+
         if (firebase.auth().currentUser) {
             $(".comments li").each(function(index) {
                 if ($(this).text().indexOf(firebase.auth().currentUser.email.substring(0, 4))) {
@@ -32,7 +34,7 @@ $(function() {
                 return;
             }
 
-            var post = $('.status-box').val();
+
             $('.comments').prepend('<li><i class="fa fa-user" aria-hidden="true"></i> ' + firebase.auth().currentUser.email.substring(0, 4) + "** : " + post + '</li>');
             $('.status-box').val('');
             $('.counter').text('140');
@@ -213,8 +215,8 @@ function fetchPetiton(inReceiving) {
         $("#current-progress").text("인터넷 캠페인 진행 중");
         if (p.content) displayPetition(p.content);
         if (p.comments) displayComments(p.comments);
-        if (p.closed) { // If it's sent to school
-
+        if (p.sent) { // If it's sent to school
+            // $('opened-case').toggle();
         }
 
         var bldgRef = firebase.database().ref('bldg/' + p.bldg);

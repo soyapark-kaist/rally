@@ -105,16 +105,6 @@
                     </h2>
                 </div>
 
-                <div class="row">
-                    <div style="float:right;">
-                        <div id="internetSlow" class="issue-type"><i class="fa fa-exclamation-circle" aria-hidden="true"> 분류: 인터넷 느림현상</i></div>
-                        <div id="internetConn" class="issue-type"><i class="fa fa-chain-broken" aria-hidden="true"> 분류: 인터넷 연결불능</i>
-                        </div>
-                    </div>
-                </div>
-
-                <!--<h6>아래 블록을 클릭하면 더 자세한 내용을 보실 수 있습니다</h6>-->
-
                 <div id="timeline"></div>
 
                 <div id="petition">
@@ -124,7 +114,7 @@
                         <div class="row">
                             <ul class="nav nav-tabs">
                                 <li class="active"><a data-toggle="tab" href="#overall">제보 현황</a></li>
-                                <li><a data-toggle="tab" href="#contents">민원 내용</a></li>
+                                <li class="opened-case"><a data-toggle="tab" href="#contents">민원 내용</a></li>
                                 <li><a data-toggle="tab" href="#internet-conn">연결 불능</a></li>
                                 <li><a data-toggle="tab" href="#internet-slow">느린 인터넷</a></li>
                             </ul>
@@ -134,7 +124,7 @@
                                     <div class="col-sm-4">
                                         <div id="issue-chart"></div>
                                     </div>
-                                    <div class="col-sm-8">
+                                    <div class="col-sm-8 opened-case">
                                         <p style="margin-top:20px;" id="number"></p>
                                         <div id="on-going">
                                             <h4>달성율
@@ -161,7 +151,8 @@
                                     </div>
                                 </div>
                                 <div id="contents" class="tab-pane fade">
-                                    <p id="content">내용없음.</p>
+                                    <p id="content">아직 내용이 없습니다. 인터넷을 사용하면서 느끼는 불편함과 현상을 댓글로 달아주면 관리자 확인 후 민원내용에 포함됩니다!</p>
+                                    <div id="accepted-comments"></div>
                                     <div class="row">
                                         <form style="margin-top: 30px;">
                                             <div class="form-group">
