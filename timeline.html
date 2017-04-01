@@ -27,7 +27,6 @@
 
     <link rel="stylesheet" href="css/font-awesome.min.css" />
     <link rel="stylesheet" href="css/custom.css" />
-    <link rel="stylesheet" href="css/vis.min.css" />
 
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="css/theme.css" />
@@ -39,7 +38,6 @@
 
     <script src="https://www.gstatic.com/firebasejs/3.6.7/firebase.js"></script>
 
-    <script type="text/javascript" src="js/vis.min.js"></script>
     <script src="js/d3.min.js"></script>
 
     <script type="text/javascript" src="js/conf.js"></script>
@@ -104,7 +102,7 @@
                         <i class="fa fa-building-o fa-2x" aria-hidden="true"></i> <span id="bldgName"></span>
                     </h2>
                 </div>
-
+                <div class="alert alert-success" role="alert" id="respond"><strong><i class="fa fa-check-square-o" aria-hidden="true"></i>정보통신팀 답변</strong><br><span>여기에 답변</span></div>
                 <div id="timeline"></div>
 
                 <div id="petition">
@@ -124,7 +122,7 @@
                                     <div class="col-sm-4">
                                         <div id="issue-chart"></div>
                                     </div>
-                                    <div class="col-sm-8 opened-case">
+                                    <div class="col-sm-8">
                                         <p style="margin-top:20px;" id="number"></p>
                                         <div id="on-going">
                                             <h4>달성율
@@ -143,7 +141,7 @@
                                                 </p>
                                             </div>
                                             <!-- SNS share button -->
-                                            <p style="margin-bottom:30px;">더 많은 목소리가 모일수록 강해집니다.</p>
+                                            <p class="opened-case" style="margin-bottom:30px;">더 많은 목소리가 모일수록 강해집니다.</p>
                                             <img class="fb-share" src="img/fb.png" />
                                         </div>
 
@@ -203,10 +201,6 @@
 
                 <div id="receive">
                     <p>정보통신팀이 민원을 접수했습니다</p>
-                </div>
-
-                <div id="respond">
-                    <p></p>
                 </div>
 
                 <div id="adminOnly" style="text-align:center;margin-top:20px;">
