@@ -80,124 +80,6 @@ function initParams() {
     }
 }
 
-function initTimeline(inTimeline) {
-    // create a dataset with items
-    // we specify the type of the fields `start` and `end` here to be strings
-    // containing an ISO date. The fields will be outputted as ISO dates
-    // automatically getting data from the DataSet via items.get().
-    var items = new vis.DataSet({
-        type: { start: 'ISODate', end: 'ISODate' }
-    });
-    var groups = new vis.DataSet([{
-        id: 'presenter',
-        content: '청원인'
-    }, {
-        id: 'school',
-        content: '정보통신팀',
-        subgroupOrder: 'subgroupOrder' // this group has no subgroups but this would be the other method to do the sorting.
-    }]);
-
-    // add items to the DataSet
-    var rows = [];
-    var cnt = 0;
-    var submitDate, receivedDate;
-    var options;
-
-    // rows.push({ id: 'A', start: new Date(), end: new Date(), group: 'now' })
-
-    if (inTimeline["submit"]) {
-        submitDate = new Date(inTimeline["submit"]);
-        var tomorrow = new Date(+submitDate);
-        tomorrow.setDate(submitDate.getDate() + openDate);
-
-        rows.push({ id: 'submit', content: "민원 제출/서명 모집 중", start: submitDate, end: tomorrow, group: 'presenter', className: 'positive' });
-
-        cnt += 1;
-    }
-
-    if (inTimeline["receive"]) {
-        receivedDate = new Date(inTimeline["receive"]);
-
-        var tomorrow = new Date(+receivedDate);
-        tomorrow.setMinutes(receivedDate.getMinutes() + 120);
-        receivedDate.setMinutes(receivedDate.getMinutes() - 120);
-
-        rows.push({ id: 'receive', content: "수신", start: receivedDate, end: tomorrow, group: 'school', className: 'negative' });
-
-        cnt += 1;
-    }
-
-    if (inTimeline["respond"]) {
-        $("#adminOnly").css("display", "none");
-        receivedDate = new Date(inTimeline["respond"]);
-
-        var tomorrow = new Date(+receivedDate);
-        tomorrow.setMinutes(receivedDate.getMinutes() + 120);
-        receivedDate.setMinutes(receivedDate.getMinutes() - 120);
-
-        rows.push({ id: 'respond', content: "답변", start: receivedDate, end: tomorrow, group: 'school', className: 'negative' });
-
-        cnt += 1;
-    }
-
-    // When the petition is only submitted.  
-    if (cnt <= 1) {
-        var maxDay = new Date(+submitDate);
-        maxDay.setDate(submitDate.getDate() + 3);
-        options = {
-            end: maxDay
-        };
-
-        cnt += 1;
-    }
-
-    items.add(rows);
-
-    var container = document.getElementById('timeline');
-    // var options = {
-    //     // orientation:'top'
-    //     editable: true,
-    //     stack: false,
-    //     stackSubgroups: true
-    // };
-
-    var timeline = new vis.Timeline(container, items, groups, options);
-
-    timeline.on('click', function(inEvent) {
-        // toggleLoading(".loading");
-
-        $("#petition").css("display", "none");
-        $("#receive").css("display", "none");
-        $("#respond").css("display", "none");
-
-        if (inEvent["item"] == "submit") {
-            if (!maploaded) {
-                maploaded = true;
-                // createMap();
-                // markMap(null);
-
-                // centerMap(center);
-                // createCircle(petitionID, { "lat": petition["latitude"], "lng": petition["longitude"] }, petition["title"]);
-
-                selectSignature();
-            }
-
-            $("#petition").slideDown();
-
-        } else if (inEvent["item"] == "receive") {
-            $("#receive").slideDown();
-        } else if (inEvent["item"] == "respond") {
-            $("#respond").slideDown();
-        } else {
-
-        }
-
-        // toggleLoading(".loading");
-    });
-
-    toggleLoading(".loading");
-}
-
 /* Fetch petitions. */
 function fetchPetiton(inReceiving) {
     var playersRef = firebase.database().ref('campaign/' + petitionID);
@@ -211,8 +93,12 @@ function fetchPetiton(inReceiving) {
 
         BLDG_INDEX = parseInt(p.bldg);
 
+        if (p.respond) {
+            fill_progress_circle(3);
+            $("#current-progress").text("정보통신팀 답변 도착");
 
-        if (p.sent) { // If it's sent to school
+            displayRespond(p.respond);
+        } else if (p.sent) { // If it's sent to school
             fill_progress_circle(2);
             $("#current-progress").text("정보통신팀에 전송");
 
@@ -253,7 +139,7 @@ function displayComments(inComment) {
 }
 
 function displayRespond(inResponse) {
-    $('#respond p').text(inResponse);
+    $('#respond span').text(inResponse);
 }
 
 function displayAvailablePetition(inPetitions) {
