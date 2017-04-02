@@ -70,7 +70,7 @@ function initParams() {
         }
 
         if (params[p].split("=")[0] == "adn") {
-            isAdmin = true; //the user is admin. 
+            isAdmin = true; //the user is admin.
         }
     }
 
@@ -117,7 +117,7 @@ function fetchPetiton(inReceiving) {
             // Building name
             $("#bldgName").text(b.name);
 
-            // signature & progress bar 
+            // signature & progress bar
             selectSignature(BLDG_INDEX, b.headcnt ? b.headcnt : 100);
         });
     });
@@ -311,4 +311,27 @@ function filterPetiton(inHour, inLoc, inCallback) {
 
         inCallback(p);
     });
+}
+
+/*
+@cid id of chart to append legend
+@legendEmt Array of Object {name, color}
+    e.g.
+    legendEmt = [
+        { name: "진행중인 캠페인", color: "#fff" },
+        { name: "작동 안함", color: "#ccc" },
+    ]
+*/
+function displayLegend(cid, legendEmt) {
+    var chart = document.getElementById(cid);
+    var legend = document.createElement('div');
+    for (var le in legendEmt) {
+        var name = legendEmt[le].name;
+        var color = legendEmt[le].color;
+        var div = document.createElement('div');
+        div.innerHTML = '<i class="fa fa-circle" aria-hidden="true" style=color:'
+                        + color + '></i>&nbsp' + name;
+        legend.appendChild(div);
+    }
+    chart.appendChild(legend);
 }

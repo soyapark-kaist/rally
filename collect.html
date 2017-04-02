@@ -106,7 +106,7 @@
             width: 100%;
             margin-top: 10px;
         }
-        
+
         textarea {
             width: 70%;
         }
@@ -376,15 +376,28 @@
                     <div class="in-content">
                         <div id="internet-question" class="row">
                             <h4 id="question-speed">인터넷 응답이 얼마나 느린가요?</h4>
-                            <input type="radio" name="speed" value="1" description="즉각적이다 (0~0.1s)" checked> 즉각적이다 (0~0.1s)<br>
-                            <input type="radio" name="speed" value="2" description="지연을 느끼지만, 사용에 지장은 없다 (0.1~1s)"> 지연을 느끼지만, 사용에 지장은 없다 (0.1~1s)<br>
-                            <input type="radio" name="speed" value="3" description="지연으로 인해 원하는 만큼 사용하지 못하고 있다 (1~10s)"> 지연으로 인해 원하는 만큼 사용하지 못하고 있다 (1~10s)<br>
-                            <input type="radio" name="speed" value="3" description="응답하지 않는다 (10s~)"> 응답하지 않는다 (10s~)<br>
-
+                            <label class="radio-vertical">
+                                <input type="radio" name="speed" value="1" description="즉각적이다 (0~0.1s)" checked> 즉각적이다 (0~0.1s)
+                            </label>
+                            <label class="radio-vertical">
+                                <input type="radio" name="speed" value="2" description="지연을 느끼지만, 사용에 지장은 없다 (0.1~1s)"> 지연을 느끼지만, 사용에 지장은 없다 (0.1~1s)
+                            </label>
+                            <label class="radio-vertical">
+                                <input type="radio" name="speed" value="3" description="지연으로 인해 원하는 만큼 사용하지 못하고 있다 (1~10s)"> 지연으로 인해 원하는 만큼 사용하지 못하고 있다 (1~10s)
+                            </label>
+                            <label class="radio-vertical">
+                                <input type="radio" name="speed" value="3" description="응답하지 않는다 (10s~)"> 응답하지 않는다 (10s~)
+                            </label>
                             <h4 id="question-consistency" style="margin-top: 30px;">인터넷 속도가 일정한가요?</h4>
-                            <input type="radio" name="consistency" value="1" description="일정한 속도를 유지한다" checked> 일정한 속도를 유지한다<br>
-                            <input type="radio" name="consistency" value="2" description="속도가 일정치 않아서 신경쓰이긴 하지만 쓸만하다"> 속도가 일정치 않아서 신경쓰이긴 하지만 쓸만하다<br>
-                            <input type="radio" name="consistency" value="3" description="종잡을 수 없다"> 종잡을 수 없다<br>
+                            <label class="radio-vertical">
+                                <input type="radio" name="consistency" value="1" description="일정한 속도를 유지한다" checked> 일정한 속도를 유지한다
+                            </label>
+                            <label class="radio-vertical">
+                                <input type="radio" name="consistency" value="2" description="속도가 일정치 않아서 신경쓰이긴 하지만 쓸만하다"> 속도가 일정치 않아서 신경쓰이긴 하지만 쓸만하다
+                            </label>
+                            <label class="radio-vertical">
+                                <input type="radio" name="consistency" value="3" description="종잡을 수 없다"> 종잡을 수 없다
+                            </label>
                         </div>
                     </div>
                 </div>
