@@ -315,19 +315,19 @@ function filterPetiton(inHour, inLoc, inCallback) {
 
 /*
 @cid id of chart to append legend
-@activities Array of Object {name, color}
+@legendEmt Array of Object {name, color}
     e.g.
-    activities = [
+    legendEmt = [
         { name: "진행중인 캠페인", color: "#fff" },
         { name: "작동 안함", color: "#ccc" },
     ]
 */
-function displayLegend(cid, activities) {
+function displayLegend(cid, legendEmt) {
     var chart = document.getElementById(cid);
     var legend = document.createElement('div');
-    for (var act in activities) {
-        var name = activities[act].name;
-        var color = activities[act].color;
+    for (var le in legendEmt) {
+        var name = legendEmt[le].name;
+        var color = legendEmt[le].color;
         var div = document.createElement('div');
         div.innerHTML = '<i class="fa fa-circle" aria-hidden="true" style=color:'
                         + color + '></i>&nbsp' + name;
