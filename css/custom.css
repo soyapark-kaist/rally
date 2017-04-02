@@ -803,3 +803,9 @@ footer {
 #internet-slow svg {
     overflow: visible;
 }
+
+.radio-vertical {
+    font-weight: 400;
+    display: block;
+    cursor: pointer;
+}

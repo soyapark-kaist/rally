@@ -159,6 +159,6 @@ input::-moz-focus-outer {
 }
 
 .building-list-container {
-    overflow: scroll;
+    overflow-y: scroll;
     height: 300px;
 }
