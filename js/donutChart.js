@@ -24,6 +24,10 @@ function drawChart(inSelector, inData) {
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
 
+    // for Legend
+    $(inSelector).append("<div class='donutchart-legend'></div>");
+
+    var legend = [];
     addData(inData);
 
     function addData(data) {
@@ -34,15 +38,10 @@ function drawChart(inSelector, inData) {
 
         g.append("path")
             .attr("d", arc)
-            .style("fill", function(d) { return color(d.data.label); });
-
-        g.append("text")
-            .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
-            .attr("dy", ".35em")
-            .text(function(d) { if (d.data.population == 0) return; return d.data.label; });
+            .style("fill", function(d) { legend.push({ name: d.data.label, color: color(d.data.label) }); return color(d.data.label); });
     }
-
-    // d3.csv("data.csv", type, );
+    // console.log(legend);
+    displayLegend(inSelector + " .donutchart-legend", legend);
 
     function type(d) {
         d.population = +d.population;

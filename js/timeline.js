@@ -322,16 +322,18 @@ function filterPetiton(inHour, inLoc, inCallback) {
         { name: "작동 안함", color: "#ccc" },
     ]
 */
-function displayLegend(cid, legendEmt) {
-    var chart = document.getElementById(cid);
-    var legend = document.createElement('div');
+function displayLegend(selector, legendEmt) {
+    // var chart = document.getElementById(cid);
+    var chart = $(selector);
+    // var legend = document.createElement('div');
+    var legend = $('<div></div>');
     for (var le in legendEmt) {
         var name = legendEmt[le].name;
         var color = legendEmt[le].color;
-        var div = document.createElement('div');
-        div.innerHTML = '<i class="fa fa-circle" aria-hidden="true" style=color:'
-                        + color + '></i>&nbsp' + name;
-        legend.appendChild(div);
+        var div = $('<div></div>');
+        div.append('<i class="fa fa-circle" aria-hidden="true" style=color:' +
+            color + '></i>&nbsp' + name);
+        legend.append(div);
     }
-    chart.appendChild(legend);
+    chart.append(legend);
 }
