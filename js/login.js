@@ -68,7 +68,7 @@ var uiConfig = {
                                     console.log(error);
                                 } else {
                                     // when post to DB is successful 
-                                    routeToTimeline("./timeline.html?id=" + localStorage.getItem("callback"));
+                                    routeToTimeline(localStorage.getItem("callback"));
                                 }
 
                             });
@@ -97,7 +97,7 @@ var uiConfig = {
                                     console.log(error);
                                 } else {
                                     // when post to DB is successful 
-                                    routeToTimeline("./timeline.html?id=" + localStorage.getItem("callback"));
+                                    routeToTimeline(localStorage.getItem("callback"));
                                 }
 
                             });
