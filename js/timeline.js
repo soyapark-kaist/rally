@@ -72,6 +72,11 @@ function initParams() {
         if (params[p].split("=")[0] == "adn") {
             isAdmin = true; //the user is admin.
         }
+
+        if (params[p].split("=")[0] == "sharing") {
+            // Show description. 
+            $("#sharing-intro").toggle();
+        }
     }
 
     if (localStorage.getItem("participate") == "1") {

@@ -114,7 +114,8 @@
                     </h2>
                 </div>
 
-                <div class="row participate-row opened-case">
+                <div id="sharing-intro" style="display:none;" class="row participate-row opened-case">
+                    <p>[아, 쫌!]은 학생들이 자발적으로 제보한 데이터를 모아 인터넷을 개선하기 위해 학교에 민원의 형태로 학교에 전송합니다. 인터넷이 느릴 때, 카대전 글 작성/사감 선생님께 문의 하는 대신에 [아, 쫌!]의 쉽고 빠른(1분) 인터페이스를 통해 불편함을 제보하고 친구들을 모아 의견에 힘을 모아보세요.</p>
                     <h4 style="margin-top: 30px;">문제에 공감하시나요? 1분을 투자해 이 캠페인에 힘을 실어주세요!</h4>
                     <div style="text-align:center; margin-top:20px;">
                         <a id="participate" href="./collect.html" class="btn btn-success btn-lg">동참하기</a>
@@ -164,7 +165,7 @@
                                             <i class="fa fa-facebook-square fa-3x share-icon fb-share" aria-hidden="true"></i>
                                             <i class="fa fa-link fa-3x share-icon link-share" aria-hidden="true"></i>
 
-                                            <input class="link-temp" type="hidden"/>
+                                            <input class="link-temp" type="hidden" />
                                         </div>
 
 
@@ -316,21 +317,21 @@
             );
         })
 
-        $(".link-share").click(function(){
+        $(".link-share").click(function() {
             var $temp = $("<input>");
             $("body").append($temp);
             $temp.val(window.location.href + "&sharing=true").select();
             document.execCommand("copy");
             $temp.remove();
-            var alert = '<div id="clip-alert" class="alert alert-warning alert-dismissible '
-                        +'col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-xs-10 col-xs-offset-1" role="alert">'
-                        +'<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
-                        +'<span aria-hidden="true">&times;</span>'
-                        +'</button>클립보드에 복사되었습니다</div>'
+            var alert = '<div id="clip-alert" class="alert alert-warning alert-dismissible ' +
+                'col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-xs-10 col-xs-offset-1" role="alert">' +
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                '<span aria-hidden="true">&times;</span>' +
+                '</button>클립보드에 복사되었습니다</div>'
             var a_div = document.createElement("div");
             a_div.innerHTML = alert;
             $("body").append(a_div);
-            setTimeout(function(){
+            setTimeout(function() {
                 $("#clip-alert").fadeOut("normal", function() {
                     $(this).remove();
                 });
