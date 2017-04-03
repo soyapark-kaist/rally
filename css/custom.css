@@ -703,6 +703,12 @@ footer {
     color: #888888;
 }
 
+@media (max-width: 400px){
+    .timeline-progress {
+        margin-left: -10px;
+        margin-right: -10px;
+    }
+}
 
 /* google map legend */
 
