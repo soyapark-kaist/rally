@@ -413,10 +413,9 @@ function getProgress(inTimeline) {
     else return 2;
 }
 
-var trackOutboundLink = function(url, inVal) {
-    ga('send', 'event', 'outbound', 'click', url, {
+var trackOutboundLink = function(url, inCategory) {
+    ga('send', 'event', inCategory, 'click', url, {
         'transport': 'beacon',
-        eventValue: inVal,
         'hitCallback': function() {
             document.location = url;
         }
