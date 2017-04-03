@@ -195,6 +195,8 @@ function fetchBldgList(inCenter) {
         });
         map.fitBounds(bounds);
 
+        $(".building-list-container div").show();
+
         toggleLoading("#loading");
     });
 }
