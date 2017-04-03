@@ -292,20 +292,20 @@ function initGuideImg() {
             imgSrc = "ios.png";
             break;
         case 'android':
-            imgSrc = "android.png";
+            imgSrc = "ios.png";
             break;
         case 'mac':
             imgSrc = "mac.png";
             break;
         case 'windows':
-            imgSrc = "windows.png";
+            imgSrc = "mac.png";
             break;
         default:
-            imgSrc = "android.png";
+            imgSrc = "mac.png";
     }
 
     imgSrc = 'img/' + imgSrc;
-    $(".tooltiptext img").attr("src", imgSrc);
+    $(".tooltiptext.ap-name img").attr("src", imgSrc);
 }
 
 function initRangeSlider() {
