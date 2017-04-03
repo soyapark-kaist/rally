@@ -23,11 +23,12 @@ self.addEventListener('install', e => {
         caches.open('airhorner').then(cache => {
             return cache.addAll([
                     '512Mb.zip',
+                    'index.html',
                     'collect.html',
-                    'visual.html',
                     'petition.html',
                     'timeline.html',
-                    'js/rally.js'
+                    'js/rally.js',
+                    'css/bootstrap.min.css'
                     // '/index.html?homescreen=1',
                     // '/?homescreen=1',
                     // '/styles/main.css',
