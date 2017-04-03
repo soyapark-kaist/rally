@@ -141,8 +141,11 @@
                                                 </p>
                                             </div>
                                             <!-- SNS share button -->
-                                            <p class="opened-case" style="margin-bottom:30px;">더 많은 목소리가 모일수록 강해집니다.</p>
-                                            <img class="fb-share" src="img/fb.png" />
+                                            <p class="opened-case" style="margin-bottom:20px;">더 많은 목소리가 모일수록 강해집니다.</p>
+                                            <i class="fa fa-facebook-square fa-3x share-icon fb-share" aria-hidden="true"></i>
+                                            <i class="fa fa-link fa-3x share-icon link-share" aria-hidden="true"></i>
+
+                                            <input class="link-temp" type="hidden"/>
                                         </div>
 
 
@@ -299,6 +302,27 @@
             window.open(
                 "http://www.facebook.com/sharer/sharer.php?u=" + window.location.href
             );
+        })
+
+        $(".link-share").click(function(){
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val(window.location.href).select();
+            document.execCommand("copy");
+            $temp.remove();
+            var alert = '<div id="clip-alert" class="alert alert-warning alert-dismissible '
+                        +'col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-xs-10 col-xs-offset-1" role="alert">'
+                        +'<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+                        +'<span aria-hidden="true">&times;</span>'
+                        +'</button>클립보드에 복사되었습니다</div>'
+            var a_div = document.createElement("div");
+            a_div.innerHTML = alert;
+            $("body").append(a_div);
+            setTimeout(function(){
+                $("#clip-alert").fadeOut("normal", function() {
+                    $(this).remove();
+                });
+            }, 1000);
         })
     </script>
 </body>

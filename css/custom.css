@@ -721,13 +721,18 @@ footer {
     margin-top: 5px;
 }
 
-.fb-share {
+.share-icon {
     cursor: pointer;
-    top: -30px;
-    position: relative;
-    width: 30px;
 }
 
+.share-icon+.share-icon {
+    margin-left: 15px;
+}
+
+#clip-alert {
+    position: fixed;
+    top: 300px;
+}
 
 /* Issue type select button */
 
