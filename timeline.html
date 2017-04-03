@@ -120,7 +120,7 @@
                         <a id="participate" href="./collect.html" class="btn btn-success btn-lg">동참하기</a>
                     </div>
                 </div>
-                
+
                 <div class="alert alert-success" role="alert" id="respond"><strong><i class="fa fa-check-square-o" aria-hidden="true"></i>정보통신팀 답변</strong><br><span>여기에 답변</span></div>
                 <div id="timeline"></div>
 
@@ -312,14 +312,14 @@
 
         $(".fb-share").click(function() {
             window.open(
-                "http://www.facebook.com/sharer/sharer.php?u=" + window.location.href
+                "http://www.facebook.com/sharer/sharer.php?u=" + window.location.href + "&sharing=true"
             );
         })
 
         $(".link-share").click(function(){
             var $temp = $("<input>");
             $("body").append($temp);
-            $temp.val(window.location.href).select();
+            $temp.val(window.location.href + "&sharing=true").select();
             document.execCommand("copy");
             $temp.remove();
             var alert = '<div id="clip-alert" class="alert alert-warning alert-dismissible '
