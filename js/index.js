@@ -30,9 +30,11 @@ function initMap() {
 
             marker.addListener('click', function(e) {
                 infoWindow.open(map);
-                infoWindow.setContent(this.title + " <a class='btn btn-primary' href='./timeline.html?id=" + this.petitionID + "&sharing=true'>자세히 보기</a>");
-                infoWindow.setPosition(this.getPosition())
+                infoWindow.setContent(this.title + " <a class='btn btn-primary' href='./timeline.html?id=" + this.petitionID + "&sharing=true' onclick='trackOutboundLink(\"./timeline.html\", 2);return false;'>자세히 보기</a>");
+                infoWindow.setPosition(this.getPosition());
             });
+
+
         }
 
         map.fitBounds(bounds);

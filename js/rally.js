@@ -413,6 +413,16 @@ function getProgress(inTimeline) {
     else return 2;
 }
 
+var trackOutboundLink = function(url, inVal) {
+    ga('send', 'event', 'outbound', 'click', url, {
+        'transport': 'beacon',
+        eventValue: inVal,
+        'hitCallback': function() {
+            document.location = url;
+        }
+    });
+}
+
 // function calcTime(city, offset) {
 //     // create Date object for current location
 //     var d = new Date();
