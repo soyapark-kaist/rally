@@ -192,7 +192,7 @@ function setProgressbar(inNow, inMax) {
     $(".progress-bar").css("width", (inNow / inMax * 100) + "%").attr("aria-valuenow", inNow);
     $(".progress-bar").attr("aria-valuemax", inMax);
 
-    $("#leftQuorum").text(inMax - inNow);
+    $("#leftQuorum").text(parseInt(inMax / 10 - inNow));
 }
 
 function createMarker(inID, inCenter, inTitle, inRate) {
@@ -313,7 +313,7 @@ function fetchSignature(inDateIndex, inDateRange, inBldgIdx, inQuorum) {
             $("#number").text("해당 건물에 아직 제보한 사람이 없습니다. 친구들에게 홍보해 더 많은 힘을 모아보세요!");
         }
 
-        if (conn["cnt"] + slow["cnt"] >= inQuorum) $("#progress-quorum").toggle();
+        if (conn["cnt"] + slow["cnt"] >= inQuorum / 10) $("#progress-quorum").toggle();
         else
             setProgressbar(conn["cnt"] + slow["cnt"], inQuorum);
         $("#finalStage").css("visibility", "visible");
