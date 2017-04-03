@@ -568,6 +568,11 @@ footer .social li a:hover {
     .steps {
         padding-top: 100px;
     }
+    .donutchart-legend {
+        float: left;
+        margin-top: 30px;
+        width: 40%;
+    }
 }
 
 .loader {
