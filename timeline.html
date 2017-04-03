@@ -73,27 +73,38 @@
         <div class="container">
             <div class="post">
                 <ul class="timeline-progress">
-                    <li><span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="제보 작성">
-                        <i class="fa fa-circle fa-stack-2x"></i>
-                        <i class="fa fa-pencil-square-o fa-stack-1x fa-inverse"></i>
-                    </span></li>
+                    <li>
+                        <span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="제보 작성">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-pencil-square-o fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <div>제보 작성</div>
+                    </li>
                     <li><i class="fa fa-chevron-right" aria-hidden="true"></i></li>
-                    <li><span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="우리 건물에 충분한 제보가 쌓이면 개선을 요구하기 위해 정보통신팀에 민원이 보내집니다.">
-                        <i class="fa fa-circle fa-stack-2x"></i>
-                        <i class="fa fa-bar-chart fa-stack-1x fa-inverse"></i>
-                    </span></li>
+                    <li>
+                        <span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="우리 건물에 충분한 제보가 쌓이면 개선을 요구하기 위해 정보통신팀에 민원이 보내집니다.">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-bar-chart fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <div>민원 준비중</div>
+                    </li>
                     <li><i class="fa fa-chevron-right" aria-hidden="true"></i></li>
-                    <li><span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="정보통신팀 전송">
-                        <i class="fa fa-circle fa-stack-2x"></i>
-                        <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
-                    </span></li>
+                    <li>
+                        <span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="정보통신팀 전송">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <div>학교에 전송</div>
+                    </li>
                     <li><i class="fa fa-chevron-right" aria-hidden="true"></i></li>
-                    <li><span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="정보통신팀 답변">
-                        <i class="fa fa-circle fa-stack-2x"></i>
-                        <i class="fa fa-reply fa-stack-1x fa-inverse"></i>
-                    </span></li>
+                    <li>
+                        <span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="정보통신팀 답변">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-reply fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <div>답변</div>
+                    </li>
                 </ul>
-                <p id="current-progress" style="text-align: center;">민원 준비 중</p>
 
                 <div class="loading"></div>
 
@@ -102,6 +113,14 @@
                         <i class="fa fa-building-o fa-2x" aria-hidden="true"></i> <span id="bldgName"></span>
                     </h2>
                 </div>
+
+                <div class="row participate-row opened-case">
+                    <h4 style="margin-top: 30px;">문제에 공감하시나요? 1분을 투자해 이 캠페인에 힘을 실어주세요!</h4>
+                    <div style="text-align:center; margin-top:20px;">
+                        <a id="participate" href="./collect.html" class="btn btn-success btn-lg">동참하기</a>
+                    </div>
+                </div>
+
                 <div class="alert alert-success" role="alert" id="respond"><strong><i class="fa fa-check-square-o" aria-hidden="true"></i>정보통신팀 답변</strong><br><span>여기에 답변</span></div>
                 <div id="timeline"></div>
 
@@ -141,8 +160,11 @@
                                                 </p>
                                             </div>
                                             <!-- SNS share button -->
-                                            <p class="opened-case" style="margin-bottom:30px;">더 많은 목소리가 모일수록 강해집니다.</p>
-                                            <img class="fb-share" src="img/fb.png" />
+                                            <p class="opened-case" style="margin-bottom:20px;">더 많은 목소리가 모일수록 강해집니다.</p>
+                                            <i class="fa fa-facebook-square fa-3x share-icon fb-share" aria-hidden="true"></i>
+                                            <i class="fa fa-link fa-3x share-icon link-share" aria-hidden="true"></i>
+
+                                            <input class="link-temp" type="hidden"/>
                                         </div>
 
 
@@ -232,16 +254,6 @@
                     </div>
                 </div>
 
-                <div class="row participate-row opened-case">
-                    <p>
-                        [아, 쫌!]은 학생들이 자발적으로 제보한 데이터를 모아 인터넷을 개선하기 위해 학교에 민원의 형태로 전송합니다. 많은 제보, 데이터가 쌓일수록 인터넷을 수리하는데 도움이 되며, 동시에 학교는 많은 학우들이 인터넷에 불편을 느낀다는 것을 인지하고 우리의 목소리에 귀를 귀울입니다.
-                    </p>
-                    <h4 style="margin-top: 30px;">문제에 공감하시나요? 1분을 투자해 이 캠페인에 힘을 실어주세요!</h4>
-                    <div style="text-align:center; margin-top:20px;">
-                        <a id="participate" href="./collect.html" class="btn btn-success btn-lg">동참하기</a>
-                    </div>
-                </div>
-
                 <div class="modal fade" id="available-modal" tabindex="-1" role="dialog">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -300,8 +312,29 @@
 
         $(".fb-share").click(function() {
             window.open(
-                "http://www.facebook.com/sharer/sharer.php?u=" + window.location.href
+                "http://www.facebook.com/sharer/sharer.php?u=" + window.location.href + "&sharing=true"
             );
+        })
+
+        $(".link-share").click(function(){
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val(window.location.href + "&sharing=true").select();
+            document.execCommand("copy");
+            $temp.remove();
+            var alert = '<div id="clip-alert" class="alert alert-warning alert-dismissible '
+                        +'col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-xs-10 col-xs-offset-1" role="alert">'
+                        +'<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+                        +'<span aria-hidden="true">&times;</span>'
+                        +'</button>클립보드에 복사되었습니다</div>'
+            var a_div = document.createElement("div");
+            a_div.innerHTML = alert;
+            $("body").append(a_div);
+            setTimeout(function(){
+                $("#clip-alert").fadeOut("normal", function() {
+                    $(this).remove();
+                });
+            }, 1000);
         })
     </script>
 </body>

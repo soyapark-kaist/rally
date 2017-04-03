@@ -568,6 +568,11 @@ footer .social li a:hover {
     .steps {
         padding-top: 100px;
     }
+    .donutchart-legend {
+        float: left;
+        margin-top: 30px;
+        width: 40%;
+    }
 }
 
 .loader {
@@ -703,6 +708,12 @@ footer {
     color: #888888;
 }
 
+@media (max-width: 400px){
+    .timeline-progress {
+        margin-left: -10px;
+        margin-right: -10px;
+    }
+}
 
 /* google map legend */
 
@@ -721,13 +732,18 @@ footer {
     margin-top: 5px;
 }
 
-.fb-share {
+.share-icon {
     cursor: pointer;
-    top: -30px;
-    position: relative;
-    width: 30px;
 }
 
+.share-icon+.share-icon {
+    margin-left: 15px;
+}
+
+#clip-alert {
+    position: fixed;
+    top: 300px;
+}
 
 /* Issue type select button */
 
