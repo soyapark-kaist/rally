@@ -52,16 +52,16 @@ function initVis() {
 
                         bldgs[p].headcnt = bldgs[p].headcnt ? bldgs[p].headcnt : 100;
 
-                        tableRows.push({ "url": bldgs[p].url, "name": bldgs[p].name, "rate": bldgRate[p] / bldgs[p].headcnt * 100 });
+                        tableRows.push({ "url": bldgs[p].url, "name": bldgs[p].name, "rate": bldgRate[p] });
 
                         // Add the circle for the petition to the map.
-                        var marker = createMarker(bldgs[p].url, { lat: bldgs[p].lat, lng: bldgs[p].lng }, bldgs[p].name, bldgRate[p] / bldgs[p].headcnt * 100);
+                        var marker = createMarker(bldgs[p].url, { lat: bldgs[p].lat, lng: bldgs[p].lng }, bldgs[p].name, bldgRate[p]);
                         bounds.extend({ lat: bldgs[p].lat, lng: bldgs[p].lng });
 
 
                         marker.addListener('click', function(e) {
                             infoWindow.open(map);
-                            infoWindow.setContent(this.title + " (" + this.rate + "%) <a class='btn btn-primary' href='./timeline.html?id=" + this.petitionID + "'>자세히 보기</a>");
+                            infoWindow.setContent(this.title + " (" + this.rate + "명) <a class='btn btn-primary' href='./timeline.html?id=" + this.petitionID + "'>자세히 보기</a>");
                             infoWindow.setPosition(this.getPosition())
                         });
                     }
@@ -71,7 +71,7 @@ function initVis() {
                     for (var i = 0; i < 5; i++) {
                         $('.table-inbox tbody').append(
                             '<tr onclick="window.document.location=\'./timeline.html?id=' + tableRows[i].url + '\';">\
-                            <td>' + "#" + (i + 1) + " " + tableRows[i].name + ' (' + tableRows[i].rate.toFixed(2) + '%)' + '</td>\
+                            <td>' + "#" + (i + 1) + " " + tableRows[i].name + ' (' + tableRows[i].rate + '명)' + '</td>\
                             </tr>'
                         );
                     }
