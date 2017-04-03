@@ -17,6 +17,13 @@ function initListener() {
         document.documentElement.style.display = 'block';
     })
 
+    $("#scroll-btn").click(function() {
+        $('html, body').animate({
+            scrollTop: '+=300'
+        }, 1000);
+    });
+
+
     /* ACTIVITY */
     $(".activity").click(function(e) {
         $(this).siblings().removeClass("select");
@@ -90,10 +97,10 @@ function displayBldgList() {
                 };
 
                 // DEBUGGING purpose
-                // center = {
-                //     "lat": 36.373732,
-                //     "lng": 127.358535
-                // };
+                center = {
+                    "lat": 36.373732,
+                    "lng": 127.358535
+                };
 
                 fetchBldgList(center);
 
