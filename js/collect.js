@@ -97,10 +97,10 @@ function displayBldgList() {
                 };
 
                 // DEBUGGING purpose
-                center = {
-                    "lat": 36.373732,
-                    "lng": 127.358535
-                };
+                // center = {
+                //     "lat": 36.373732,
+                //     "lng": 127.358535
+                // };
 
                 fetchBldgList(center);
 
