@@ -313,9 +313,11 @@ function fetchSignature(inDateIndex, inDateRange, inBldgIdx, inQuorum) {
             $("#number").text("해당 건물에 아직 제보한 사람이 없습니다. 친구들에게 홍보해 더 많은 힘을 모아보세요!");
         }
 
-        if (conn["cnt"] + slow["cnt"] >= inQuorum / 10) $("#progress-quorum").toggle();
-        else
-            setProgressbar(conn["cnt"] + slow["cnt"], inQuorum);
+        if (conn["cnt"] + slow["cnt"] >= inQuorum / 10) {
+            $("#leftQuorum").hide();
+            $("#leftQuorum2").hide();
+        }
+        setProgressbar(conn["cnt"] + slow["cnt"], inQuorum);
         $("#finalStage").css("visibility", "visible");
 
         return;

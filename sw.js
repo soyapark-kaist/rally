@@ -27,6 +27,7 @@ self.addEventListener('install', e => {
                     'collect.html',
                     'petition.html',
                     'timeline.html',
+                    'login.html',
                     'js/rally.js',
                     'css/bootstrap.min.css'
                     // '/index.html?homescreen=1',

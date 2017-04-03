@@ -61,6 +61,7 @@ $(function() {
 
 function initParams() {
     var params = window.location.search.substring(1).split("&");
+    var isSharing = false;
     for (var p in params) {
         if (params[p].split("=")[0] == "id")
             petitionID = params[p].split("=")[1];
@@ -73,15 +74,20 @@ function initParams() {
             isAdmin = true; //the user is admin.
         }
 
-        if (params[p].split("=")[0] == "sharing") {
+        if (params[p].split("=")[0] == "sharing" && params[p].split("=")[1] == "true") {
             // Show description. 
-            $("#sharing-intro").toggle();
+            isSharing = true;
+
         }
     }
 
     if (localStorage.getItem("participate") == "1") {
         localStorage.setItem("participate", "0")
         $(".participate-row").toggle();
+    }
+
+    if (!isSharing) {
+        $("#sharing-intro").hide();
     }
 }
 

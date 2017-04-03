@@ -71,6 +71,12 @@ function initListener() {
     $("#finalStage").css("display", "block");
 }
 
+$(function() {
+    $('[data-toggle="tooltip"]').tooltip({
+        html: true
+    })
+})
+
 var markers = [];
 
 function displayBldgList() {
@@ -402,6 +408,12 @@ function postUsers() {
     // center = kaist;
     var userID = generateID(5);
     var type;
+
+    if (!center) {
+        center = {};
+        center["lat"] = BLDG[$('.building-list tr.warning').attr("bldg")].lat;
+        center["lng"] = BLDG[$('.building-list tr.warning').attr("bldg")].lng;
+    }
 
     // Check whether the user is authenticated
     var user = firebase.auth().currentUser;
