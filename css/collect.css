@@ -7,8 +7,20 @@
     display: none;
 }
 
+.form-alert a {
+    cursor: pointer;
+}
+
 textarea {
     width: 70%;
+}
+
+.activity {
+    margin-bottom: 20px;
+}
+
+.activity p {
+    margin: 0 0 0px;
 }
 
 .activity:hover {

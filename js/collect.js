@@ -347,7 +347,8 @@ function initRangeSlider() {
 function collectData() {
     if (isIssueConn())
         $("#preview").html(
-            "인터넷 유형: " + $(".internet-type a.active").text() +
+            "제출하시면 아래의 정보가 전송됩니다." +
+            "<br> 인터넷 유형: " + $(".internet-type a.active").text() +
             "<br> 건물: " + BLDG[$('.building-list tr.warning').attr("bldg")].name +
             "<br> 건물에서의 위치: " + $("#roomNumber").val() +
             "<br> Welcome_KAIST 강도: " + $(".antenna").text() + "%" +
@@ -358,7 +359,8 @@ function collectData() {
 
     else
         $("#preview").html(
-            "인터넷 유형: " + $(".internet-type a.active").text() +
+            "제출하시면 아래의 정보가 전송됩니다." +
+            "<br> 인터넷 유형: " + $(".internet-type a.active").text() +
             "<br> 건물: " + BLDG[$('.building-list tr.warning').attr("bldg")].name +
             "<br> 속도: " + $("input[name='speed']:checked").attr("description") +
             "<br>일정성: " + $("input[name='consistency']:checked").attr("description") +
