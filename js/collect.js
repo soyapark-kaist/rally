@@ -97,10 +97,10 @@ function displayBldgList() {
                 };
 
                 // DEBUGGING purpose
-                // center = {
-                //     "lat": 36.373732,
-                //     "lng": 127.358535
-                // };
+                center = {
+                    "lat": 36.374,
+                    "lng": 127.3655
+                };
 
                 fetchBldgList(center);
 
@@ -195,6 +195,8 @@ function fetchBldgList(inCenter) {
             bounds.extend(marker.position);
         });
         map.fitBounds(bounds);
+        if (map.getZoom() > 17)
+            map.setZoom(17);
 
         $(".building-list-container div").show();
 

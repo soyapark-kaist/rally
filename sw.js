@@ -34,6 +34,7 @@ self.addEventListener('install', e => {
                     'js/timeline.js',
                     'css/bootstrap.min.css',
                     'css/custom.css',
+                    'css/theme.css',
                     'css/collect.css',
                     'css/timeline.css'
                     // '/index.html?homescreen=1',

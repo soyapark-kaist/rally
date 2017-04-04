@@ -43,7 +43,7 @@ function drawChart(inSelector, inData) {
         g.append("text")
             .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
             .attr("dy", ".35em")
-            .text(function(d) { if (d.data.population == 0) return; return d.data.population + "명"; });
+            .text(function(d) { if (d.data.population == 0) return; return d.data.population + "개"; });
     }
     // console.log(legend);
     displayLegend(inSelector + " .donutchart-legend", legend);
