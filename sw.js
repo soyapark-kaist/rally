@@ -25,10 +25,12 @@ self.addEventListener('install', e => {
                     '512Mb.zip',
                     'index.html',
                     'collect.html',
+                    'others.html',
                     'petition.html',
                     'timeline.html',
                     'login.html',
                     'js/rally.js',
+                    'js/collect.js',
                     'css/bootstrap.min.css'
                     // '/index.html?homescreen=1',
                     // '/?homescreen=1',
