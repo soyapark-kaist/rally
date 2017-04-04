@@ -7,7 +7,7 @@ function drawChart(inSelector, inData) {
         radius = Math.min(width, height) / 2;
 
     var color = d3.scale.ordinal()
-        .range(["#0EFF62", "#0CE897", "#0E93FF", "#0CBFE8", "#1AFFEC", "#98abc5", "#8a89a6"]);
+        .range(["#D787FF", "#D787FF", "#FFA394", "#E8AC7D", "#FFDB87", "#98abc5", "#8a89a6"]);
 
     var arc = d3.svg.arc()
         .outerRadius(radius - 10)
