@@ -34,6 +34,7 @@ self.addEventListener('install', e => {
                     'js/collect.js',
                     'js/timeline.js',
                     'css/bootstrap.min.css',
+                    'css/font-awesome.min.css',
                     'css/custom.css',
                     'css/theme.css',
                     'css/collect.css',
