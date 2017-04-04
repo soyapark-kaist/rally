@@ -25,16 +25,12 @@ function initListener() {
 
 
     /* ACTIVITY */
-    // $(".activity").click(function(e) {
-    //     $(this).siblings().removeClass("select");
-    //     $(this).siblings().addClass("unselect");
-    //     $(this).removeClass("unselect");
-    //     $(this).addClass("select");
-
-    //     $("html, body").animate({
-    //         scrollTop: $("#submitSection").position().top
-    //     }, 2000);
-    // })
+    $(".activity").click(function(e) {
+        $(this).siblings().removeClass("select");
+        $(this).siblings().addClass("unselect");
+        $(this).removeClass("unselect");
+        $(this).addClass("select");
+    })
 
     $("#move-bldg").click(function(e) {
         $("html, body").animate({
