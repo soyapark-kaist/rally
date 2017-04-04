@@ -97,10 +97,16 @@ function displayBldgList() {
                 };
 
                 // DEBUGGING purpose
-                center = {
-                    "lat": 36.374,
-                    "lng": 127.3655
-                };
+                // center = {
+                //     "lat": 36.374,
+                //     "lng": 127.3655
+                // };
+
+                // center = {
+                //     "lat": 36.374,
+                //     "lng": 127.360
+                // };
+
 
                 fetchBldgList(center);
 
@@ -148,7 +154,7 @@ function fetchBldgList(inCenter) {
                     $('.building-list tbody').append(
                         '<tr bldg=' + l + '> <td>' + alphabet + '</td>\
                                <td>' + BLDG[l].name + '</td>\
-                               <td><button onclick="animateMarker(' + (cnt++) + ')">선택</button></td> \
+                               <td><button class="btn btn-default" onclick="animateMarker(' + (cnt++) + ')">선택</button></td> \
                                </tr>');
 
                     list.push({ "lat": BLDG[l].lat, "lng": BLDG[l].lng, label: alphabet, name: BLDG[l].name });
@@ -160,7 +166,7 @@ function fetchBldgList(inCenter) {
                     '<tr bldg=' + l + '>\
                                <td>' + alphabet + '</td>\
                                <td>' + BLDG[l].name + '</td> \
-                               <td><button onclick="animateMarker(' + (cnt++) + ')">선택</button></td> \
+                               <td><button class="btn btn-default" onclick="animateMarker(' + (cnt++) + ')">선택</button></td> \
                         </tr>');
 
                 list.push({ "lat": BLDG[l].lat, "lng": BLDG[l].lng, label: alphabet, name: BLDG[l].name });
@@ -207,11 +213,15 @@ function fetchBldgList(inCenter) {
 var preIndex = -1;
 
 function animateMarker(index) {
-    if (preIndex != -1)
+    if (preIndex != -1) {
         markers[preIndex].setAnimation(null);
+        $(".building-list tr button").eq(preIndex).text("선택");
+    }
+
 
     $(".building-list tr").removeClass("warning");
     $(".building-list tr").eq(index).addClass("warning");
+    $(".building-list tr button").eq(index).text("선택됨");
 
     preIndex = index;
 
