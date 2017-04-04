@@ -29,6 +29,7 @@ self.addEventListener('install', e => {
                     'petition.html',
                     'timeline.html',
                     'login.html',
+                    'js/jquery.min.js',
                     'js/rally.js',
                     'js/collect.js',
                     'js/timeline.js',
