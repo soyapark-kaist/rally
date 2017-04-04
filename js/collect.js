@@ -19,22 +19,22 @@ function initListener() {
 
     $("#scroll-btn").click(function() {
         $('html, body').animate({
-            scrollTop: '+=300'
+            scrollTop: '+=350'
         }, 1000);
     });
 
 
     /* ACTIVITY */
-    $(".activity").click(function(e) {
-        $(this).siblings().removeClass("select");
-        $(this).siblings().addClass("unselect");
-        $(this).removeClass("unselect");
-        $(this).addClass("select");
+    // $(".activity").click(function(e) {
+    //     $(this).siblings().removeClass("select");
+    //     $(this).siblings().addClass("unselect");
+    //     $(this).removeClass("unselect");
+    //     $(this).addClass("select");
 
-        $("html, body").animate({
-            scrollTop: $("#submitSection").position().top
-        }, 2000);
-    })
+    //     $("html, body").animate({
+    //         scrollTop: $("#submitSection").position().top
+    //     }, 2000);
+    // })
 
     $("#move-bldg").click(function(e) {
         $("html, body").animate({
