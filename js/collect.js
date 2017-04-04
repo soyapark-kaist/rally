@@ -146,9 +146,9 @@ function fetchBldgList(inCenter) {
             if (center) {
                 if (Math.abs(center.lat - BLDG[l].lat) < 0.001 && Math.abs(center.lng - BLDG[l].lng) < 0.001) {
                     $('.building-list tbody').append(
-                        '<tr bldg=' + l + ' onclick="animateMarker(' + (cnt++) + ')">\
-                               <td>' + alphabet + '</td>\
+                        '<tr bldg=' + l + '> <td>' + alphabet + '</td>\
                                <td>' + BLDG[l].name + '</td>\
+                               <td><button onclick="animateMarker(' + (cnt++) + ')">선택</button></td> \
                                </tr>');
 
                     list.push({ "lat": BLDG[l].lat, "lng": BLDG[l].lng, label: alphabet, name: BLDG[l].name });
@@ -167,6 +167,7 @@ function fetchBldgList(inCenter) {
 
                 alphabet = nextChar(alphabet);
             }
+
         }
 
         infoWindow = new google.maps.InfoWindow({ map: map });

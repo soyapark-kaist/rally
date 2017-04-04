@@ -31,7 +31,11 @@ self.addEventListener('install', e => {
                     'login.html',
                     'js/rally.js',
                     'js/collect.js',
-                    'css/bootstrap.min.css'
+                    'js/timeline.js',
+                    'css/bootstrap.min.css',
+                    'css/custom.css',
+                    'css/collect.css',
+                    'css/timeline.css'
                     // '/index.html?homescreen=1',
                     // '/?homescreen=1',
                     // '/styles/main.css',
