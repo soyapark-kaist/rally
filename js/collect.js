@@ -344,7 +344,9 @@ function initRangeSlider() {
 function collectData() {
     if (isIssueConn())
         $("#preview").html(
-            "기숙사 방 번호: " + $("#roomNumber").val() +
+            "인터넷 유형: " + $(".internet-type a.active").text() +
+            "<br> 건물: " + BLDG[$('.building-list tr.warning').attr("bldg")].name +
+            "<br> 건물에서의 위치: " + $("#roomNumber").val() +
             "<br> Welcome_KAIST 강도: " + $(".antenna").text() + "%" +
             "<br> Wi-Fi: " + getListWifi() +
             "<br> IP 주소: " + $(".ip-address").text() +
@@ -353,7 +355,9 @@ function collectData() {
 
     else
         $("#preview").html(
-            "속도: " + $("input[name='speed']:checked").attr("description") +
+            "인터넷 유형: " + $(".internet-type a.active").text() +
+            "<br> 건물: " + BLDG[$('.building-list tr.warning').attr("bldg")].name +
+            "<br> 속도: " + $("input[name='speed']:checked").attr("description") +
             "<br>일정성: " + $("input[name='consistency']:checked").attr("description") +
             "<br> Download: " + $(".data.download").text() +
             "<br> Upload: " + $(".data.upload").text() +
