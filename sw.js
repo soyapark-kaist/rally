@@ -30,6 +30,7 @@ self.addEventListener('install', e => {
                     'timeline.html',
                     'login.html',
                     'js/jquery.min.js',
+                    'js/bootstrap.min.js',
                     'js/rally.js',
                     'js/collect.js',
                     'js/timeline.js',

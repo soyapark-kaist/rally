@@ -463,7 +463,7 @@ function postUsers() {
                 "os": $(".operation-system").text(),
                 "web": $(".browser-name").text(),
                 "time": new Date().toString(),
-                "email": user.email
+                "email": user.email ? user.email : "***"
             }, function(error) {
                 if (error) {
                     console.log(error);
@@ -489,7 +489,7 @@ function postUsers() {
                 "os": $(".operation-system").text(),
                 "web": $(".browser-name").text(),
                 "time": new Date().toString(),
-                "email": user.email
+                "email": user.email ? user.email : "***"
             }, function(error) {
                 if (error) {
                     console.log(error);

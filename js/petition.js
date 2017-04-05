@@ -196,7 +196,7 @@ function postPetition() {
                     "submit": new Date().toString()
                 },
                 "quorum": SLOW_TOTAL,
-                "email": user.email
+                "email": user.email ? user.email : "***"
             },
             function(error) {
                 if (error) {

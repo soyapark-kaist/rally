@@ -22,8 +22,10 @@ $(function() {
         var post = $('.status-box').val();
 
         if (firebase.auth().currentUser) {
+            var email = firebase.auth().currentUser.email ? firebase.auth().currentUser.email.substring(0, 3) : "***";
             $(".comments li").each(function(index) {
-                if ($(this).text().indexOf(firebase.auth().currentUser.email.substring(0, 3))) {
+                if (email == "***") return;
+                if ($(this).text().indexOf(email)) {
                     cnt++;
                 }
 
@@ -35,7 +37,7 @@ $(function() {
             }
 
 
-            $('.comments').prepend('<li><i class="fa fa-user" aria-hidden="true"></i> ' + firebase.auth().currentUser.email.substring(0, 3) + "** : " + post + '</li>');
+            $('.comments').prepend('<li><i class="fa fa-user" aria-hidden="true"></i> ' + email + "** : " + post + '</li>');
             $('.status-box').val('');
             $('.counter').text('140');
             $('.comments-post').addClass('disabled');
@@ -141,10 +143,11 @@ function displayPetition(inContent) {
 function displayComments(inComment) {
     var cnt = 0;
     for (var c in inComment) {
+        var email = inComment[c].email ? inComment[c].email.substring(0, 3) : "***";
         if (inComment[c].accepted) {
-            $("#accepted-comments").prepend('<div class="alert alert-success" role="alert"><strong><i class="fa fa-check-square-o" aria-hidden="true"></i></strong>' + inComment[c].email.substring(0, 3) + "** : " + inComment[c].content + '</div>');
+            $("#accepted-comments").prepend('<div class="alert alert-success" role="alert"><strong><i class="fa fa-check-square-o" aria-hidden="true"></i></strong>' + email + "** : " + inComment[c].content + '</div>');
         } else
-            $('.comments').prepend('<li><i class="fa fa-user" aria-hidden="true"></i> ' + inComment[c].email.substring(0, 3) + "** : " + inComment[c].content + ' (' + (new Date(c)) + ')</li>');
+            $('.comments').prepend('<li><i class="fa fa-user" aria-hidden="true"></i> ' + email + "** : " + inComment[c].content + ' (' + (new Date(c)) + ')</li>');
         if (++cnt == 3) return; // show upto three comments
     }
 }
@@ -247,7 +250,7 @@ function postComment(inPost) {
         var pRef = firebase.database().ref("campaign/" + petitionID + "/comments/" + now);
 
         pRef.set({
-                "email": user.email,
+                "email": user.email ? user.email : "******",
                 "content": inPost
             },
             function(error) {

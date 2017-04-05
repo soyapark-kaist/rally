@@ -181,7 +181,7 @@
             <div class="post row">
                 <div class="col-sm-4">
                     <!--현재 위치-->
-                    <h4>어떤 건물에 계신가요?*</h4>
+                    <h4>현재 어떤 건물에 계신가요?(제보하려는 건물) *</h4>
                     <!--<h6>마커를 움직여 선택해주세요</h6>-->
                     <button onclick="displayBldgList()" class="btn btn-default btn-block">내 위치 검색</button>
                     <div style="color: gray"><i class="fa fa-map-marker" aria-hidden="true"></i> 위치정보 수집</div>
@@ -192,7 +192,7 @@
                             <tbody></tbody>
                         </table>
                         <div style="display:none;">
-                            <p>찾는 건물이 없나요? </p> <a href="./petition.html" type="button" class="btn btn-link">다른 건물 건의하기</a></div>
+                            <p>찾는 건물이 없나요? </p> <a href="./petition.html" onclick="trackOutboundLink('./collect.html','bldgrequest'); return false;" type="button" class="btn btn-link">우리 건물 추가 요청하기</a></div>
                     </div>
                 </div>
                 <div class="col-sm-8">
