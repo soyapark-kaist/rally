@@ -61,7 +61,7 @@ function initVis() {
 
                         marker.addListener('click', function(e) {
                             infoWindow.open(map);
-                            infoWindow.setContent(this.title + " (" + this.rate + "명) <a class='btn btn-primary' href='./timeline.html?id=" + this.petitionID + "&sharing=true'>자세히 보기</a>");
+                            infoWindow.setContent(this.title + " (" + this.rate + "명) <a class='btn btn-primary' href='./timeline.html?id=" + this.petitionID + "'>자세히 보기</a>");
                             infoWindow.setPosition(this.getPosition())
                         });
                     }
@@ -70,7 +70,7 @@ function initVis() {
 
                     for (var i = 0; i < 5; i++) {
                         $('.table-inbox tbody').append(
-                            '<tr onclick="window.document.location=\'./timeline.html?sharing=true&id=' + tableRows[i].url + '\';">\
+                            '<tr onclick="window.document.location=\'./timeline.html?id=' + tableRows[i].url + '\';">\
                             <td>' + "#" + (i + 1) + " " + tableRows[i].name + ' (' + tableRows[i].rate + '명)' + '</td>\
                             </tr>'
                         );
