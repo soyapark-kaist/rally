@@ -103,7 +103,6 @@ function displayBldgList() {
                 //     "lng": 127.360
                 // };
 
-                map.setCenter(center);
                 fetchBldgList(center);
 
             },
@@ -157,7 +156,12 @@ function fetchBldgList(inCenter) {
 
                     alphabet = nextChar(alphabet);
                 }
-            } else {
+            }
+
+        }
+
+        if (list.length == 0)
+            for (var l in BLDG) {
                 $('.building-list tbody').append(
                     '<tr bldg=' + l + '>\
                                <td>' + alphabet + '</td>\
@@ -169,8 +173,6 @@ function fetchBldgList(inCenter) {
 
                 alphabet = nextChar(alphabet);
             }
-
-        }
 
         infoWindow = new google.maps.InfoWindow({ map: map });
         infoWindow.close();
@@ -197,6 +199,7 @@ function fetchBldgList(inCenter) {
             bounds.extend(marker.position);
         });
         map.fitBounds(bounds);
+
         if (map.getZoom() > 17)
             map.setZoom(17);
 
@@ -443,13 +446,13 @@ function postUsers() {
     var user = firebase.auth().currentUser;
     if (!user) {
         firebase.auth().signInAnonymously().then(function(user) {
-            pushUser();
+            pushUser(user);
         });
     }
 
     // User is signed in.
     if (user) {
-        pushUser();
+        pushUser(user);
     }
     // No user is signed in.
     // else {
@@ -489,7 +492,7 @@ function postUsers() {
     return false;
 }
 
-function pushUser() {
+function pushUser(user) {
     var userID = generateID(5);
 
     if (!isIssueConn()) {
@@ -511,13 +514,12 @@ function pushUser() {
                 "os": $(".operation-system").text(),
                 "web": $(".browser-name").text(),
                 "time": new Date().toString(),
-                "email": user ? (user.email ? user.email : "***") : "***"
+                "email": (user.email ? user.email : "***")
             },
             function(error) {
                 if (error) {
                     console.log(error);
                 } else {
-                    localStorage.setItem("participate", "1")
                     routeToTimeline(BLDG[$('.building-list tr.warning').attr("bldg")].url);
                 }
 
@@ -538,12 +540,11 @@ function pushUser() {
             "os": $(".operation-system").text(),
             "web": $(".browser-name").text(),
             "time": new Date().toString(),
-            "email": user ? (user.email ? user.email : "***") : "***"
+            "email": (user.email ? user.email : "***")
         }, function(error) {
             if (error) {
                 console.log(error);
             } else {
-                localStorage.setItem("participate", "1")
                 routeToTimeline(BLDG[$('.building-list tr.warning').attr("bldg")].url);
             }
 
