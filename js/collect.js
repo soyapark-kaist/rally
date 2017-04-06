@@ -497,30 +497,31 @@ function pushUser() {
         // users/2017-3-6
 
         playersRef.set({
-            "type": $(".internet-type a.active").attr("conn-type"),
-            "bldg": $('.building-list tr.warning').attr("bldg"),
-            "activity": $(".activity.select img").attr("type"),
-            "ip_addr": $(".ip-address ").text(),
-            "latitude": center.lat,
-            "longitude": center.lng,
-            "download": $(".data.download").text(),
-            "upload": $(".data.upload").text(),
-            "ping": $("#speedo-ping .data .time").text(),
-            "speed": $("input[name='speed']:checked").val(),
-            "consistency": $("input[name='consistency']:checked").val(),
-            "os": $(".operation-system").text(),
-            "web": $(".browser-name").text(),
-            "time": new Date().toString(),
-            "email": user.email ? user.email : "***"
-        }, function(error) {
-            if (error) {
-                console.log(error);
-            } else {
-                localStorage.setItem("participate", "1")
-                routeToTimeline(BLDG[$('.building-list tr.warning').attr("bldg")].url);
-            }
+                "type": $(".internet-type a.active").attr("conn-type"),
+                "bldg": $('.building-list tr.warning').attr("bldg"),
+                "activity": $(".activity.select img").attr("type"),
+                "ip_addr": $(".ip-address ").text(),
+                "latitude": center.lat,
+                "longitude": center.lng,
+                "download": $(".data.download").text(),
+                "upload": $(".data.upload").text(),
+                "ping": $("#speedo-ping .data .time").text(),
+                "speed": $("input[name='speed']:checked").val(),
+                "consistency": $("input[name='consistency']:checked").val(),
+                "os": $(".operation-system").text(),
+                "web": $(".browser-name").text(),
+                "time": new Date().toString(),
+                "email": user ? (user.email ? user.email : "***") : "***"
+            },
+            function(error) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    localStorage.setItem("participate", "1")
+                    routeToTimeline(BLDG[$('.building-list tr.warning').attr("bldg")].url);
+                }
 
-        });
+            });
     } else {
         var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + "conn" + userID);
         // users/2017-3-6/conn~~
@@ -537,7 +538,7 @@ function pushUser() {
             "os": $(".operation-system").text(),
             "web": $(".browser-name").text(),
             "time": new Date().toString(),
-            "email": user.email ? user.email : "***"
+            "email": user ? (user.email ? user.email : "***") : "***"
         }, function(error) {
             if (error) {
                 console.log(error);
