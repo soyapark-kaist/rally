@@ -341,7 +341,7 @@ function fetchSignature(inDateIndex, inDateRange, inBldgIdx, inQuorum) {
                         conn["strength"][parseInt(users[o]["welcome_kaist"]) / 25]++;
                         conn["cnt"]++;
 
-                        appendConnRow(users[o][email]);
+                        // appendConnRow(users[o][email]);
                     } else {
                         var act = users[o].activity;
                         if (slow["apps"][act]) slow["apps"][act] += 1;
