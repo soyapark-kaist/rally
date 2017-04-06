@@ -103,7 +103,7 @@ function displayBldgList() {
                 //     "lng": 127.360
                 // };
 
-
+                map.setCenter(center);
                 fetchBldgList(center);
 
             },
@@ -430,7 +430,7 @@ function postUsers() {
 
     // DEBUGGING purpose
     // center = kaist;
-    var userID = generateID(5);
+
     var type;
 
     if (!center) {
@@ -441,100 +441,111 @@ function postUsers() {
 
     // Check whether the user is authenticated
     var user = firebase.auth().currentUser;
+    if (!user) {
+        firebase.auth().signInAnonymously().then(function(user) {
+            pushUser();
+        });
+    }
 
     // User is signed in.
     if (user) {
-        if (!isIssueConn()) {
-            var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + userID);
-            // users/2017-3-6
-
-            playersRef.set({
-                "type": $(".internet-type a.active").attr("conn-type"),
-                "bldg": $('.building-list tr.warning').attr("bldg"),
-                "activity": $(".activity.select img").attr("type"),
-                "ip_addr": $(".ip-address ").text(),
-                "latitude": center.lat,
-                "longitude": center.lng,
-                "download": $(".data.download").text(),
-                "upload": $(".data.upload").text(),
-                "ping": $("#speedo-ping .data .time").text(),
-                "speed": $("input[name='speed']:checked").val(),
-                "consistency": $("input[name='consistency']:checked").val(),
-                "os": $(".operation-system").text(),
-                "web": $(".browser-name").text(),
-                "time": new Date().toString(),
-                "email": user.email ? user.email : "***"
-            }, function(error) {
-                if (error) {
-                    console.log(error);
-                } else {
-                    localStorage.setItem("participate", "1")
-                    routeToTimeline(BLDG[$('.building-list tr.warning').attr("bldg")].url);
-                }
-
-            });
-        } else {
-            var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + "conn" + userID);
-            // users/2017-3-6/conn~~
-
-            playersRef.set({
-                "type": $(".internet-type a.active").attr("conn-type"),
-                "bldg": $('.building-list tr.warning').attr("bldg"),
-                "room": $("#roomNumber").val(),
-                "welcome_kaist": $(".antenna").text(),
-                "wi-fi": getListWifi(),
-                "ip_addr": $(".ip-address ").text(),
-                "latitude": center.lat,
-                "longitude": center.lng,
-                "os": $(".operation-system").text(),
-                "web": $(".browser-name").text(),
-                "time": new Date().toString(),
-                "email": user.email ? user.email : "***"
-            }, function(error) {
-                if (error) {
-                    console.log(error);
-                } else {
-                    localStorage.setItem("participate", "1")
-                    routeToTimeline(BLDG[$('.building-list tr.warning').attr("bldg")].url);
-                }
-
-            });
-        }
+        pushUser();
     }
     // No user is signed in.
-    else {
-        localStorage.setItem("code", "1");
-        localStorage.setItem("type", $(".internet-type a.active").attr("conn-type"));
-        localStorage.setItem("bldg", $('.building-list tr.warning').attr("bldg"));
-        localStorage.setItem("callback", BLDG[$('.building-list tr.warning').attr("bldg")].url);
-        localStorage.setItem("latitude", center.lat);
-        localStorage.setItem("longitude", center.lng);
-        localStorage.setItem("ip_addr", $(".ip-address ").text());
-        localStorage.setItem("os", $(".operation-system").text());
-        localStorage.setItem("web", $(".browser-name").text());
-        localStorage.setItem("time", new Date().toString());
+    // else {
+    //     localStorage.setItem("code", "1");
+    //     localStorage.setItem("type", $(".internet-type a.active").attr("conn-type"));
+    //     localStorage.setItem("bldg", $('.building-list tr.warning').attr("bldg"));
+    //     localStorage.setItem("callback", BLDG[$('.building-list tr.warning').attr("bldg")].url);
+    //     localStorage.setItem("latitude", center.lat);
+    //     localStorage.setItem("longitude", center.lng);
+    //     localStorage.setItem("ip_addr", $(".ip-address ").text());
+    //     localStorage.setItem("os", $(".operation-system").text());
+    //     localStorage.setItem("web", $(".browser-name").text());
+    //     localStorage.setItem("time", new Date().toString());
 
-        //then route to login page(login.html)
-        //route to login.html
-        if (!isIssueConn()) {
-            localStorage.setItem("conn", false);
-            localStorage.setItem("activity", $(".activity.select img").attr("type"));
-            localStorage.setItem("download", $(".data.download").text());
-            localStorage.setItem("upload", $(".data.upload").text());
-            localStorage.setItem("ping", $("#speedo-ping .data .time").text());
-            localStorage.setItem("speed", $("input[name='speed']:checked").val());
-            localStorage.setItem("consistency", $("input[name='consistency']:checked").val());
-        } else {
-            localStorage.setItem("conn", true);
-            localStorage.setItem("room", $("#roomNumber").val());
-            localStorage.setItem("welcome_kaist", $(".antenna").text());
-            localStorage.setItem("wi-fi", getListWifi());
-        }
-        localStorage.setItem("participate", "1")
+    //     //then route to login page(login.html)
+    //     //route to login.html
+    //     if (!isIssueConn()) {
+    //         localStorage.setItem("conn", false);
+    //         localStorage.setItem("activity", $(".activity.select img").attr("type"));
+    //         localStorage.setItem("download", $(".data.download").text());
+    //         localStorage.setItem("upload", $(".data.upload").text());
+    //         localStorage.setItem("ping", $("#speedo-ping .data .time").text());
+    //         localStorage.setItem("speed", $("input[name='speed']:checked").val());
+    //         localStorage.setItem("consistency", $("input[name='consistency']:checked").val());
+    //     } else {
+    //         localStorage.setItem("conn", true);
+    //         localStorage.setItem("room", $("#roomNumber").val());
+    //         localStorage.setItem("welcome_kaist", $(".antenna").text());
+    //         localStorage.setItem("wi-fi", getListWifi());
+    //     }
+    //     localStorage.setItem("participate", "1")
 
-        window.location.replace("./login.html");
+    //     window.location.replace("./login.html");
 
-    }
+    // }
 
     return false;
+}
+
+function pushUser() {
+    var userID = generateID(5);
+
+    if (!isIssueConn()) {
+        var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + userID);
+        // users/2017-3-6
+
+        playersRef.set({
+            "type": $(".internet-type a.active").attr("conn-type"),
+            "bldg": $('.building-list tr.warning').attr("bldg"),
+            "activity": $(".activity.select img").attr("type"),
+            "ip_addr": $(".ip-address ").text(),
+            "latitude": center.lat,
+            "longitude": center.lng,
+            "download": $(".data.download").text(),
+            "upload": $(".data.upload").text(),
+            "ping": $("#speedo-ping .data .time").text(),
+            "speed": $("input[name='speed']:checked").val(),
+            "consistency": $("input[name='consistency']:checked").val(),
+            "os": $(".operation-system").text(),
+            "web": $(".browser-name").text(),
+            "time": new Date().toString(),
+            "email": user.email ? user.email : "***"
+        }, function(error) {
+            if (error) {
+                console.log(error);
+            } else {
+                localStorage.setItem("participate", "1")
+                routeToTimeline(BLDG[$('.building-list tr.warning').attr("bldg")].url);
+            }
+
+        });
+    } else {
+        var playersRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-") + "/" + "conn" + userID);
+        // users/2017-3-6/conn~~
+
+        playersRef.set({
+            "type": $(".internet-type a.active").attr("conn-type"),
+            "bldg": $('.building-list tr.warning').attr("bldg"),
+            "room": $("#roomNumber").val(),
+            "welcome_kaist": $(".antenna").text(),
+            "wi-fi": getListWifi(),
+            "ip_addr": $(".ip-address ").text(),
+            "latitude": center.lat,
+            "longitude": center.lng,
+            "os": $(".operation-system").text(),
+            "web": $(".browser-name").text(),
+            "time": new Date().toString(),
+            "email": user.email ? user.email : "***"
+        }, function(error) {
+            if (error) {
+                console.log(error);
+            } else {
+                localStorage.setItem("participate", "1")
+                routeToTimeline(BLDG[$('.building-list tr.warning').attr("bldg")].url);
+            }
+
+        });
+    }
 }
