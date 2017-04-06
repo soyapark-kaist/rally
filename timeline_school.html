@@ -6,8 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="google" content="notranslate">
+    <meta name="description" content="아무리 카대전에 말해도 해결되지 않는 인터넷 문제, 우리 목소리가 모이면 학교에 전해지지 않을까요?">
+    <meta name="author" content="kixlab">
+    <meta property="og:image" content="img/rally_brand.png" />
+    <meta property="og:description" content="아무리 카대전에 말해도 해결되지 않는 인터넷 문제, 우리 목소리가 모이면 학교에 전해지지 않을까요?" />
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
@@ -17,68 +20,61 @@
 
     <title>정보통신팀 전용화면</title>
 
-    <link href="css/kube.min.css" rel="stylesheet" />
-
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css" />
     <!-- Bootstrap theme -->
     <link rel="stylesheet" href="css/bootstrap-theme.min.css" />
 
-    <link rel="stylesheet" href="css/speedtest.css" />
     <link rel="stylesheet" href="css/font-awesome.min.css" />
     <link rel="stylesheet" href="css/custom.css" />
-    <link rel="stylesheet" href="css/vis.min.css" />
 
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="css/theme.css" />
     <link rel="stylesheet" href="css/collect.css" />
-    <style>
-        #map {
-            height: 400px;
-            width: 100%;
-        }
-        
-        .vis-item.vis-background.negative {
-            background-color: rgba(255, 0, 0, 0.2);
-        }
-        
-        .vis-item.vis-background.positive {
-            background-color: rgba(105, 255, 98, 0.20);
-        }
-        
-        .vis-item.marker {
-            border-left: 2px solid green;
-        }
-        
-        #petition,
-        #receive,
-        #respond,
-        #stat {
-            margin-top: 30px;
-            display: none;
-        }
-        
-        .issue-type {
-            display: none;
-        }
-        
-        #timeline {}
-    </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="css/timeline.css" />
+
+    <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
 
     <script src="https://www.gstatic.com/firebasejs/3.6.7/firebase.js"></script>
 
-    <script type="text/javascript" src="js/vis.min.js"></script>
     <script src="js/d3.min.js"></script>
 
     <script type="text/javascript" src="js/conf.js"></script>
     <script type="text/javascript" src="js/rally.js"></script>
-    <script type="text/javascript" src="js/timeline_school.js"></script>
+    <script type="text/javascript" src="js/timeline.js"></script>
     <script type="text/javascript" src="js/donutChart.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js', {
+                    scope: '.'
+                })
+                .then(function(registration) {
+                    console.log('Service Worker Registered');
+                });
+
+            navigator.serviceWorker.ready.then(function(registration) {
+                console.log('Service Worker Ready');
+            });
+        }
+
+        (function(i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function() {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'UA-96659225-1', 'auto');
+        ga('send', 'pageview');
+    </script>
 </head>
 
-<body onload="initPetition()">
+<body>
     <!-- nav bar -->
     <header class="navbar navbar-static-top" role="banner" style="margin-bottom: 0px;">
         <div class="navbar-header">
@@ -87,16 +83,10 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a href="./index.html" class="navbar-brand" style="padding:10px;">
+            <a class="navbar-brand" style="padding:10px;">
                 <img alt="Rally" src="img/achome_beta_brand.png" style="height: 100%;" />
             </a>
         </div>
-        <nav class="collapse navbar-collapse rally-navbar-collapse">
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="./others.html">살펴보기</a></li>
-                <li><a href="./collect.html">제보하기</a></li>
-            </ul>
-        </nav>
     </header>
     <!--/nav bar-->
 
@@ -104,58 +94,189 @@
     <div class="content">
         <div class="container">
             <div class="post">
-                <div class="page-header">
-                    <h2 style="margin-left:10px;">진행사항</h2>
-                </div>
-                <div class="row">
-                    <div style="float:right;">
-                        <div id="internetSlow" class="issue-type"><i class="fa fa-exclamation-circle" aria-hidden="true"> 분류: 인터넷 느림현상</i></div>
-                        <div id="internetConn" class="issue-type"><i class="fa fa-chain-broken" aria-hidden="true"> 분류: 인터넷 연결불능</i>
-                        </div>
-                    </div>
-                </div>
+                <ul class="timeline-progress">
+                    <li>
+                        <span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="제보 작성">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-pencil-square-o fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <div>제보 작성</div>
+                    </li>
+                    <li><i class="fa fa-chevron-right" aria-hidden="true"></i></li>
+                    <li>
+                        <span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="우리 건물에 충분한 제보가 쌓이면 개선을 요구하기 위해 정보통신팀에 민원이 보내집니다.">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-bar-chart fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <div>민원 준비중</div>
+                    </li>
+                    <li><i class="fa fa-chevron-right" aria-hidden="true"></i></li>
+                    <li>
+                        <span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="정보통신팀 전송">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <div>학교에 전송</div>
+                    </li>
+                    <li><i class="fa fa-chevron-right" aria-hidden="true"></i></li>
+                    <li>
+                        <span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="정보통신팀 답변">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-reply fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <div>답변</div>
+                    </li>
+                </ul>
 
-                <h6>아래 블록을 클릭하면 더 자세한 내용을 보실 수 있습니다</h6>
-
-                <div id="timeline"></div>
                 <div class="loading"></div>
 
+                <div class="page-header">
+                    <h2>
+                        <i class="fa fa-building-o fa-2x" aria-hidden="true"></i> <span id="bldgName"></span>
+                    </h2>
+                </div>
+
+                <div id="sharing-intro" class="row participate-row opened-case">
+                    <p>[아, 쫌!]은 학생들이 자발적으로 제보한 데이터를 모아 인터넷을 개선하기 위해 학교에 민원의 형태로 학교에 전송합니다. 인터넷이 느릴 때, 카대전 글 작성/사감 선생님께 문의 하는 대신에 [아, 쫌!]의 쉽고 빠른(1분) 인터페이스를 통해 불편함을 제보하고 친구들을 모아 의견에 힘을 모아보세요.</p>
+                    <h4 style="margin-top: 30px;">문제에 공감하시나요? 1분을 투자해 이 캠페인에 힘을 실어주세요!</h4>
+                    <div style="text-align:center; margin-top:20px;">
+                        <a id="participate" href="./collect.html" onclick="trackOutboundLink('./collect.html','participate'); return false;" class="btn btn-success btn-lg">동참하기</a>
+                    </div>
+                </div>
+
+                <div class="alert alert-success" role="alert" id="respond"><strong><i class="fa fa-check-square-o" aria-hidden="true"></i>정보통신팀 답변</strong><br><span>여기에 답변</span></div>
+                <div id="timeline"></div>
+
                 <div id="petition">
-                    <div class="row">
-                        <p id="title"></p>
-                        <i class="fa fa-clock-o" aria-hidden="true"></i>발생시간: <span class="label label-warning" id="time-range"></span>
-                        <p id="content"></p>
-                    </div>
-
-                    <div class="row">
-                        <div id="map"></div>
-                    </div>
-
-                    <!--<div id="map"></div>-->
                     <p id="signature"></p>
 
-                    <p id="number"></p>
                     <div id="stat">
-                        <p id="bandwidth"></p>
                         <div class="row">
-                            <div class="col-sm-4 list-group">
-                                <a class="list-group-item active">인터넷 활동</a>
-                                <a class="list-group-item">속도 만족도</a>
-                                <a class="list-group-item">일정성 만족도</a>
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a data-toggle="tab" href="#overall">제보 현황</a></li>
+                                <li><a data-toggle="tab" href="#contents">민원 내용</a></li>
+                                <li><a data-toggle="tab" href="#internet-conn">연결 불능</a></li>
+                                <li><a data-toggle="tab" href="#internet-slow">느린 인터넷</a></li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div id="overall" class="tab-pane fade in active">
+                                    <div class="col-sm-4">
+                                        <div id="issue-chart"></div>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <p style="margin-top:20px;" id="number"></p>
+                                        <div id="on-going">
+                                            <h4>참여도 <i class="fa fa-question-circle" data-toggle="tooltip" title="민원이 보내지기 위한 최소 제보(10개) 중 몇 개가 모였는지 나타냅니다. 10개 이상 제보가 모이면 정보통신팀에 보내집니다" aria-hidden="true"></i>
+                                            </h4>
+                                            <div id="progress-quorum">
+                                                <div class="progress">
+                                                    <div class="progress-bar active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%">
+                                                    </div>
+                                                </div>
+                                                <p>
+                                                    <span id="leftQuorum"></span><span id="leftQuorum2">명이 더 참여하면, 정보통신팀에 보내집니다.</span>
+                                                </p>
+                                            </div>
+                                            <!-- SNS share button -->
+                                            <p class="opened-case" style="margin-bottom:20px;">친구에게 알려주세요. 더 많은 목소리가 모일수록 강해집니다.</p>
+                                            <i class="fa fa-facebook-square fa-3x share-icon fb-share" aria-hidden="true"></i>
+                                            <i class="fa fa-link fa-3x share-icon link-share" aria-hidden="true"></i>
+
+                                            <input class="link-temp" type="hidden" />
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                                <div id="contents" class="tab-pane fade">
+                                    <p id="content">아직 내용이 없습니다.</p>
+                                    <div class="opened-case" id="accepted-comments"></div>
+                                    <div class="opened-case">
+                                        <form style="margin-top: 30px;">
+                                            <div class="form-group">
+                                                <textarea class="form-control status-box" rows="2" placeholder="인터넷을 사용하면서 느끼는 불편함과 현상을 댓글로 달아주면 민원내용에 포함됩니다!"></textarea>
+                                            </div>
+                                        </form>
+                                        <div class="button-group pull-right">
+                                            <p class="counter">140</p>
+                                            <a class="btn btn-primary comments-post disabled">Post</a>
+                                        </div>
+
+                                        <ul class="comments">
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div id="internet-conn" class="tab-pane fade">
+                                    <div class="row">
+                                        <div class="col-xs-4">
+                                            <p>인터넷 안테나 갯수</p>
+                                            <div id="strength-chart">연결 불능 제보 없음.</div>
+                                        </div>
+                                        <div class="col-xs-4">
+                                            <div id="os-chart"></div>
+                                        </div>
+                                        <div class="col-xs-4">
+                                            <div id="web-chart"></div>
+                                        </div>
+                                    </div>
+
+                                    <table class="detailed-data table table-striped table-hover table-inbox">
+                                        <thead>
+                                            <tr>
+                                                <th>사용 중이던 인터넷 유형</th>
+                                                <th>이메일</th>
+                                                <th>제출 일시</th>
+                                                <th>건물에서의 위치</th>
+                                                <th>IP</th>
+                                                <th>OS</th>
+                                                <th>web</th>
+                                                <th>welcome_kaist의 신호세기(안테나 갯수)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                                <div id="internet-slow" class="tab-pane fade">
+                                    <p id="bandwidth"></p>
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-6 col-lg-4">
+                                            <div id="application">느린 인터넷 제보 없음.</div>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-6 col-lg-4">
+                                            <div id="speed"></div>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-6 col-lg-4">
+                                            <div id="consistency"></div>
+                                        </div>
+                                    </div>
+
+                                    <table class="detailed-data-speed table table-striped table-hover table-inbox">
+                                        <thead>
+                                            <tr>
+                                                <th>사용 중이던 인터넷 유형</th>
+                                                <th>이메일</th>
+                                                <th>제출 일시</th>
+                                                <th>IP</th>
+                                                <th>OS</th>
+                                                <th>web</th>
+                                                <th>Down / Up</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                                <div id="menu3" class="tab-pane fade">
+                                    <h3>Menu 3</h3>
+                                    <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                                </div>
                             </div>
-                            <div class="col-sm-8" id="application"></div>
-                            <div class="col-sm-8" id="speed"></div>
-                            <div class="col-sm-8" id="consistency"></div>
                         </div>
                     </div>
                 </div>
 
                 <div id="receive">
                     <p>정보통신팀이 민원을 접수했습니다</p>
-                </div>
-
-                <div id="respond">
-                    <p></p>
                 </div>
 
                 <div id="adminOnly" style="text-align:center;margin-top:20px;">
@@ -228,7 +349,7 @@
             <ul class="footer-links right-links">
                 <li><a href="mailto:kixlab.rally@gmail.com">contact</a></li>
                 <li><a href="./privacy.html">privacy</a></li>
-                <li>ver 0.2</li>
+                <li>ver 0.3</li>
             </ul>
             <ul class="footer-links">
                 <li>© 2017 KIXLAB</li>
@@ -238,8 +359,35 @@
             </ul>
         </div>
     </footer>
-
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCByCLtjJ9BAR29-HXHHDBU8DWCyyuA_CE">
+    <script type="text/javascript">
+        $(function() {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+        $(".fb-share").click(function() {
+            window.open(
+                "http://www.facebook.com/sharer/sharer.php?u=" + window.location.href + "&sharing=true"
+            );
+        })
+        $(".link-share").click(function() {
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val(window.location.href + "&sharing=true").select();
+            document.execCommand("copy");
+            $temp.remove();
+            var alert = '<div id="clip-alert" class="alert alert-warning alert-dismissible ' +
+                'col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-xs-10 col-xs-offset-1" role="alert">' +
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                '<span aria-hidden="true">&times;</span>' +
+                '</button>클립보드에 복사되었습니다</div>'
+            var a_div = document.createElement("div");
+            a_div.innerHTML = alert;
+            $("body").append(a_div);
+            setTimeout(function() {
+                $("#clip-alert").fadeOut("normal", function() {
+                    $(this).remove();
+                });
+            }, 1000);
+        })
     </script>
 </body>
 

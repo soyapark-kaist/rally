@@ -268,6 +268,7 @@ function fetchSignature(inDateIndex, inDateRange, inBldgIdx, inQuorum) {
                 var c = [];
                 for (var i = 0; i < conn["strength"].length; i++) {
                     c.push({ "label": WIFI_STRENGTH_MSG[i], "population": conn["strength"][i] });
+
                 }
 
                 drawChart("#strength-chart", c);
@@ -339,6 +340,8 @@ function fetchSignature(inDateIndex, inDateRange, inBldgIdx, inQuorum) {
                         // Get welcome kaist strength
                         conn["strength"][parseInt(users[o]["welcome_kaist"]) / 25]++;
                         conn["cnt"]++;
+
+                        appendConnRow(users[o][email]);
                     } else {
                         var act = users[o].activity;
                         if (slow["apps"][act]) slow["apps"][act] += 1;

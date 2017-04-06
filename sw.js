@@ -33,6 +33,7 @@ self.addEventListener('install', e => {
                     'js/bootstrap.min.js',
                     'js/rally.js',
                     'js/collect.js',
+                    'js/login.js',
                     'js/timeline.js',
                     'css/bootstrap.min.css',
                     'css/font-awesome.min.css',
