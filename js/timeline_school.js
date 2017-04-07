@@ -1,5 +1,8 @@
 var petitionID;
 $(function() {
+    $('[data-toggle="tooltip"]').tooltip({
+        html: true
+    })
     $(".opened-case").hide();
 
     var params = window.location.search.substring(1).split("&");
@@ -54,7 +57,7 @@ $(function() {
                             if (u.indexOf("conn") != -1)
                                 appendConnRow(users[day][u].email, users[day][u].time, users[day][u].room, users[day][u].ip_addr, users[day][u].os, users[day][u].web, users[day][u].type, users[day][u]["welcome_kaist"]);
                             else
-                                appendSpeedRow(users[day][u].email, users[day][u].time, users[day][u].ip_addr, users[day][u].os, users[day][u].web, users[day][u].type, users[day][u].download + "/" + users[day][u].upload, users[day][u].activity);
+                                appendSpeedRow(users[day][u].email, users[day][u].time, users[day][u].ip_addr, users[day][u].os, users[day][u].web, users[day][u].type, users[day][u].download + "/" + users[day][u].upload, users[day][u].activity, users[day][u].speed, users[day][u].consistency);
                     }
                 }
 
@@ -68,10 +71,23 @@ $(function() {
 
 })
 
-function appendSpeedRow(inEmail, inDate, inIP, inOS, inWeb, inType, inBandwidth, inActivity) {
+function appendSpeedRow(inEmail, inDate, inIP, inOS, inWeb, inType, inBandwidth, inActivity, inSpeed, inConsistency) {
     if (inType == 0) inType = "welcome_kaist";
     else if (inType == 1) inType = "그외 공유기";
     else inType = "랜선";
+
+    if (inSpeed == 0) inSpeed = "즉각적이다";
+    else if (inSpeed == 1) inSpeed = "지연을 느낌";
+    else if (inSpeed == 2) inSpeed = "원하는만큼 못 사용";
+    else if (inSpeed == 3) inSpeed = "응답없음";
+
+    if (inConsistency == 1) inConsistency = "일정함";
+    else if (inConsistency == 2) inConsistency = "쓸만함";
+    else if (inConsistency == 3) inConsistency = "불안정";
+
+
+    if (inEmail == undefined) inEmail = "***";
+    inDate = inDate.split("GMT+09")[0];
 
     $('.detailed-data-speed tbody').append(
         '<tr>\
@@ -83,6 +99,8 @@ function appendSpeedRow(inEmail, inDate, inIP, inOS, inWeb, inType, inBandwidth,
             <td>' + inWeb + '</td>\
             <td>' + inBandwidth + '</td>\
             <td>' + inActivity + '</td>\
+            <td>' + inSpeed + '</td>\
+            <td>' + inConsistency + '</td>\
           </tr>'
     );
 }
@@ -102,6 +120,8 @@ function appendConnRow(inEmail, inDate, inLoc, inIP, inOS, inWeb, inType, inStre
     if (inType == 0) inType = "welcome_kaist";
     else if (inType == 1) inType = "그외 공유기";
     else inType = "랜선";
+    if (inEmail == undefined) inEmail = "***";
+    inDate = inDate.split("GMT+09")[0];
 
     $('.detailed-data tbody').append(
         '<tr>\
@@ -112,7 +132,7 @@ function appendConnRow(inEmail, inDate, inLoc, inIP, inOS, inWeb, inType, inStre
             <td>' + inIP + '</td>\
             <td>' + inOS + '</td>\
             <td>' + inWeb + '</td>\
-            <td>' + inStrength + '</td>\
+            <td>' + inStrength +"%"+ '</td>\
           </tr>'
     );
 }

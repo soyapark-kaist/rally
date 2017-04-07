@@ -73,6 +73,11 @@
         ga('create', 'UA-96659225-1', 'auto');
         ga('send', 'pageview');
     </script>
+    <style>
+        #on-going {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
@@ -167,6 +172,8 @@
                                     </div>
                                     <div class="col-sm-8">
                                         <p style="margin-top:20px;" id="number"></p>
+                                        <p>느린 인터넷: 인터넷(welcome_kaist, 그 외 공유기, 랜선 중)에 연결하였으나 속도가 느려 불편함을 느끼는 상태입니다.</p>
+                                        <p>연결불능: 인터넷에 연결하였으나, 불안정한 접속으로 연결조차 불가한 상태입니다. </p>
                                         <div id="on-going">
                                             <h4>참여도 <i class="fa fa-question-circle" data-toggle="tooltip" title="민원이 보내지기 위한 최소 제보(10개) 중 몇 개가 모였는지 나타냅니다. 10개 이상 제보가 모이면 정보통신팀에 보내집니다" aria-hidden="true"></i>
                                             </h4>
@@ -192,7 +199,7 @@
                                 </div>
                                 <div id="contents" class="tab-pane fade">
                                     <p id="content">아직 내용이 없습니다.</p>
-                                    <div class="opened-case" id="accepted-comments"></div>
+                                    <div id="accepted-comments"></div>
                                     <div class="opened-case">
                                         <form style="margin-top: 30px;">
                                             <div class="form-group">
@@ -232,14 +239,14 @@
                                                 <th>IP</th>
                                                 <th>OS</th>
                                                 <th>web</th>
-                                                <th>welcome_kaist의 안테나 갯수</th>
+                                                <th>welcome_kaist의 안테나 갯수(신호세기)</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
                                     </table>
                                 </div>
                                 <div id="internet-slow" class="tab-pane fade">
-                                    <p id="bandwidth"></p>
+                                    <p id="bandwidth"></p> <i class="fa fa-question-circle" data-toggle="tooltip" title="정확한 측정을 위해 <a href='https://myspeed.today/en'>공인된 인터넷 측정 라이브러리</a>를 사용하였습니다. 측정서버는 총학생회에 위치해 있습니다." aria-hidden="true"></i>
                                     <div class="row">
                                         <div class="col-xs-12 col-sm-6 col-lg-4">
                                             <div id="application">느린 인터넷 제보 없음.</div>
@@ -263,6 +270,8 @@
                                                 <th>web</th>
                                                 <th>Down / Up</th>
                                                 <th>활동</th>
+                                                <th>속도 만족도</th>
+                                                <th>일정성 만족도</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
