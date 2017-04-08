@@ -146,9 +146,12 @@ function displayComments(inComment) {
         var email = inComment[c].email ? inComment[c].email.substring(0, 3) : "***";
         if (inComment[c].accepted) {
             $("#accepted-comments").prepend('<div class="alert alert-success" role="alert"><strong><i class="fa fa-check-square-o" aria-hidden="true"></i></strong>' + email + "** : " + inComment[c].content + '</div>');
-        } else
+        } else {
+            if (cnt++ == 3) continue; // show upto three comments
             $('.comments').prepend('<li><i class="fa fa-user" aria-hidden="true"></i> ' + email + "** : " + inComment[c].content + ' (' + (new Date(c)) + ')</li>');
-        if (++cnt == 3) return; // show upto three comments
+        }
+
+
     }
 }
 
