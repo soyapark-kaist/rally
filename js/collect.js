@@ -50,7 +50,7 @@ function initListener() {
         }, 1500);
     })
 
-    $("#move-test").click(function(e) {
+    $(".move-test").click(function(e) {
         $("html, body").animate({
             scrollTop: $("#speedtest").position().top
         }, 1500);
@@ -412,6 +412,11 @@ function postSignature() {
         if ($(".data.download").text() == "--") {
             $("#form-test").css("display", "block");
             isValid = false;
+        } else {
+            if ($(".data.upload").text() == "--") { // check whether test is completed. 
+                $("#form-test-wait").css("display", "block");
+                isValid = false;
+            }
         }
 
         if (!$(".activity.select").length) {
