@@ -187,12 +187,12 @@ function fetchBldgList(inCenter) {
                 name: list[index].name
             });
 
-            marker.addListener('click', function(e) {
-                infoWindow.open(map);
-                infoWindow.setContent(this.name);
-                animateMarker(this.index);
-                infoWindow.setPosition(this.getPosition())
-            });
+            // marker.addListener('click', function(e) {
+            //     infoWindow.open(map);
+            //     infoWindow.setContent(this.name);
+            //     animateMarker(this.index);
+            //     infoWindow.setPosition(this.getPosition())
+            // });
 
             markers.push(marker);
 

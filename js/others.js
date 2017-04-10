@@ -6,8 +6,6 @@ function initVis() {
     infoWindow = new google.maps.InfoWindow({ map: map });
     infoWindow.close();
 
-
-
     var bldgRef = firebase.database().ref("bldg/");
     // Attach an asynchronous callback to read the data at our posts reference
     bldgRef.once("value").then(function(snapshot) {
@@ -88,7 +86,28 @@ function initVis() {
             });
     });
 
+    // var victoryRef = firebase.database().ref("victory/");
+    // // Attach an asynchronous callback to read the data at our posts reference
+    // victoryRef.once("value").then(function(snapshot) {
+    //     var vic = snapshot.val();
+
+    //     for (var v in vic) {
+    //         $('.table-victory tbody').append(
+    //             '<tr onclick="window.document.location=\'./timeline.html?id=' + v + '\';">\
+    //                 <td>' + vic[v].name + '</td>\
+    //                 <td>' + vic[v].cnt + ' 명' + '</td>\
+    //                 <td>' + (vic[v].received ? "정보통신팀에서 답변 도착" : "답변 대기 중") + '</td>\
+    //             </tr>');
+    //     }
+    // })
+
 }
+
+$(function() {
+    $('[data-toggle="tooltip"]').tooltip({
+        html: true
+    })
+})
 
 function getUserID() {
     var params = window.location.search.substring(1).split("&");

@@ -36,6 +36,7 @@ self.addEventListener('install', e => {
                     'js/donutChart.js',
                     'js/login.js',
                     'js/petition.js',
+                    'js/others.js',
                     'js/timeline.js',
                     'css/bootstrap.min.css',
                     'css/font-awesome.min.css',
