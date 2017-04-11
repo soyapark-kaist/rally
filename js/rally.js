@@ -18,6 +18,8 @@ var APPLICATIONS = [],
 var SLOW_TOTAL = 5,
     CONN_TOTAL = 3;
 
+var QUORUM_TOTAL = 10;
+
 /* Initialize map. */
 function createMap() {
     map = new google.maps.Map(document.getElementById('map'), {
@@ -192,7 +194,7 @@ function setProgressbar(inNow, inMax) {
     $(".progress-bar").css("width", (inNow / inMax * 100) + "%").attr("aria-valuenow", inNow);
     $(".progress-bar").attr("aria-valuemax", inMax);
 
-    $("#leftQuorum").text(parseInt(10 - inNow));
+    $("#leftQuorum").text(parseInt(QUORUM_TOTAL - inNow));
 }
 
 function createMarker(inID, inCenter, inTitle, inRate) {
@@ -314,11 +316,11 @@ function fetchSignature(inDateIndex, inDateRange, inBldgIdx, inQuorum) {
             $("#number").text("해당 건물에 아직 제보한 사람이 없습니다. 친구들에게 홍보해 더 많은 힘을 모아보세요!");
         }
 
-        if (conn["cnt"] + slow["cnt"] >= 10) {
+        if (conn["cnt"] + slow["cnt"] >= QUORUM_TOTAL) {
             $("#leftQuorum").hide();
             $("#leftQuorum2").hide();
         }
-        setProgressbar(conn["cnt"] + slow["cnt"] > 10 ? 10 : conn["cnt"] + slow["cnt"], 10);
+        setProgressbar(conn["cnt"] + slow["cnt"] > QUORUM_TOTAL ? QUORUM_TOTAL : conn["cnt"] + slow["cnt"], QUORUM_TOTAL);
         $("#finalStage").css("visibility", "visible");
 
         return;
