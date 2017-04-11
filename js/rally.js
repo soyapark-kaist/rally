@@ -165,7 +165,7 @@ function detectOS() {
         return 'windows';
     } else if (userAgent.match(/Android/i)) {
         return 'android';
-    } else if (userAgent.match(/Mac/i)) {
+    } else if (userAgent.match(/Macintosh/i)) {
         return 'mac';
     } else // Leave ios as default os
         return 'ios';
