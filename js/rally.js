@@ -165,14 +165,10 @@ function detectOS() {
         return 'windows';
     } else if (userAgent.match(/Android/i)) {
         return 'android';
-    } else if (userAgent.match(/iPhone/i)) {
-        return 'ios';
     } else if (userAgent.match(/Mac/i)) {
-        /* Actually it is macos */
         return 'mac';
-    } else {
-        return 'unknown';
-    }
+    } else // Leave ios as default os
+        return 'ios';
 }
 
 function detectBrowser() {
