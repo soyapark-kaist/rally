@@ -340,9 +340,17 @@
             );
         })
         $(".link-share").click(function() {
+            var share_url = window.location.href + "&sharing=true";
+            
+            /* iOS case (it does not support clipboard copy) */
+            if(detectOS() == "ios") {
+                prompt("URL을 복사해주세요!", share_url);
+                return;
+            }
+
             var $temp = $("<input>");
             $("body").append($temp);
-            $temp.val(window.location.href + "&sharing=true").select();
+            $temp.val(share_url).select();
             document.execCommand("copy");
             $temp.remove();
             var alert = '<div id="clip-alert" class="alert alert-warning alert-dismissible ' +
