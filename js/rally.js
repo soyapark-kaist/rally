@@ -323,6 +323,8 @@ function fetchSignature(inDateIndex, inDateRange, inBldgIdx, inQuorum) {
         setProgressbar(conn["cnt"] + slow["cnt"] > QUORUM_TOTAL ? QUORUM_TOTAL : conn["cnt"] + slow["cnt"], QUORUM_TOTAL);
         $("#finalStage").css("visibility", "visible");
 
+        toggleLoading(".loading");
+
         return;
     }
 
