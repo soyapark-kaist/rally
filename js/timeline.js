@@ -181,7 +181,7 @@ function selectSignature(pBldgIdx, pHeadCount) {
     var openDateRef = firebase.database().ref('opendate/');
     openDateRef.once("value").then(function(snapshot) {
         filterSignature(new Date(snapshot.val()), pBldgIdx, pHeadCount);
-        toggleLoading(".loading");
+        
     });
 }
 
