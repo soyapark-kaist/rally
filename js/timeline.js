@@ -120,9 +120,7 @@ function fetchPetiton(inReceiving) {
             fill_progress_circle(1);
         }
 
-        if (p.content) displayPetition(p.content);
         if (p.comments) displayComments(p.comments);
-
 
         var bldgRef = firebase.database().ref('bldg/' + p.bldg);
         bldgRef.once("value").then(function(snapshot) {
@@ -145,6 +143,7 @@ function displayComments(inComment) {
     for (var c in inComment) {
         var email = inComment[c].email ? inComment[c].email.substring(0, 3) : "***";
         if (inComment[c].accepted) {
+            $('#content').text("");
             $("#accepted-comments").prepend('<div class="alert alert-success" role="alert"><strong><i class="fa fa-check-square-o" aria-hidden="true"></i></strong>' + email + "** : " + inComment[c].content + '</div>');
         } else {
             if (cnt++ == 3) continue; // show upto three comments
@@ -181,7 +180,7 @@ function selectSignature(pBldgIdx, pHeadCount) {
     var openDateRef = firebase.database().ref('opendate/');
     openDateRef.once("value").then(function(snapshot) {
         filterSignature(new Date(snapshot.val()), pBldgIdx, pHeadCount);
-        
+
     });
 }
 
