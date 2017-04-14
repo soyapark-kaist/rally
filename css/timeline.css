@@ -59,3 +59,11 @@
     margin-bottom: 0px;
     margin-top: 20px;
 }
+
+#ios-url {
+    width: 100%;
+}
+
+#ios-prompt-modal > .modal-dialog {
+    top: 200px;
+}

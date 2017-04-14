@@ -314,6 +314,22 @@
             </div>
         </div>
     </div>
+    
+    <div class="modal fade" id="ios-prompt-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">아래 URL을 복사해주세요</h4>
+                </div>
+                <div class="modal-body">
+                    <input id="ios-url" type="text" />
+                </div>
+            </div>
+        </div>
+    </div>
 
     <footer>
         <div class="container">
@@ -344,7 +360,11 @@
             
             /* iOS case (it does not support clipboard copy) */
             if(detectOS() == "ios") {
-                prompt("URL을 복사해주세요!", share_url);
+                $("#ios-url").val(share_url);
+                $('#ios-prompt-modal').modal();
+                setTimeout(function(){
+                    $("#ios-url").select();
+                }, 500);
                 return;
             }
 
