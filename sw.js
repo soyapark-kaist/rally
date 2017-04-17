@@ -43,7 +43,8 @@ self.addEventListener('install', e => {
                     'css/custom.css',
                     'css/theme.css',
                     'css/collect.css',
-                    'css/timeline.css'
+                    'css/timeline.css',
+                    'img/achome_beta_brand.png'
                     // '/index.html?homescreen=1',
                     // '/?homescreen=1',
                     // '/styles/main.css',
