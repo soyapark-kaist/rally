@@ -3,16 +3,27 @@ var BLDG;
 function initListener() {
     /* INTERNET */
     $("#speedo-start").click(function(event) {
-//         event.preventDefault();
-        
-//         // If speed is already measured scroll to next question. 
-//         if ($("#speedo-start span").text() == "다음으로 이동하기")
-//         /* Scroll to speed question section */
-//             $("html, body").animate({
-//             scrollTop: $("#question-speed").position().top
-//         }, 1500);
-        
-//         $("#speedo-start span").text("다음으로 이동하기");
+        //         event.preventDefault();
+
+        //         // If speed is already measured scroll to next question. 
+        //         if ($("#speedo-start span").text() == "다음으로 이동하기")
+        //         /* Scroll to speed question section */
+        //             $("html, body").animate({
+        //             scrollTop: $("#question-speed").position().top
+        //         }, 1500);
+
+        //         $("#speedo-start span").text("다음으로 이동하기");
+        $("#speedo-done").show();
+        $("#speedo-start").hide();
+
+        $("#speedo-start span").text("다시 측정하기");
+    })
+
+    $("#speedo-done").click(function(event) {
+        /* Scroll to speed question section */
+        $("html, body").animate({
+            scrollTop: $("#question-speed").position().top
+        }, 1500);
     })
 
     $("#scroll-btn").click(function() {
@@ -330,7 +341,9 @@ function initGuideImg() {
     }
 
     imgSrc = 'img/' + imgSrc;
-    $(".tooltiptext.ap-name img").attr("src", imgSrc);
+    $("#ap-instruction").attr("data-original-title", '<img width="180" src="%s"/>신호가 강한 순으로 세 개까지 적어주세요.'.replace("%s", imgSrc));
+    //'<img width="180" src=%s/>신호가 강한 순으로 세 개까지 적어주세요.' 
+    // $(".tooltiptext.ap-name img").attr("src", imgSrc);
 }
 
 function initRangeSlider() {

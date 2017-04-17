@@ -263,7 +263,7 @@
                 </div>
 
                 <div class="post">
-                    <h4>Wi-Fi 공유기 <i class="fa fa-question-circle" data-toggle="tooltip" title='<img width="180" src="img/ios.png"/>신호가 강한 순으로 세 개까지 적어주세요.' aria-hidden="true"></i> </h4>
+                    <h4>Wi-Fi 공유기 <i id="ap-instruction" class="fa fa-question-circle" data-toggle="tooltip" aria-hidden="true"></i> </h4>
                     <h6>welcome_kaist 외에 잡히는 Wi-Fi 공유기 이름을 적어주세요.</h6>
                     <div class="input-group">
                         <input id="apRead" type="text" class="form-control" placeholder="공유기 이름">
@@ -292,6 +292,9 @@
                                                                 <img src="img/indicator.png" id="speedo-arrow" class="speedo-arrow" style="transform: rotate(-48.5deg); transform-origin: 50% 50% 0px;">
                                                                 <div class="content wrapp">
                                                                     <div class="ready wrapp" id="ready">
+                                                                        <div id="speedo-done" class="alert alert-success" role="alert" style="display: none;">
+                                                                            <a><i class="fa fa-check-square-o" aria-hidden="true"></i> 다음으로 이동하기</a>
+                                                                        </div>
                                                                         <button id="speedo-start" class="button" style="display: none;"><span>인터넷 측정하기</span></button>
                                                                         <i class="fa fa-spinner fa-spin fa-3x fa-fw" id="acl-indicator"></i>
                                                                     </div>
