@@ -43,20 +43,25 @@ function initVis() {
 
 
 
-    // var victoryRef = firebase.database().ref("victory/");
-    // // Attach an asynchronous callback to read the data at our posts reference
-    // victoryRef.once("value").then(function(snapshot) {
-    //     var vic = snapshot.val();
+    var victoryRef = firebase.database().ref("victory/");
+    // Attach an asynchronous callback to read the data at our posts reference
+    victoryRef.once("value").then(function(snapshot) {
+        var vic = snapshot.val();
 
-    //     for (var v in vic) {
-    //         $('.table-victory tbody').append(
-    //             '<tr onclick="window.document.location=\'./timeline.html?id=' + v + '\';">\
-    //                 <td>' + vic[v].name + '</td>\
-    //                 <td>' + vic[v].cnt + ' 명' + '</td>\
-    //                 <td>' + (vic[v].received ? "정보통신팀에서 답변 도착" : "답변 대기 중") + '</td>\
-    //             </tr>');
-    //     }
-    // })
+        var targetDate = new Date("Tue Apr 11 2017 23:59:00 GMT+0900 (KST)");
+        var timeDiff = Math.abs(new Date().getTime() - targetDate.getTime());
+        var diffWeek = Math.floor(Math.ceil(timeDiff / (1000 * 3600 * 24)) / 7) - 1;
+        // alert(diffWeek);
+
+        for (var v in vic) {
+            $('.table-victory tbody').append(
+                '<tr onclick="window.document.location=\'./timeline.html?date=' + diffWeek + '&id=' + v + '\';">\
+                    <td>' + vic[v].name + '</td>\
+                    <td>' + vic[v].cnt + ' 명' + '</td>\
+                    <td>' + (vic[v].received ? "정보통신팀에서 답변 도착" : "답변 대기 중") + '</td>\
+                </tr>');
+        }
+    })
 
 }
 

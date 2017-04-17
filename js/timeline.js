@@ -3,7 +3,8 @@ var maploaded = false,
     petitionloaded = false;
 var petition, petitionID, hour_range;
 var isReceiving = false,
-    isAdmin = false;
+    isAdmin = false,
+    weekNumber = false;
 var users;
 
 var BLDG_INDEX;
@@ -68,6 +69,9 @@ function initParams() {
         if (params[p].split("=")[0] == "id")
             petitionID = params[p].split("=")[1];
 
+        if (params[p].split("=")[0] == "date")
+            weekNumber = parseInt(params[p].split("=")[1]);
+
         if (params[p].split("=")[0] == "r3v") {
             isReceiving = true;
         }
@@ -83,9 +87,8 @@ function initParams() {
         }
     }
 
-    if (localStorage.getItem("participate") == "1") {
-        localStorage.setItem("participate", "0")
-        $(".participate-row").toggle();
+    if (weekNumber) {
+
     }
 
     if (!isSharing) {
@@ -131,7 +134,7 @@ function fetchPetiton(inReceiving) {
                 $("#bldgName").text(b.name);
 
                 // signature & progress bar
-                selectSignature(BLDG_INDEX, b.headcnt ? b.headcnt : 100);
+                selectSignature(BLDG_INDEX, weekNumber);
             } else {
                 $("#bldgName").text("테스트");
 
@@ -186,12 +189,35 @@ function centerMap(inCenter) {
     map.setCenter(inCenter);
 }
 
-function selectSignature(pBldgIdx, pHeadCount) {
-    var openDateRef = firebase.database().ref('opendate/');
-    openDateRef.once("value").then(function(snapshot) {
-        filterSignature(new Date(snapshot.val()), pBldgIdx, pHeadCount);
+function getStartofWeek(d) {
+    d = new Date(d);
+    var day = d.getDay(),
+        diff = d.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
+    return new Date(d.setDate(diff)); // Tue 0:0:1
+}
 
-    });
+function selectSignature(inBldgIdx, inWeek) {
+    if (inWeek) {
+        if (inWeek == 0)
+            filterSignature(new Date("Wed Apr 05 2017 0:0:1 GMT+0900 (KST)"), inBldgIdx, new Date("Mon Apr 17 2017 23:59:21 GMT+0900 (KST)"));
+
+        else {
+            var startDate = new Date("Tue Apr 18 2017 0:0:1 GMT+0900 (KST)");
+            startDate.setDate(startDate.getDate() + (inWeek - 1) * 7);
+
+            var endDate = new Date("Mon Apr 24 2017 23:59:1 GMT+0900 (KST)");
+            endDate.setDate(endDate.getDate() + (inWeek - 1) * 7);
+            console.log(startDate, endDate, inWeek);
+            filterSignature(startDate, inBldgIdx, endDate); // TODO pass given week
+        }
+
+    } else {
+        var openDateRef = firebase.database().ref('opendate/');
+        openDateRef.once("value").then(function(snapshot) {
+            filterSignature(new Date(snapshot.val()), inBldgIdx, inWeek);
+
+        });
+    }
 }
 
 function checkEligibility() {

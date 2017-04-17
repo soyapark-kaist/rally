@@ -245,19 +245,21 @@ var conn = {
         "cnt": 0
     }
 
-function filterSignature(inTargetDate, inBldgIdx, inQuorum) {
-    var now = new Date();
+function filterSignature(inStartDate, inBldgIdx, inEndDate) {
+    if (!inEndDate)
+        inEndDate = new Date();
+
     var dateRange = [];
 
-    for (var d = inTargetDate; d <= now; d.setDate(d.getDate() + 1)) {
+    for (var d = inStartDate; d <= inEndDate; d.setDate(d.getDate() + 1)) {
         // console.log([d.getFullYear(), d.getMonth() + 1, d.getDate()].join("-"));
         dateRange.push([d.getFullYear(), d.getMonth() + 1, d.getDate()].join("-"));
     }
 
-    fetchSignature(0, dateRange, inBldgIdx, inQuorum);
+    fetchSignature(0, dateRange, inBldgIdx, inEndDate);
 }
 
-function fetchSignature(inDateIndex, inDateRange, inBldgIdx, inQuorum) {
+function fetchSignature(inDateIndex, inDateRange, inBldgIdx) {
     if (inDateIndex == inDateRange.length) {
         if (conn["cnt"] + slow["cnt"] > 0) {
             drawChart("#issue-chart", [{ "label": "느린 인터넷", "population": slow["cnt"] },
@@ -363,7 +365,7 @@ function fetchSignature(inDateIndex, inDateRange, inBldgIdx, inQuorum) {
                 }
             }
 
-            fetchSignature(++inDateIndex, inDateRange, inBldgIdx, inQuorum);
+            fetchSignature(++inDateIndex, inDateRange, inBldgIdx);
         },
         function(errorObject) {
             alert("The read failed: " + errorObject.code);
