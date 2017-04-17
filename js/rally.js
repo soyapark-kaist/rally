@@ -245,7 +245,7 @@ var conn = {
         "cnt": 0
     }
 
-function filterSignature(inStartDate, inBldgIdx, inEndDate) {
+function filterSignature(inStartDate, inBldgIdx, inEndDate, inCulmutative) {
     if (!inEndDate)
         inEndDate = new Date();
 
@@ -256,10 +256,10 @@ function filterSignature(inStartDate, inBldgIdx, inEndDate) {
         dateRange.push([d.getFullYear(), d.getMonth() + 1, d.getDate()].join("-"));
     }
 
-    fetchSignature(0, dateRange, inBldgIdx, inEndDate);
+    fetchSignature(0, dateRange, inBldgIdx, inCulmutative);
 }
 
-function fetchSignature(inDateIndex, inDateRange, inBldgIdx) {
+function fetchSignature(inDateIndex, inDateRange, inBldgIdx, inCulumtative) {
     if (inDateIndex == inDateRange.length) {
         if (conn["cnt"] + slow["cnt"] > 0) {
             drawChart("#issue-chart", [{ "label": "느린 인터넷", "population": slow["cnt"] },
@@ -311,12 +311,12 @@ function fetchSignature(inDateIndex, inDateRange, inBldgIdx) {
                 $("#bandwidth").text("평균 download / upload : " + downAvg.toFixed(2) + " / " + upAvg.toFixed(2) + "Mbps");
             }
 
-            $("#number").text("제보 총 " + (conn["cnt"] + slow["cnt"]) + "개");
+            $("#number").text(["이번 주 제보", (conn["cnt"] + slow["cnt"]), "개", "(누적", (conn["cnt"] + slow["cnt"] + inCulumtative), "개)"].join(" "));
 
             $("#stat").css("display", "block");
         } /* END. When exist report. */
         else {
-            $("#number").text("해당 건물에 아직 제보한 사람이 없습니다. 친구들에게 홍보해 더 많은 힘을 모아보세요!");
+            $("#number").text("해당 건물에 아직 제보한 사람이 없습니다. 친구들에게 홍보해 더 많은 힘을 모아보세요! (누적 " + inCulumtative + "개)");
         } /* END. When not exist report. */
 
         if (conn["cnt"] + slow["cnt"] >= QUORUM_TOTAL) {
@@ -365,7 +365,7 @@ function fetchSignature(inDateIndex, inDateRange, inBldgIdx) {
                 }
             }
 
-            fetchSignature(++inDateIndex, inDateRange, inBldgIdx);
+            fetchSignature(++inDateIndex, inDateRange, inBldgIdx, inCulumtative);
         },
         function(errorObject) {
             alert("The read failed: " + errorObject.code);

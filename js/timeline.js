@@ -134,7 +134,7 @@ function fetchPetiton(inReceiving) {
                 $("#bldgName").text(b.name);
 
                 // signature & progress bar
-                selectSignature(BLDG_INDEX, weekNumber);
+                selectSignature(BLDG_INDEX, weekNumber, p.culmutative ? p.culmutative : 0);
             } else {
                 $("#bldgName").text("테스트");
 
@@ -196,10 +196,10 @@ function getStartofWeek(d) {
     return new Date(d.setDate(diff)); // Tue 0:0:1
 }
 
-function selectSignature(inBldgIdx, inWeek) {
+function selectSignature(inBldgIdx, inWeek, inCulmutative) {
     if (inWeek) {
         if (inWeek == 0)
-            filterSignature(new Date("Wed Apr 05 2017 0:0:1 GMT+0900 (KST)"), inBldgIdx, new Date("Mon Apr 17 2017 23:59:21 GMT+0900 (KST)"));
+            filterSignature(new Date("Wed Apr 05 2017 0:0:1 GMT+0900 (KST)"), inBldgIdx, new Date("Mon Apr 17 2017 23:59:21 GMT+0900 (KST)"), inCulmutative);
 
         else {
             var startDate = new Date("Tue Apr 18 2017 0:0:1 GMT+0900 (KST)");
@@ -208,13 +208,13 @@ function selectSignature(inBldgIdx, inWeek) {
             var endDate = new Date("Mon Apr 24 2017 23:59:1 GMT+0900 (KST)");
             endDate.setDate(endDate.getDate() + (inWeek - 1) * 7);
             console.log(startDate, endDate, inWeek);
-            filterSignature(startDate, inBldgIdx, endDate); // TODO pass given week
+            filterSignature(startDate, inBldgIdx, endDate, inCulmutative); // TODO pass given week
         }
 
     } else {
         var openDateRef = firebase.database().ref('opendate/');
         openDateRef.once("value").then(function(snapshot) {
-            filterSignature(new Date(snapshot.val()), inBldgIdx, inWeek);
+            filterSignature(new Date(snapshot.val()), inBldgIdx, inWeek, inCulmutative);
 
         });
     }
