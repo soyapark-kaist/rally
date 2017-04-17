@@ -2,19 +2,15 @@ var BLDG;
 
 function initListener() {
     /* INTERNET */
-    /* Scroll to activity section */
     $("#speedo-start").click(function() {
-        document.documentElement.addEventListener('DOMAttrModified', function(e) {
-            if (e.attrName === 'style' && e.target.id == "ready" && e.newValue == "display: block;") {
-                console.log("Test over. Download: " + $(".data.download").text() + ". Upload: " + $(".data.upload").text())
+        $("#speedo-start span").text("다음으로 이동하기");
 
-                $("html, body").animate({
-                    scrollTop: $("#internet-question").position().top
-                }, 2000);
-            }
-        }, false);
-
-        document.documentElement.style.display = 'block';
+        // If speed is already measured scroll to next question. 
+        if ($("#speedo-start span").text() == "다음으로 이동하기")
+        /* Scroll to speed question section */
+            $("html, body").animate({
+            scrollTop: $("#question-speed").position().top
+        }, 1500);
     })
 
     $("#scroll-btn").click(function() {
