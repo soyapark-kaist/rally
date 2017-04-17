@@ -109,16 +109,16 @@ function fetchPetiton(inReceiving) {
 
         BLDG_INDEX = parseInt(p.bldg);
 
-        if (p.respond) {
+        if (p[weekNumber] && p[weekNumber].respond) {
             fill_progress_circle(3);
             $("#current-progress").text("정보통신팀 답변 도착");
 
-            displayRespond(p.respond);
-        } else if (p.sent) { // If it's sent to school
+            displayRespond(p[weekNumber].respond);
+        } else if (p[weekNumber] && p[weekNumber].sent) { // If it's sent to school
             fill_progress_circle(2);
             $("#current-progress").text("정보통신팀에 전송");
 
-            $('.opened-case').toggle();
+            $('.opened-case').hide();
         } else {
             fill_progress_circle(1);
         }
@@ -197,20 +197,18 @@ function getStartofWeek(d) {
 }
 
 function selectSignature(inBldgIdx, inWeek, inCulmutative) {
-    if (inWeek) {
-        if (inWeek == 0)
-            filterSignature(new Date("Wed Apr 05 2017 0:0:1 GMT+0900 (KST)"), inBldgIdx, new Date("Mon Apr 17 2017 23:59:21 GMT+0900 (KST)"), inCulmutative);
 
-        else {
-            var startDate = new Date("Tue Apr 18 2017 0:0:1 GMT+0900 (KST)");
-            startDate.setDate(startDate.getDate() + (inWeek - 1) * 7);
+    if (inWeek === 0)
+        filterSignature(new Date("Wed Apr 05 2017 0:0:1 GMT+0900 (KST)"), inBldgIdx, new Date("Mon Apr 17 2017 23:59:21 GMT+0900 (KST)"), inCulmutative);
 
-            var endDate = new Date("Mon Apr 24 2017 23:59:1 GMT+0900 (KST)");
-            endDate.setDate(endDate.getDate() + (inWeek - 1) * 7);
-            console.log(startDate, endDate, inWeek);
-            filterSignature(startDate, inBldgIdx, endDate, inCulmutative); // TODO pass given week
-        }
+    else if (inWeek > 0) {
+        var startDate = new Date("Tue Apr 18 2017 0:0:1 GMT+0900 (KST)");
+        startDate.setDate(startDate.getDate() + (inWeek - 1) * 7);
 
+        var endDate = new Date("Mon Apr 24 2017 23:59:1 GMT+0900 (KST)");
+        endDate.setDate(endDate.getDate() + (inWeek - 1) * 7);
+        console.log(startDate, endDate, inWeek);
+        filterSignature(startDate, inBldgIdx, endDate, inCulmutative); // TODO pass given week
     } else {
         var openDateRef = firebase.database().ref('opendate/');
         openDateRef.once("value").then(function(snapshot) {
