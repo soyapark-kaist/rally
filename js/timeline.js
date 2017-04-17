@@ -125,11 +125,20 @@ function fetchPetiton(inReceiving) {
         var bldgRef = firebase.database().ref('bldg/' + p.bldg);
         bldgRef.once("value").then(function(snapshot) {
             var b = snapshot.val();
-            // Building name
-            $("#bldgName").text(b.name);
 
-            // signature & progress bar
-            selectSignature(BLDG_INDEX, b.headcnt ? b.headcnt : 100);
+            if (b) {
+                // Building name
+                $("#bldgName").text(b.name);
+
+                // signature & progress bar
+                selectSignature(BLDG_INDEX, b.headcnt ? b.headcnt : 100);
+            } else {
+                $("#bldgName").text("테스트");
+
+                toggleLoading(".loading");
+            }
+
+
         });
     });
 }
@@ -156,6 +165,7 @@ function displayComments(inComment) {
 
 function displayRespond(inResponse) {
     $('#respond span').text(inResponse);
+    $('#respond').show();
 }
 
 function displayAvailablePetition(inPetitions) {

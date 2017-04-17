@@ -142,7 +142,7 @@
                     </h2>
                 </div>
 
-                <div id="sharing-intro" class="row participate-row opened-case">
+                <div id="sharing-intro" class="row participate-row">
                     <p>[아, 쫌!]은 학생들이 자발적으로 제보한 데이터를 모아 인터넷을 개선하기 위해 학교에 민원의 형태로 학교에 전송합니다. 인터넷이 느릴 때, 카대전 글 작성/사감 선생님께 문의 하는 대신에 [아, 쫌!]의 쉽고 빠른(1분) 인터페이스를 통해 불편함을 제보하고 친구들을 모아 의견에 힘을 모아보세요.</p>
                     <h4 style="margin-top: 30px;">문제에 공감하시나요? 1분을 투자해 이 캠페인에 힘을 실어주세요!</h4>
                     <div style="text-align:center; margin-top:20px;">
@@ -150,7 +150,38 @@
                     </div>
                 </div>
 
-                <div class="alert alert-success" role="alert" id="respond"><strong><i class="fa fa-check-square-o" aria-hidden="true"></i>정보통신팀 답변</strong><br><span>여기에 답변</span></div>
+                <div class="alert alert-info" role="alert" id="respond">
+                    <strong><i class="fa fa-check-square-o" aria-hidden="true"></i>정보통신팀 답변</strong><br><span>여기에 답변</span><br>
+                    <ul class="nav nav-pills nav-justified">
+                        <li role="presentation"><a data-toggle="pill" href="#like"><i class="fa fa-thumbs-o-up fa-4x" aria-hidden="true"></i>수고하셨습니다!</a></li>
+                        <li role="presentation"><a data-toggle="pill" href="#dislike"><i class="fa fa-thumbs-o-down fa-4x" aria-hidden="true"></i>아직도 느려요</a></li>
+                    </ul>
+
+                    <!--<div class="row" style="margin-top: 10px;">
+                        <div class="col-xs-6" style="text-align: center;">
+                            <a></a>
+                        </div>
+                        <div class="col-xs-6" style="text-align: center;">
+                            <a></a>
+                        </div>
+                    </div>-->
+                </div>
+
+                <div class="tab-content">
+                    <div id="like" class="tab-pane fade">
+                        <h3>정보통신팀에 감사 메세지 보내기</h3>
+                        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    </div>
+                    <div id="dislike" class="tab-pane fade">
+                        <h3>이번 주 민원에 참여하기</h3>
+                        <div style="text-align:center; margin-top:20px;margin-bottom:20px;">
+                            <a href="./collect.html" onclick="trackOutboundLink('./collect.html','participate'); return false;" class="btn btn-success btn-lg">동참하기</a>
+                        </div>
+                    </div>
+                </div>
+
+
+
                 <div id="timeline"></div>
 
                 <div id="petition">
@@ -246,39 +277,6 @@
                     </div>
                 </div>
 
-                <div id="receive">
-                    <p>정보통신팀이 민원을 접수했습니다</p>
-                </div>
-
-                <div id="adminOnly" style="text-align:center;margin-top:20px;">
-                    <a href="#compose-modal" data-toggle="modal" id="compose-button" class="btn btn-success btn-lg">답변하기</a>
-                    <p>* 위 버튼은 정보통신팀만 볼 수 있습니다</p>
-
-
-                    <div class="modal fade" id="compose-modal" tabindex="-1" role="dialog">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title">답변하기</h4>
-                                </div>
-                                <form onsubmit="return false;">
-                                    <div class="modal-body">
-                                        <div class="form-group">
-                                            <textarea class="form-control" id="compose-message" placeholder="Message" rows="10" required></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                        <button type="submit" onclick="postRespond()" id="send-button" class="btn btn-primary">Send</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="modal fade" id="available-modal" tabindex="-1" role="dialog">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -314,7 +312,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="modal fade" id="ios-prompt-modal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -357,12 +355,12 @@
         })
         $(".link-share").click(function() {
             var share_url = window.location.href + "&sharing=true";
-            
+
             /* iOS case (it does not support clipboard copy) */
-            if(detectOS() == "ios") {
+            if (detectOS() == "ios") {
                 $("#ios-url").val(share_url);
                 $('#ios-prompt-modal').modal();
-                setTimeout(function(){
+                setTimeout(function() {
                     $("#ios-url").select();
                 }, 500);
                 return;
