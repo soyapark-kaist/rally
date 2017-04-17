@@ -312,9 +312,10 @@ function fetchSignature(inDateIndex, inDateRange, inBldgIdx, inQuorum) {
             $("#number").text("제보 총 " + (conn["cnt"] + slow["cnt"]) + "개");
 
             $("#stat").css("display", "block");
-        } else {
+        } /* END. When exist report. */
+        else {
             $("#number").text("해당 건물에 아직 제보한 사람이 없습니다. 친구들에게 홍보해 더 많은 힘을 모아보세요!");
-        }
+        } /* END. When not exist report. */
 
         if (conn["cnt"] + slow["cnt"] >= QUORUM_TOTAL) {
             $("#leftQuorum").hide();

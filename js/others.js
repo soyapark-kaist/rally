@@ -1,90 +1,47 @@
 var userID;
 var pos;
+var bldgs, bldgRate;
+var bounds;
+
+$(function() {
+    toggleLoading("#loading");
+
+    $('[data-toggle="tooltip"]').tooltip({
+        html: true
+    })
+})
 
 function initVis() {
-    toggleLoading("#loading");
     infoWindow = new google.maps.InfoWindow({ map: map });
     infoWindow.close();
 
-    var bldgRef = firebase.database().ref("bldg/");
-    // Attach an asynchronous callback to read the data at our posts reference
-    bldgRef.once("value").then(function(snapshot) {
-        var bldgs = snapshot.val();
+    bounds = new google.maps.LatLngBounds();
 
-        var playersRef = firebase.database().ref('users/');
+    var openDateRef = firebase.database().ref('opendate/');
+    openDateRef.once("value").then(function(snapshot) {
+        openDate = new Date(snapshot.val());
+
+        var bldgRef = firebase.database().ref("bldg/");
         // Attach an asynchronous callback to read the data at our posts reference
-        playersRef.once("value").then(function(snapshot) {
+        bldgRef.once("value").then(function(snapshot) {
+            bldgs = snapshot.val();
 
-                // [0,0 ..]
-                var bldgRate = new Array(Object.keys(bldgs).length + 1).join('0').split('').map(parseFloat);
-                users = snapshot.val();
+            var now = new Date();
+            var dateRange = [];
 
-                var openDateRef = firebase.database().ref('opendate/');
-                openDateRef.once("value").then(function(snapshot) {
-                    for (var o in users) {
-                        var year = o.split("-")[0],
-                            month = parseInt(o.split("-")[1]) - 1,
-                            day = parseInt(o.split("-")[2]);
+            for (var d = openDate; d <= now; d.setDate(d.getDate() + 1)) {
+                dateRange.push([d.getFullYear(), d.getMonth() + 1, d.getDate()].join("-"));
+            }
 
-                        var date = new Date();
-                        date.setFullYear(year);
-                        date.setMonth(month);
-                        date.setDate(day);
+            bldgRate = new Array(Object.keys(bldgs).length + 1).join('0').split('').map(parseFloat); // [0,0 ..]
 
-                        // fetch data which registered after opendate
-                        if (new Date(snapshot.val()) > date) {
-                            continue;
-                        }
+            markBldg(0, dateRange);
 
-                        for (var u in users[o]) {
-                            bldgRate[parseInt(users[o][u].bldg)]++;
-                        }
-                    }
+        });
 
-
-                    var bounds = new google.maps.LatLngBounds();
-                    var tableRows = [];
-
-                    for (var p in bldgs) {
-                        p = parseInt(p);
-
-                        bldgs[p].headcnt = bldgs[p].headcnt ? bldgs[p].headcnt : 100;
-
-                        tableRows.push({ "url": bldgs[p].url, "name": bldgs[p].name, "rate": bldgRate[p] });
-
-                        // Add the circle for the petition to the map.
-                        var marker = createMarker(bldgs[p].url, { lat: bldgs[p].lat, lng: bldgs[p].lng }, bldgs[p].name, bldgRate[p]);
-                        bounds.extend({ lat: bldgs[p].lat, lng: bldgs[p].lng });
-
-
-                        marker.addListener('click', function(e) {
-                            infoWindow.open(map);
-                            infoWindow.setContent(this.title + " (" + this.rate + "명) <a class='btn btn-primary' href='./timeline.html?id=" + this.petitionID + "'>자세히 보기</a>");
-                            infoWindow.setPosition(this.getPosition())
-                        });
-                    }
-
-                    tableRows = tableRows.sort(function(a, b) { return (a.rate < b.rate) ? 1 : ((b.rate < a.rate) ? -1 : 0); });
-
-                    for (var i = 0; i < 5; i++) {
-                        $('.table-inbox tbody').append(
-                            '<tr onclick="window.document.location=\'./timeline.html?id=' + tableRows[i].url + '\';">\
-                            <td>' + "#" + (i + 1) + " " + tableRows[i].name + ' (' + tableRows[i].rate + '명)' + '</td>\
-                            </tr>'
-                        );
-                    }
-
-
-                    map.fitBounds(bounds);
-
-                    toggleLoading("#loading");
-                });
-            },
-            function(errorObject) {
-                alert("The read failed: " + errorObject.code);
-                // $btn.button('reset');
-            });
     });
+
+
 
     // var victoryRef = firebase.database().ref("victory/");
     // // Attach an asynchronous callback to read the data at our posts reference
@@ -103,11 +60,60 @@ function initVis() {
 
 }
 
-$(function() {
-    $('[data-toggle="tooltip"]').tooltip({
-        html: true
-    })
-})
+function markBldg(inDateIndex, inDateRange) {
+    if (inDateIndex == inDateRange.length) {
+        var tableRows = [];
+
+        for (var p in bldgs) {
+            p = parseInt(p);
+
+            tableRows.push({ "url": bldgs[p].url, "name": bldgs[p].name, "rate": bldgRate[p] });
+
+            // Add the circle for the petition to the map.
+            var marker = createMarker(bldgs[p].url, { lat: bldgs[p].lat, lng: bldgs[p].lng }, bldgs[p].name, bldgRate[p]);
+            bounds.extend({ lat: bldgs[p].lat, lng: bldgs[p].lng });
+
+
+            marker.addListener('click', function(e) {
+                infoWindow.open(map);
+                infoWindow.setContent(this.title + " (" + this.rate + "명) <a class='btn btn-primary' href='./timeline.html?id=" + this.petitionID + "'>자세히 보기</a>");
+                infoWindow.setPosition(this.getPosition())
+            });
+        }
+
+        tableRows = tableRows.sort(function(a, b) { return (a.rate < b.rate) ? 1 : ((b.rate < a.rate) ? -1 : 0); });
+
+        for (var i = 0; i < 5; i++) {
+            $('.table-inbox tbody').append(
+                '<tr onclick="window.document.location=\'./timeline.html?id=' + tableRows[i].url + '\';">\
+                            <td>' + "#" + (i + 1) + " " + tableRows[i].name + ' (' + tableRows[i].rate + '명)' + '</td>\
+                            </tr>'
+            );
+        }
+
+        map.fitBounds(bounds);
+
+        toggleLoading("#loading");
+
+        return;
+    }
+
+    var playersRef = firebase.database().ref('users/' + inDateRange[inDateIndex]);
+    // Attach an asynchronous callback to read the data at our posts reference
+    playersRef.once("value").then(function(snapshot) {
+            users = snapshot.val();
+
+            for (var o in users) {
+                bldgRate[parseInt(users[o].bldg)]++;
+            }
+
+            markBldg(++inDateIndex, inDateRange);
+        },
+        function(errorObject) {
+            alert("The read failed: " + errorObject.code);
+            // $btn.button('reset');
+        });
+}
 
 function getUserID() {
     var params = window.location.search.substring(1).split("&");
@@ -162,11 +168,9 @@ function displayPetitions(inPetitions) {
 function initMap() {
     createMap();
     initDB();
-    markMap(getUserID());
+    markMap(); // show today report
 
-    centerMap();
-
-
+    initVis();
 }
 
 function centerMap() {
