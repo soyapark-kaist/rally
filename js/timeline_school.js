@@ -7,9 +7,14 @@ $(function() {
 
     var params = window.location.search.substring(1).split("&");
     var isSharing = false;
+    var inWeek = false;
+
     for (var p in params) {
         if (params[p].split("=")[0] == "id")
             petitionID = params[p].split("=")[1];
+
+        if (params[p].split("=")[0] == "date")
+            inWeek = parseInt(params[p].split("=")[1]);
 
         if (params[p].split("=")[0] == "r3v") {
             // Add timestamp
@@ -36,40 +41,48 @@ $(function() {
     var campaign = firebase.database().ref('campaign/');
     campaign.once("value").then(function(snapshot) {
         var BLDG_index = snapshot.val()[petitionID].bldg;
-        var openDateRef = firebase.database().ref('opendate/');
-        openDateRef.once("value").then(function(snapshot) {
-            var now = new Date();
-            var dateRange = [];
+        if (inWeek === 0)
+            fetchTable(new Date("Wed Apr 05 2017 0:0:1 GMT+0900 (KST)"), new Date("Mon Apr 17 2017 23:59:21 GMT+0900 (KST)"), BLDG_index);
+        else if (inWeek > 0) {
+            var startDate = new Date("Tue Apr 18 2017 0:0:1 GMT+0900 (KST)");
+            startDate.setDate(startDate.getDate() + (inWeek - 1) * 7);
 
-            var inTargetDate = new Date(snapshot.val());
+            var endDate = new Date("Mon Apr 24 2017 23:59:1 GMT+0900 (KST)");
+            endDate.setDate(endDate.getDate() + (inWeek - 1) * 7);
+            console.log(startDate, endDate, inWeek);
 
-            // console.log([d.getFullYear(), d.getMonth() + 1, d.getDate()].join("-"));
-
-            var usersRef = firebase.database().ref('users/');
-            usersRef.once("value").then(function(snapshot) {
-                var users = snapshot.val();
-
-                for (var d = inTargetDate; d <= now; d.setDate(d.getDate() + 1)) {
-                    var day = [d.getFullYear(), d.getMonth() + 1, d.getDate()].join("-");
-
-                    for (var u in users[day]) {
-                        if (users[day][u].bldg == BLDG_index)
-                            if (u.indexOf("conn") != -1)
-                                appendConnRow(users[day][u].email, users[day][u].time, users[day][u].room, users[day][u].ip_addr, users[day][u].os, users[day][u].web, users[day][u].type, users[day][u]["welcome_kaist"], users[day][u]["wi-fi"]);
-                            else
-                                appendSpeedRow(users[day][u].email, users[day][u].time, users[day][u].ip_addr, users[day][u].os, users[day][u].web, users[day][u].type, users[day][u].download + "/" + users[day][u].upload, users[day][u].activity, users[day][u].speed, users[day][u].consistency);
-                    }
-                }
-
+            fetchTable(startDate, endDate, BLDG_index);
+        } else {
+            var openDateRef = firebase.database().ref('opendate/');
+            openDateRef.once("value").then(function(snapshot) {
+                fetchTable(new Date(snapshot.val()), new Date(), BLDG_index)
             });
-
-            // toggleLoading(".loading");
-        });
+        }
     });
 
 
 
 })
+
+function fetchTable(inStartDate, inEndDate, BLDG_index) {
+    var usersRef = firebase.database().ref('users/');
+    usersRef.once("value").then(function(snapshot) {
+        var users = snapshot.val();
+
+        for (var d = inStartDate; d <= inEndDate; d.setDate(d.getDate() + 1)) {
+            var day = [d.getFullYear(), d.getMonth() + 1, d.getDate()].join("-");
+
+            for (var u in users[day]) {
+                if (users[day][u].bldg == BLDG_index)
+                    if (u.indexOf("conn") != -1)
+                        appendConnRow(users[day][u].email, users[day][u].time, users[day][u].room, users[day][u].ip_addr, users[day][u].os, users[day][u].web, users[day][u].type, users[day][u]["welcome_kaist"], users[day][u]["wi-fi"]);
+                    else
+                        appendSpeedRow(users[day][u].email, users[day][u].time, users[day][u].ip_addr, users[day][u].os, users[day][u].web, users[day][u].type, users[day][u].download + "/" + users[day][u].upload, users[day][u].activity, users[day][u].speed, users[day][u].consistency);
+            }
+        }
+
+    });
+}
 
 function appendSpeedRow(inEmail, inDate, inIP, inOS, inWeb, inType, inBandwidth, inActivity, inSpeed, inConsistency) {
     if (inType == 0) inType = "welcome_kaist";
