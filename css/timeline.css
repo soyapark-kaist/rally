@@ -67,3 +67,9 @@
 #ios-prompt-modal > .modal-dialog {
     top: 200px;
 }
+
+.answer-text {
+    position: relative;
+    top: -10px;
+    margin-left: 10px;
+}
