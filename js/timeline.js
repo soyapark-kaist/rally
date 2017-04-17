@@ -77,7 +77,7 @@ function initParams() {
         }
 
         if (params[p].split("=")[0] == "sharing" && params[p].split("=")[1] == "true") {
-            // Show description. 
+            // Show description.
             isSharing = true;
 
         }
@@ -164,7 +164,7 @@ function displayComments(inComment) {
 }
 
 function displayRespond(inResponse) {
-    $('#respond span').text(inResponse);
+    $('#respond .respond-text').text(inResponse);
     $('#respond').show();
 }
 
