@@ -55,7 +55,7 @@ $(function() {
                     for (var u in users[day]) {
                         if (users[day][u].bldg == BLDG_index)
                             if (u.indexOf("conn") != -1)
-                                appendConnRow(users[day][u].email, users[day][u].time, users[day][u].room, users[day][u].ip_addr, users[day][u].os, users[day][u].web, users[day][u].type, users[day][u]["welcome_kaist"]);
+                                appendConnRow(users[day][u].email, users[day][u].time, users[day][u].room, users[day][u].ip_addr, users[day][u].os, users[day][u].web, users[day][u].type, users[day][u]["welcome_kaist"], users[day][u]["wi-fi"]);
                             else
                                 appendSpeedRow(users[day][u].email, users[day][u].time, users[day][u].ip_addr, users[day][u].os, users[day][u].web, users[day][u].type, users[day][u].download + "/" + users[day][u].upload, users[day][u].activity, users[day][u].speed, users[day][u].consistency);
                     }
@@ -116,7 +116,7 @@ function appendSpeedRow(inEmail, inDate, inIP, inOS, inWeb, inType, inBandwidth,
 <th>welcome_kaist의 신호세기(안테나 갯수)</th>
  */
 
-function appendConnRow(inEmail, inDate, inLoc, inIP, inOS, inWeb, inType, inStrength) {
+function appendConnRow(inEmail, inDate, inLoc, inIP, inOS, inWeb, inType, inStrength, inOtherAP) {
     if (inType == 0) inType = "welcome_kaist";
     else if (inType == 1) inType = "그외 공유기";
     else inType = "랜선";
@@ -132,7 +132,8 @@ function appendConnRow(inEmail, inDate, inLoc, inIP, inOS, inWeb, inType, inStre
             <td>' + inIP + '</td>\
             <td>' + inOS + '</td>\
             <td>' + inWeb + '</td>\
-            <td>' + inStrength +"%"+ '</td>\
+            <td>' + inStrength + "%" + '</td>\
+            <td>' + inOtherAP + '</td>\
           </tr>'
     );
 }
