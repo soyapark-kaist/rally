@@ -3,16 +3,16 @@ var BLDG;
 function initListener() {
     /* INTERNET */
     $("#speedo-start").click(function(event) {
-        event.preventDefault();
+//         event.preventDefault();
         
-        // If speed is already measured scroll to next question. 
-        if ($("#speedo-start span").text() == "다음으로 이동하기")
-        /* Scroll to speed question section */
-            $("html, body").animate({
-            scrollTop: $("#question-speed").position().top
-        }, 1500);
+//         // If speed is already measured scroll to next question. 
+//         if ($("#speedo-start span").text() == "다음으로 이동하기")
+//         /* Scroll to speed question section */
+//             $("html, body").animate({
+//             scrollTop: $("#question-speed").position().top
+//         }, 1500);
         
-        $("#speedo-start span").text("다음으로 이동하기");
+//         $("#speedo-start span").text("다음으로 이동하기");
     })
 
     $("#scroll-btn").click(function() {
