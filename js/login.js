@@ -105,7 +105,7 @@ var uiConfig = {
                 } else { // from timeline.html for comments
                     var now = new Date().toISOString().split(".")[0];
 
-                    var pRef = firebase.database().ref("campaign/" + localStorage.getItem("petitionID") + "/comments/" + now);
+                    var pRef = firebase.database().ref(["campaign-content", localStorage.getItem("petitionID"), localStorage.getItem("week"), "comments", now].join("/"));
                     pRef.set({
                             "email": firebase.auth().currentUser.email,
                             "content": localStorage.getItem("comment")

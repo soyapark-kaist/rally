@@ -123,7 +123,9 @@ function fetchPetiton(inReceiving) {
             fill_progress_circle(1);
         }
 
-        if (p.comments) displayComments(p.comments);
+        // Handling comments
+        if (weekNumber === 0 && p.comments) displayContents(new Date("Wed Apr 05 2017 0:0:1 GMT+0900 (KST)"), new Date("Mon Apr 17 2017 23:59:21 GMT+0900 (KST)"), p);
+        else fetchContents();
 
         var bldgRef = firebase.database().ref('bldg/' + p.bldg);
         bldgRef.once("value").then(function(snapshot) {
@@ -134,7 +136,8 @@ function fetchPetiton(inReceiving) {
                 $("#bldgName").text(b.name);
 
                 // signature & progress bar
-                selectSignature(BLDG_INDEX, weekNumber, p.culmutative ? p.culmutative : 0);
+                getDateRangebyWeek(getSignature, BLDG_INDEX, p.culmutative ? p.culmutative : 0);
+                // getSignature(BLDG_INDEX, weekNumber, p.culmutative ? p.culmutative : 0);
             } else {
                 $("#bldgName").text("테스트");
 
@@ -146,24 +149,30 @@ function fetchPetiton(inReceiving) {
     });
 }
 
-function displayPetition(inContent) {
-    $('#content').text(inContent);
+function fetchContents() {
+    //TODO
+    var campaign_contentRef = firebase.database().ref(['campaign-content', petitionID, getCurrentWeek(), ""].join("/"));
+    campaign_contentRef.once("value").then(function(snapshot) {
+        getDateRangebyWeek(displayContents, snapshot.val());
+    });
+
 }
 
-function displayComments(inComment) {
+function displayContents(inStart, inEnd, inComment) {
+    /* Comments */
     var cnt = 0;
-    for (var c in inComment) {
-        var email = inComment[c].email ? inComment[c].email.substring(0, 3) : "***";
-        if (inComment[c].accepted) {
+    for (var c in inComment.comments) {
+        var email = inComment.comments[c].email ? inComment.comments[c].email.substring(0, 3) : "***";
+        if (inComment.comments[c].accepted) {
             $('#content').text("");
-            $("#accepted-comments").prepend('<div class="alert alert-success" role="alert"><strong><i class="fa fa-check-square-o" aria-hidden="true"></i></strong>' + email + "** : " + inComment[c].content + '</div>');
+            $("#accepted-comments").prepend('<div class="alert alert-success" role="alert"><strong><i class="fa fa-check-square-o" aria-hidden="true"></i></strong>' + email + "** : " + inComment.comments[c].content + '</div>');
         } else {
             if (cnt++ == 3) continue; // show upto three comments
-            $('.comments').prepend('<li><i class="fa fa-user" aria-hidden="true"></i> ' + email + "** : " + inComment[c].content + ' (' + (new Date(c)) + ')</li>');
+            $('.comments').prepend('<li><i class="fa fa-user" aria-hidden="true"></i> ' + email + "** : " + inComment.comments[c].content + ' (' + (new Date(c)) + ')</li>');
         }
-
-
     }
+
+    /* Feedback */
 }
 
 function displayRespond(inResponse) {
@@ -189,90 +198,71 @@ function centerMap(inCenter) {
     map.setCenter(inCenter);
 }
 
-function getStartofWeek(d) {
-    d = new Date(d);
-    var day = d.getDay(),
-        diff = d.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
-    return new Date(d.setDate(diff)); // Tue 0:0:1
+function getCurrentWeek() {
+    var now = new Date();
+    if (now > new Date("Wed Apr 05 2017 0:0:1 GMT+0900 (KST)") && now < new Date("Mon Apr 17 2017 23:59:21 GMT+0900 (KST)"))
+        return 0;
+    else {
+        var targetDate = new Date("Tue Apr 11 2017 23:59:00 GMT+0900 (KST)");
+        var timeDiff = Math.abs(new Date().getTime() - targetDate.getTime());
+        var diffWeek = Math.floor(Math.ceil(timeDiff / (1000 * 3600 * 24)) / 7);
+        return diffWeek;
+    }
 }
 
-function selectSignature(inBldgIdx, inWeek, inCulmutative) {
+function getDateRangebyWeek(inCallback, inArg1, inArg2) {
+    var d = {
+        "start": "",
+        "end": ""
+    };
 
-    if (inWeek === 0)
-        filterSignature(new Date("Wed Apr 05 2017 0:0:1 GMT+0900 (KST)"), inBldgIdx, new Date("Mon Apr 17 2017 23:59:21 GMT+0900 (KST)"), inCulmutative);
+    if (weekNumber === 0) {
+        d.start = new Date("Wed Apr 05 2017 0:0:1 GMT+0900 (KST)");
+        d.end = new Date("Mon Apr 17 2017 23:59:21 GMT+0900 (KST)");
 
-    else if (inWeek > 0) {
+        inCallback(d.start, d.end, inArg1, inArg2);
+
+    } else if (weekNumber > 0) {
         var startDate = new Date("Tue Apr 18 2017 0:0:1 GMT+0900 (KST)");
-        startDate.setDate(startDate.getDate() + (inWeek - 1) * 7);
+        startDate.setDate(startDate.getDate() + (weekNumber - 1) * 7);
 
         var endDate = new Date("Mon Apr 24 2017 23:59:1 GMT+0900 (KST)");
-        endDate.setDate(endDate.getDate() + (inWeek - 1) * 7);
-        console.log(startDate, endDate, inWeek);
-        filterSignature(startDate, inBldgIdx, endDate, inCulmutative); // TODO pass given week
+        endDate.setDate(endDate.getDate() + (weekNumber - 1) * 7);
+
+        d.start = startDate;
+        d.end = endDate;
+        inCallback(d.start, d.end, inArg1, inArg2);
     } else {
         var openDateRef = firebase.database().ref('opendate/');
         openDateRef.once("value").then(function(snapshot) {
-            filterSignature(new Date(snapshot.val()), inBldgIdx, inWeek, inCulmutative);
-
+            inCallback(new Date(snapshot.val()), null, inArg1, inArg2);
         });
-    }
+
+    } // ELSE END: no week number given(current week)
+
 }
 
-function checkEligibility() {
-    var $btn = $("#participate").button('loading');
+// caller function to filter signature
+function getSignature(inStart, inEnd, inBldgIdx, inCulmutative) {
+    filterSignature(inStart, inBldgIdx, inEnd, inCulmutative);
+    // if (inWeek === 0)
+    //     filterSignature(new Date("Wed Apr 05 2017 0:0:1 GMT+0900 (KST)"), inBldgIdx, new Date("Mon Apr 17 2017 23:59:21 GMT+0900 (KST)"), inCulmutative);
 
-    var isEligible = true;
-    var hour = new Date().getHours();
-    var hour_from = TIME_RANGE[parseInt(petition["time-range"])].from,
-        hour_to = TIME_RANGE[parseInt(petition["time-range"])].to;
-    if (!filterHour(hour_range, hour_to, hour)) {
-        //alert("민원 시간대에 해당하지 않습니다! " + hour_range + ":00 ~ " + (hour_range + 3) + ":00");
-        isEligible = false;
-    }
+    // else if (inWeek > 0) {
+    //     var startDate = new Date("Tue Apr 18 2017 0:0:1 GMT+0900 (KST)");
+    //     startDate.setDate(startDate.getDate() + (inWeek - 1) * 7);
 
-    // Try HTML5 geolocation.
-    if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-                current_loc = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                };
-                //debugging purpose
-                // current_loc = {
-                //     lat: petition["latitude"],
-                //     lng: petition["longitude"]
-                // };
+    //     var endDate = new Date("Mon Apr 24 2017 23:59:1 GMT+0900 (KST)");
+    //     endDate.setDate(endDate.getDate() + (inWeek - 1) * 7);
+    //     console.log(startDate, endDate, inWeek);
+    //     filterSignature(startDate, inBldgIdx, endDate, inCulmutative); // TODO pass given week
+    // } else {
+    //     var openDateRef = firebase.database().ref('opendate/');
+    //     openDateRef.once("value").then(function(snapshot) {
+    //         filterSignature(new Date(snapshot.val()), inBldgIdx, inWeek, inCulmutative);
 
-                if (isEligible && (Math.abs(current_loc.lat - petition["latitude"]) <= 0.0009) && (Math.abs(current_loc.lng - petition["longitude"]) <= 0.0009)) {
-                    window.location.replace("./collect.html");
-
-                } else {
-                    isEligible = false;
-                }
-
-                //recommend other petition
-                if (!isEligible) {
-                    filterPetiton(hour, current_loc, displayAvailablePetition);
-                }
-
-            },
-            function() { //error callback
-                console.log("Error geolocation");
-                alert('브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.');
-                $("#participate").button('reset')
-                    // handleLocationError(true, infoWindow, map.getCenter());
-            }, {
-                timeout: 10000
-            });
-
-
-    } else {
-        // Browser doesn't support Geolocation
-        console.log("Error geolocation; brower doesn't support");
-        alert('브라우저의 위치정보 수집이 불가합니다. 다른 브라우저에서 다시 시도해주세요.');
-        $("#participate").button('reset')
-            // handleLocationError(false, infoWindow, map.getCenter());
-    }
+    //     });
+    // }
 }
 
 function postComment(inPost) {
@@ -283,7 +273,7 @@ function postComment(inPost) {
     if (user) {
         var now = new Date().toISOString().split(".")[0];
 
-        var pRef = firebase.database().ref("campaign/" + petitionID + "/comments/" + now);
+        var pRef = firebase.database().ref(["campaign-content", petitionID, getCurrentWeek(), "comments", now].join("/"));
 
         pRef.set({
                 "email": user.email ? user.email : "******",
@@ -297,12 +287,23 @@ function postComment(inPost) {
                 }
             });
     } else {
-        localStorage.setItem("code", "2");
-        localStorage.setItem("comment", inPost);
-        localStorage.setItem("petitionID", petitionID);
-        localStorage.setItem("callback", window.location.href);
+        firebase.auth().signInAnonymously().then(function(user) {
+            var now = new Date().toISOString().split(".")[0];
 
-        window.location.replace("./login.html");
+            var pRef = firebase.database().ref(["campaign-content", petitionID, getCurrentWeek(), "comments", now].join("/"));
+
+            pRef.set({
+                    "email": user.email ? user.email : "******",
+                    "content": inPost
+                },
+                function(error) {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        // when post to DB is successful
+                    }
+                });
+        });
     }
 }
 
