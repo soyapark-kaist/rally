@@ -170,7 +170,20 @@
                 <div class="tab-content">
                     <div id="like" class="tab-pane fade">
                         <h3>정보통신팀에 감사 메세지 보내기</h3>
-                        <p>댓글 남길 수 있는 인터페이스가 추가될 것...</p>
+                        <div>
+                            <form style="margin-top: 30px;">
+                                <div class="form-group">
+                                    <textarea class="form-control status-box" rows="2" placeholder="감사합니다! 인터넷이 빨라졌어요"></textarea>
+                                </div>
+                            </form>
+                            <div class="button-group pull-right">
+                                <p class="counter">140</p>
+                                <a class="btn btn-primary comments-post like-comment disabled">Post</a>
+                            </div>
+
+                            <ul class="comments">
+                            </ul>
+                        </div>
                     </div>
                     <div id="dislike" class="tab-pane fade">
                         <h3>이번 주 민원에 참여하기</h3>
@@ -226,7 +239,7 @@
 
                                     </div>
                                 </div>
-                                <div id="contents" class="tab-pane fade">
+                                <div id="contents" class="claim tab-pane fade">
                                     <p id="content">아직 내용이 없습니다.</p>
                                     <div id="accepted-comments"></div>
                                     <div class="opened-case">
