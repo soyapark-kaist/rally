@@ -20,7 +20,7 @@
 
 self.addEventListener('install', e => {
     e.waitUntil(
-        caches.open('airhorner').then(cache => {
+        caches.open('rally').then(cache => {
             return cache.addAll([
                     '512Mb.zip',
                     'index.html',
