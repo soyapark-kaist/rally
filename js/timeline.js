@@ -20,11 +20,11 @@ $(function() {
     // comment event handler
     $('.comments-post').click(function() {
         var cnt = 0;
-        var post = $('.status-box').val();
+        var post = $(this).parent().parent().find(".status-box").val();
 
         if (firebase.auth().currentUser) {
             var email = firebase.auth().currentUser.email ? firebase.auth().currentUser.email.substring(0, 3) : "***";
-            $(".comments li").each(function(index) {
+            $(this).parent().parent().find(".comments li").each(function(index) {
                 if (email == "***") return;
                 if ($(this).text().indexOf(email)) {
                     cnt++;
@@ -38,26 +38,25 @@ $(function() {
             }
 
 
-            $('.comments').prepend('<li><i class="fa fa-user" aria-hidden="true"></i> ' + email + "** : " + post + '</li>');
-            $('.status-box').val('');
-            $('.counter').text('140');
-            $('.comments-post').addClass('disabled');
+            $(this).parent().parent().find(".comments").prepend('<li><i class="fa fa-user" aria-hidden="true"></i> ' + email + "** : " + post + '</li>');
+            $(this).parent().parent().find(".status-box").val('');
+            $(this).parent().parent().find(".counter").text('140');
+            $(this).parent().parent().find(".comments-post").addClass('disabled');
         }
-
-        postComment(post);
+        postComment(post, $(this).parent().find(".like-comment").length != 0);
     });
 
     $('.status-box').keyup(function() {
         var postLength = $(this).val().length;
         var charactersLeft = 140 - postLength;
-        $('.counter').text(charactersLeft);
+        $(this).parent().parent().parent().find(".counter").text(charactersLeft);
 
         if (charactersLeft < 0) {
-            $('.comments-post').addClass('disabled');
+            $(this).parent().parent().parent().find(".comments-post").addClass('disabled');
         } else if (charactersLeft == 140) {
-            $('.comments-post').addClass('disabled');
+            $(this).parent().parent().parent().find(".comments-post").addClass('disabled');
         } else {
-            $('.comments-post').removeClass('disabled');
+            $(this).parent().parent().parent().find(".comments-post").removeClass('disabled');
         }
     });
 })
@@ -109,23 +108,12 @@ function fetchPetiton(inReceiving) {
 
         BLDG_INDEX = parseInt(p.bldg);
 
-        if (p[weekNumber] && p[weekNumber].respond) {
-            fill_progress_circle(3);
-            $("#current-progress").text("정보통신팀 답변 도착");
-
-            displayRespond(p[weekNumber].respond);
-        } else if (p[weekNumber] && p[weekNumber].sent) { // If it's sent to school
-            fill_progress_circle(2);
-            $("#current-progress").text("정보통신팀에 전송");
-
-            $('.opened-case').hide();
-        } else {
-            fill_progress_circle(1);
+        // Handling comments
+        if (weekNumber === 0) {
+            if (p.comments) attachComments(p);
         }
 
-        // Handling comments
-        if (weekNumber === 0 && p.comments) displayContents(new Date("Wed Apr 05 2017 0:0:1 GMT+0900 (KST)"), new Date("Mon Apr 17 2017 23:59:21 GMT+0900 (KST)"), p);
-        else fetchContents();
+        fetchContents();
 
         var bldgRef = firebase.database().ref('bldg/' + p.bldg);
         bldgRef.once("value").then(function(snapshot) {
@@ -150,16 +138,37 @@ function fetchPetiton(inReceiving) {
 }
 
 function fetchContents() {
-    //TODO
-    var campaign_contentRef = firebase.database().ref(['campaign-content', petitionID, getCurrentWeek(), ""].join("/"));
+    var campaign_contentRef = firebase.database().ref(['campaign-content', petitionID, weekNumber === false ? getCurrentWeek() : weekNumber, ""].join("/"));
     campaign_contentRef.once("value").then(function(snapshot) {
         getDateRangebyWeek(displayContents, snapshot.val());
     });
 
 }
 
-function displayContents(inStart, inEnd, inComment) {
+function displayContents(inStart, inEnd, inContent) {
+    /* Progress */
+    if (inContent && inContent.respond) {
+        fill_progress_circle(3);
+        $("#current-progress").text("정보통신팀 답변 도착");
+
+        displayRespond(inContent.respond);
+    } else if (inContent && inContent.sent) { // If it's sent to school
+        fill_progress_circle(2);
+        $("#current-progress").text("정보통신팀에 전송");
+
+        $('.opened-case').hide();
+    } else {
+        fill_progress_circle(1);
+    }
+
     /* Comments */
+    attachComments(inContent);
+
+    /* Feedback */
+    attachFeedback(inContent);
+}
+
+function attachComments(inComment) {
     var cnt = 0;
     for (var c in inComment.comments) {
         var email = inComment.comments[c].email ? inComment.comments[c].email.substring(0, 3) : "***";
@@ -168,11 +177,23 @@ function displayContents(inStart, inEnd, inComment) {
             $("#accepted-comments").prepend('<div class="alert alert-success" role="alert"><strong><i class="fa fa-check-square-o" aria-hidden="true"></i></strong>' + email + "** : " + inComment.comments[c].content + '</div>');
         } else {
             if (cnt++ == 3) continue; // show upto three comments
-            $('.comments').prepend('<li><i class="fa fa-user" aria-hidden="true"></i> ' + email + "** : " + inComment.comments[c].content + ' (' + (new Date(c)) + ')</li>');
+            $('.claim .comments').prepend('<li><i class="fa fa-user" aria-hidden="true"></i> ' + email + "** : " + inComment.comments[c].content + ' (' + (new Date(c)) + ')</li>');
         }
     }
+}
 
-    /* Feedback */
+function attachFeedback(inComment) {
+    var cnt = 0;
+    for (var c in inComment.feedback) {
+        var email = inComment.feedback[c].email ? inComment.feedback[c].email.substring(0, 3) : "***";
+        if (inComment.feedback[c].accepted) {
+            $('#content').text("");
+            $("#accepted-comments").prepend('<div class="alert alert-success" role="alert"><strong><i class="fa fa-check-square-o" aria-hidden="true"></i></strong>' + email + "** : " + inComment.feedback[c].content + '</div>');
+        } else {
+            if (cnt++ == 3) continue; // show upto three comments
+            $('#like .comments').prepend('<li><i class="fa fa-user" aria-hidden="true"></i> ' + email + "** : " + inComment.feedback[c].content + ' (' + (new Date(c)) + ')</li>');
+        }
+    }
 }
 
 function displayRespond(inResponse) {
@@ -265,7 +286,7 @@ function getSignature(inStart, inEnd, inBldgIdx, inCulmutative) {
     // }
 }
 
-function postComment(inPost) {
+function postComment(inPost, isLike) {
     // Check whether the user is authenticated
     var user = firebase.auth().currentUser;
 
@@ -273,7 +294,7 @@ function postComment(inPost) {
     if (user) {
         var now = new Date().toISOString().split(".")[0];
 
-        var pRef = firebase.database().ref(["campaign-content", petitionID, getCurrentWeek(), "comments", now].join("/"));
+        var pRef = firebase.database().ref(["campaign-content", petitionID, weekNumber === false ? getCurrentWeek() : weekNumber, isLike ? "feedback" : "comments", now].join("/"));
 
         pRef.set({
                 "email": user.email ? user.email : "******",
@@ -290,7 +311,7 @@ function postComment(inPost) {
         firebase.auth().signInAnonymously().then(function(user) {
             var now = new Date().toISOString().split(".")[0];
 
-            var pRef = firebase.database().ref(["campaign-content", petitionID, getCurrentWeek(), "comments", now].join("/"));
+            var pRef = firebase.database().ref(["campaign-content", petitionID, weekNumber === false ? getCurrentWeek() : weekNumber, isLike ? "feedback" : "comments", now].join("/"));
 
             pRef.set({
                     "email": user.email ? user.email : "******",
