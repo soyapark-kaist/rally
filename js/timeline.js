@@ -59,6 +59,19 @@ $(function() {
             $(this).parent().parent().parent().find(".comments-post").removeClass('disabled');
         }
     });
+
+
+    var totalWeek = getCurrentWeek();
+    var activeWeek = weekNumber;
+    if (weekNumber === false) activeWeek = getCurrentWeek();
+    for (var i = 0; i <= totalWeek; i++) {
+        // When it is currently selected week => active
+        if (i == activeWeek)
+            $(".breadcrumb").append(['<li class="active">', (i + 1), '주차</li>'].join(""));
+        else
+            $(".breadcrumb").append(['<li><a href="', './timeline.html?id=', petitionID, '&date=', i, '">', (i + 1), '주차</a></li>'].join(""));
+    }
+
 })
 
 function initParams() {
