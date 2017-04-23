@@ -63,7 +63,7 @@ $(function() {
 
     var totalWeek = getCurrentWeek();
     var activeWeek = weekNumber;
-    if (weekNumber === false) activeWeek = getCurrentWeek();
+    if (weekNumber === false) activeWeek = totalWeek;
     for (var i = 0; i <= totalWeek; i++) {
         // When it is currently selected week => active
         if (i == activeWeek)
@@ -165,11 +165,20 @@ function displayContents(inStart, inEnd, inContent) {
         $("#current-progress").text("정보통신팀 답변 도착");
 
         displayRespond(inContent.respond);
+        /* Feedback */
+        attachFeedback(inContent);
     } else if (inContent && inContent.sent) { // If it's sent to school
         fill_progress_circle(2);
         $("#current-progress").text("정보통신팀에 전송");
 
         $('.opened-case').hide();
+    } else if (weekNumber !== false && weekNumber < getCurrentWeek()) {
+        insert_tail_timeline_progress(2, {
+            tooltip: "참여수 부족으로 학교에 민원이 보내지지 않았습니다",
+            icon: "fa-times",
+            label: "민원폐기"
+        })
+        fill_progress_circle(2);
     } else {
         fill_progress_circle(1);
     }
@@ -177,11 +186,11 @@ function displayContents(inStart, inEnd, inContent) {
     /* Comments */
     attachComments(inContent);
 
-    /* Feedback */
-    attachFeedback(inContent);
+
 }
 
 function attachComments(inComment) {
+    if (!inComment) return;
     var cnt = 0;
     for (var c in inComment.comments) {
         var email = inComment.comments[c].email ? inComment.comments[c].email.substring(0, 3) : "***";
@@ -196,6 +205,7 @@ function attachComments(inComment) {
 }
 
 function attachFeedback(inComment) {
+    if (!inComment) return;
     var cnt = 0;
     for (var c in inComment.feedback) {
         var email = inComment.feedback[c].email ? inComment.feedback[c].email.substring(0, 3) : "***";
