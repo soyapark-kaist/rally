@@ -401,6 +401,25 @@
                 });
             }, 1000);
         })
+
+        /* @param idx int | index to insert disuse circle of timeline-progress
+           @param content obj | { tooltip, icon, label }
+           @usage
+           insert_tail_timeline_progress(2, {
+               tooltip: "참여수 부족으로 민원이 폐기되었습니다",
+               icon: "fa-times",
+               label: "민원폐기",
+           }) */
+        function insert_tail_timeline_progress(idx, content) {
+            var circle_idx = idx * 2 - 1;
+            var html_arr = '<li><span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top"'+
+                'title="'+content.tooltip+'">'+
+                '<i class="fa fa-circle fa-stack-2x"></i>'+
+                '<i class="fa '+content.icon+' fa-stack-1x fa-inverse"></i></span>'+
+                '<div>'+content.label+'</div></li>';
+            $(".timeline-progress>li:gt("+circle_idx+")").remove();
+            $(".timeline-progress").append(html_arr);
+        }
     </script>
 </body>
 

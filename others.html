@@ -34,7 +34,18 @@
             height: 400px;
             width: 100%;
         }
+        .table-arrow {
+            text-align: center;
+            position: relative;
+            top: -20px;
+        }
+        .table-arrow > i {
+            margin-left: 5px;
+            margin-right: 5px;
+            cursor: pointer;
+        }
     </style>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
 
@@ -118,16 +129,20 @@
                 <div class="col-sm-7">
                     <h4>지난 주 성공한 민원</h4>
                     <!--<p> 충분한 제보가 모인 건물의 민원은 합산되어 그 다음 주에 보내집니다 </p>-->
-                    <table class="table table-striped table-hover table-victory" style="margin-top: 15px;">
-                        <thead>
-                            <tr>
-                                <th>건물명</th>
-                                <th>참여도</th>
-                                <th style="white-space:nowrap;">진행 상태</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+                    <div id="success-history-table" class="swipable-table">
+                        <div>
+                            <table class="table table-striped table-hover table-victory" style="margin-top: 15px;">
+                                <thead>
+                                    <tr>
+                                        <th>건물명</th>
+                                        <th>참여도</th>
+                                        <th style="white-space:nowrap;">진행 상태</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -157,6 +172,30 @@
     </footer>
 
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCByCLtjJ9BAR29-HXHHDBU8DWCyyuA_CE&callback=initMap">
+    </script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js"></script>
+    <script>
+    activate_swipable_table("success-history-table");
+    function activate_swipable_table(id){
+        /* Usage
+        <div id="success-history-table" class="swipable-table">
+            <div><table>...</table></div>
+            <div><table>...</table></div>
+            <div><table>...</table></div>
+        </div>
+        <script>
+            activate_swipable_table("success-history-table");
+        */
+        var arrow = "<div id='"+id+"-arrow' class='table-arrow'></div>"
+        $("#"+id).after(arrow);
+        var option = {
+            arrows: true,
+            appendArrows: "#"+id+"-arrow",
+            prevArrow: '<i class="fa fa-arrow-circle-left fa-2x" aria-hidden="true"></i>',
+            nextArrow: '<i class="fa fa-arrow-circle-right fa-2x" aria-hidden="true"></i>',
+        };
+        $("#"+id).slick(option);
+    }
     </script>
 </body>
 
