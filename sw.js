@@ -20,7 +20,7 @@
 
 self.addEventListener('install', e => {
     e.waitUntil(
-        caches.open('rally41').then(cache => {
+        caches.open('rally42').then(cache => {
             return cache.addAll([
                     '512Mb.zip',
                     'index.html',
