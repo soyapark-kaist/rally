@@ -34,18 +34,20 @@
             height: 400px;
             width: 100%;
         }
+        
         .table-arrow {
             text-align: center;
             position: relative;
             top: -20px;
         }
-        .table-arrow > i {
+        
+        .table-arrow>i {
             margin-left: 5px;
             margin-right: 5px;
             cursor: pointer;
         }
     </style>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
 
@@ -160,7 +162,7 @@
             <ul class="footer-links right-links">
                 <li><a href="mailto:kixlab.rally@gmail.com">contact</a></li>
                 <li><a href="./privacy.html">privacy</a></li>
-                <li>ver 0.4</li>
+                <li>ver 0.43</li>
             </ul>
             <ul class="footer-links">
                 <li>© 2017 KIXLAB</li>
@@ -175,27 +177,28 @@
     </script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js"></script>
     <script>
-    activate_swipable_table("success-history-table");
-    function activate_swipable_table(id){
-        /* Usage
-        <div id="success-history-table" class="swipable-table">
-            <div><table>...</table></div>
-            <div><table>...</table></div>
-            <div><table>...</table></div>
-        </div>
-        <script>
-            activate_swipable_table("success-history-table");
-        */
-        var arrow = "<div id='"+id+"-arrow' class='table-arrow'></div>"
-        $("#"+id).after(arrow);
-        var option = {
-            arrows: true,
-            appendArrows: "#"+id+"-arrow",
-            prevArrow: '<i class="fa fa-arrow-circle-left fa-2x" aria-hidden="true"></i>',
-            nextArrow: '<i class="fa fa-arrow-circle-right fa-2x" aria-hidden="true"></i>',
-        };
-        $("#"+id).slick(option);
-    }
+        activate_swipable_table("success-history-table");
+
+        function activate_swipable_table(id) {
+            /* Usage
+            <div id="success-history-table" class="swipable-table">
+                <div><table>...</table></div>
+                <div><table>...</table></div>
+                <div><table>...</table></div>
+            </div>
+            <script>
+                activate_swipable_table("success-history-table");
+            */
+            var arrow = "<div id='" + id + "-arrow' class='table-arrow'></div>"
+            $("#" + id).after(arrow);
+            var option = {
+                arrows: true,
+                appendArrows: "#" + id + "-arrow",
+                prevArrow: '<i class="fa fa-arrow-circle-left fa-2x" aria-hidden="true"></i>',
+                nextArrow: '<i class="fa fa-arrow-circle-right fa-2x" aria-hidden="true"></i>',
+            };
+            $("#" + id).slick(option);
+        }
     </script>
 </body>
 
