@@ -416,6 +416,7 @@
                 '<div>' + content.label + '</div></li>';
             $(".timeline-progress>li:gt(" + circle_idx + ")").remove();
             $(".timeline-progress").append(html_arr);
+            $('[data-toggle="tooltip"]').tooltip();
         }
     </script>
 </body>
