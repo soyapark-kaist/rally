@@ -52,10 +52,11 @@ function initVis() {
         var timeDiff = Math.abs(new Date().getTime() - targetDate.getTime());
         var diffWeek = Math.floor(Math.ceil(timeDiff / (1000 * 3600 * 24)) / 7) - 1;
         // alert(diffWeek);
+        diffWeek = 0;
 
         for (var v in vic) {
             $('.table-victory tbody').append(
-                '<tr onclick="window.document.location=\'./timeline.html?date=' + diffWeek + '&id=' + v + '\';">\
+                '<tr onclick="handleOutboundLinkClicks(this)" href="./timeline.html?date=' + diffWeek + '&id=' + v + '">\
                     <td>' + vic[v].name + '</td>\
                     <td>' + vic[v].cnt + ' 명' + '</td>\
                     <td>' + (vic[v].received ? "정보통신팀에서 답변 도착" : "답변 대기 중") + '</td>\
@@ -63,6 +64,15 @@ function initVis() {
         }
     })
 
+}
+
+function handleOutboundLinkClicks(event) {
+    ga('send', 'event', 'ranking_board', 'click', event.getAttribute("href"), {
+        'transport': 'beacon',
+        'hitCallback': function() {
+            document.location = event.getAttribute("href");
+        }
+    });
 }
 
 function markBldg(inDateIndex, inDateRange) {

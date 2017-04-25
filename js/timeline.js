@@ -75,10 +75,10 @@ $(function() {
 })
 
 function handleOutboundLinkClicks(event) {
-    ga('send', 'event', 'previous_week', 'click', event.target.href, {
+    ga('send', 'event', 'previous_week', 'click', event.getAttribute("href"), {
         'transport': 'beacon',
         'hitCallback': function() {
-            document.location = event.target.href;
+            document.location = event.getAttribute("href");
         }
     });
 }
