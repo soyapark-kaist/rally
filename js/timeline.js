@@ -69,10 +69,21 @@ $(function() {
         if (i == activeWeek)
             $(".breadcrumb").append(['<li class="active">', (i + 1), '주차</li>'].join(""));
         else
-            $(".breadcrumb").append(['<li><a href="', './timeline.html?id=', petitionID, '&date=', i, '">', (i + 1), '주차</a></li>'].join(""));
+            $(".breadcrumb").append(['<li><a onclick="handleOutboundLinkClicks(this)" href="', './timeline.html?id=', petitionID, '&date=', i, '">', (i + 1), '주차</a></li>'].join(""));
     }
 
 })
+
+function handleOutboundLinkClicks(event) {
+    ga('send', 'event', 'previous_week', 'click', event.getAttribute("href"), {
+        'transport': 'beacon',
+        'hitCallback': function() {
+            document.location = event.getAttribute("href");
+        }
+    });
+}
+
+
 
 function initParams() {
     var params = window.location.search.substring(1).split("&");
