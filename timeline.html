@@ -367,7 +367,7 @@
             );
         })
         $(".link-share").click(function() {
-            var share_url = window.location.href + "&sharing=true";
+            var share_url = remove_url_parameter(window.location.href + "&sharing=true", "date");
 
             /* iOS case (it does not support clipboard copy) */
             if (detectOS() == "ios") {
@@ -417,6 +417,23 @@
             $(".timeline-progress>li:gt(" + circle_idx + ")").remove();
             $(".timeline-progress").append(html_arr);
             $('[data-toggle="tooltip"]').tooltip();
+        }
+
+        /* Thx stackoverflow. (http://stackoverflow.com/a/1634841) */
+        function remove_url_parameter(url, parameter) {
+            var urlparts= url.split('?');
+            if (urlparts.length >= 2) {
+                var prefix= encodeURIComponent(parameter)+'=';
+                var pars= urlparts[1].split(/[&;]/g);
+                for (var i= pars.length; i-- > 0;) {
+                    if (pars[i].lastIndexOf(prefix, 0) !== -1)
+                        pars.splice(i, 1);
+                    }
+                url= urlparts[0] + (pars.length > 0 ? '?' + pars.join('&') : "");
+                return url;
+            } else {
+                return url;
+            }
         }
     </script>
 </body>
