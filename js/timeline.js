@@ -151,7 +151,7 @@ function fetchPetiton(inReceiving) {
                 getDateRangebyWeek(getSignature, BLDG_INDEX, p.culmutative ? p.culmutative : 0);
                 // getSignature(BLDG_INDEX, weekNumber, p.culmutative ? p.culmutative : 0);
             } else {
-                $("#bldgName").text("테스트");
+                $("#bldgName").text("김동관");
 
                 toggleLoading(".loading");
             }
