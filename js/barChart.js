@@ -1,18 +1,6 @@
 function drawBarChart() {
     var data = {
         labels: [
-            "21시",
-            "22시",
-            "23시",
-            "0시",
-            "1시",
-            "2시",
-            "3시",
-            "4시",
-            "5시",
-            "6시",
-            "7시",
-            "8시",
             "9시",
             "10시",
             "11시",
@@ -25,19 +13,29 @@ function drawBarChart() {
             "18시",
             "19시",
             "20시",
+            "21시",
+            "22시",
+            "23시",
+            "0시",
+            "1시",
+            "2시",
+            "3시",
+            "4시",
+            "5시",
+            "6시",
 
         ],
         series: [{
             label: '제보 갯수',
-            values: [13, 10, 25, 20, 10, 13, 5, 3, 0, 2, 0, 0, 10, 14, 21, 12, 15, 25, 12, 14, 11, 9, 10, 5]
+            values: [10, 14, 21, 12, 15, 25, 12, 14, 11, 9, 10, 5, 13, 10, 25, 20, 10, 13, 5, 3, 0, 2]
         }, ]
     };
 
     var chartWidth = 150,
         barHeight = 15,
         groupHeight = barHeight * data.series.length,
-        gapBetweenGroups = 7,
-        spaceForLabels = 40,
+        gapBetweenGroups = 2,
+        spaceForLabels = 0,
         spaceForLegend = 150;
 
     // Zip the series data together (first values, second values, etc.)
@@ -65,6 +63,7 @@ function drawBarChart() {
         .tickSize(0)
         .orient("left");
 
+
     // Specify the chart area and dimensions
     var chart = d3.select("#timeStat")
         .attr("width", spaceForLabels + chartWidth + spaceForLegend)
@@ -89,9 +88,19 @@ function drawBarChart() {
     bar.append("text")
         .attr("x", function(d) { return x(d) - 3; })
         .attr("y", barHeight / 2)
-        .attr("fill", "red")
+        .attr("fill", "white")
         .attr("dy", ".35em")
         .text(function(d) { return d; });
+
+    // Add text label next to bar
+    bar.append("text")
+        .attr("x", function(d) { return x(d) + 30; })
+        .attr("y", barHeight / 2)
+        .attr("fill", "black")
+        .attr("style", "visibility:hidden;")
+        .attr("dy", ".35em")
+        .attr("class", function(d, i) { return "tooltip" + i; })
+        .text(function(d, i) { return data["labels"][i]; });
 
     // Draw labels
     bar.append("text")
@@ -138,4 +147,9 @@ function drawBarChart() {
         .attr('x', legendRectSize + legendSpacing)
         .attr('y', legendRectSize - legendSpacing)
         .text(function(d) { return d.label; });
+
+    d3.selectAll("#timeStat rect")
+        .on("mouseover", function(d, i) { $("#timeStat .tooltip" + i).css("visibility", "visible"); })
+        .on("mouseout", function(d, i) { $("#timeStat .tooltip" + i).css("visibility", "hidden"); });
+
 }
