@@ -41,6 +41,7 @@
     <script type="text/javascript" src="js/rally.js"></script>
     <script type="text/javascript" src="js/timeline.js"></script>
     <script type="text/javascript" src="js/donutChart.js"></script>
+    <script type="text/javascript" src="js/barChart.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js', {
@@ -193,7 +194,31 @@
                     </div>
                 </div>
 
+                <div style="margin-top:30px" id="overall-stat">
+                    <div class="row">
+                        <div class="col-sm-7">
+                            <p>아, 쫌 런칭 후 총 308개의 제보가 접수되었습니다. 안정적인 인터넷은 학생들의 학습력과 직결된 문제이지만 많은 예산과 인력이 필요하다는 이유로 아직까지 학생들은 불편함을 겪고 있습니다. 운영진은 지속적으로 제보를 모아 학교에 지속적으로 변화를 촉구할 것입니다.</p>
+                            <div class="panel-body">
+                                <div class="table-responsive">
+                                    <table class="detailed-data table table-striped table-hover table-inbox">
+                                        <thead>
+                                            <tr>
+                                                <th>건물명</th>
+                                                <th>제보 갯수</th>
+                                                <th>Download 속도(Mbps)</th>
+                                                <th>Upload 속도(Mbps)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-5">
+                            <svg id="timeStat"></svg></div>
+                    </div>
 
+                </div>
 
                 <div id="timeline"></div>
 
@@ -347,7 +372,7 @@
             <ul class="footer-links right-links">
                 <li><a href="mailto:kixlab.rally@gmail.com">contact</a></li>
                 <li><a href="./privacy.html">privacy</a></li>
-                <li>ver 0.43</li>
+                <li>ver 0.44</li>
             </ul>
             <ul class="footer-links">
                 <li>© 2017 KIXLAB</li>
@@ -423,15 +448,15 @@
 
         /* Thx stackoverflow. (http://stackoverflow.com/a/1634841) */
         function remove_param(url, parameter) {
-            var urlparts= url.split('?');
+            var urlparts = url.split('?');
             if (urlparts.length >= 2) {
-                var prefix= encodeURIComponent(parameter)+'=';
-                var pars= urlparts[1].split(/[&;]/g);
-                for (var i= pars.length; i-- > 0;) {
+                var prefix = encodeURIComponent(parameter) + '=';
+                var pars = urlparts[1].split(/[&;]/g);
+                for (var i = pars.length; i-- > 0;) {
                     if (pars[i].lastIndexOf(prefix, 0) !== -1)
                         pars.splice(i, 1);
-                    }
-                url= urlparts[0] + (pars.length > 0 ? '?' + pars.join('&') : "");
+                }
+                url = urlparts[0] + (pars.length > 0 ? '?' + pars.join('&') : "");
                 return url;
             } else {
                 return url;
@@ -439,14 +464,14 @@
         }
 
         /* http://stackoverflow.com/a/20420424 */
-        function add_or_replace_param(url, paramName, paramValue){
-            if(paramValue == null)
+        function add_or_replace_param(url, paramName, paramValue) {
+            if (paramValue == null)
                 paramValue = '';
-            var pattern = new RegExp('\\b('+paramName+'=).*?(&|$)')
-            if(url.search(pattern)>=0){
-                return url.replace(pattern,'$1' + paramValue + '$2');
+            var pattern = new RegExp('\\b(' + paramName + '=).*?(&|$)')
+            if (url.search(pattern) >= 0) {
+                return url.replace(pattern, '$1' + paramValue + '$2');
             }
-            return url + (url.indexOf('?')>0 ? '&' : '?') + paramName + '=' + paramValue
+            return url + (url.indexOf('?') > 0 ? '&' : '?') + paramName + '=' + paramValue
         }
     </script>
 </body>

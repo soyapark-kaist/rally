@@ -64,7 +64,7 @@
     width: 100%;
 }
 
-#ios-prompt-modal > .modal-dialog {
+#ios-prompt-modal>.modal-dialog {
     top: 200px;
 }
 
@@ -72,4 +72,37 @@
     position: relative;
     top: -10px;
     margin-left: 10px;
+}
+
+
+/* bar chart */
+
+#timeStat .legend {
+    fill: black;
+    font: 14px sans-serif;
+    text-anchor: start;
+    font-size: 12px;
+}
+
+#timeStat text {
+    fill: white;
+    font: 10px sans-serif;
+    text-anchor: end;
+}
+
+#timeStat .label {
+    fill: black;
+    font: 14px sans-serif;
+    text-anchor: end;
+}
+
+.bar:hover {
+    fill: brown;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
 }
