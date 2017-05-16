@@ -70,7 +70,7 @@
 //     );
 // });
 
-var CACHE_VERSION = 5;
+var CACHE_VERSION = 6;
 var CURRENT_CACHES = {
     prefetch: 'prefetch-cache-v' + CACHE_VERSION
 };
@@ -90,6 +90,7 @@ self.addEventListener('install', function(event) {
         'js/bootstrap.min.js',
         'js/rally.js',
         'js/collect.js',
+        'js/barChart.js',
         'js/donutChart.js',
         'js/login.js',
         'js/petition.js',
