@@ -17,6 +17,50 @@ $(function() {
 
     fetchPetiton();
 
+    // tooltip init
+    $('[data-toggle="tooltip"]').tooltip();
+
+    // fb share button listener
+    $(".fb-share").click(function() {
+        window.open(
+            "http://www.facebook.com/sharer/sharer.php?u=" + window.location.href + "&sharing=true"
+        );
+    })
+    $(".link-share").click(function() {
+        var share_url = window.location.href;
+        share_url = add_or_replace_param(share_url, "sharing", "true");
+        share_url = remove_param(share_url, "date");
+
+        /* iOS case (it does not support clipboard copy) */
+        if (detectOS() == "ios") {
+            $("#ios-url").val(share_url);
+            $('#ios-prompt-modal').modal();
+            setTimeout(function() {
+                $("#ios-url").select();
+            }, 500);
+            return;
+        }
+
+        var $temp = $("<input>");
+        $("body").append($temp);
+        $temp.val(share_url).select();
+        document.execCommand("copy");
+        $temp.remove();
+        var alert = '<div id="clip-alert" class="alert alert-warning alert-dismissible ' +
+            'col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-xs-10 col-xs-offset-1" role="alert">' +
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+            '<span aria-hidden="true">&times;</span>' +
+            '</button>클립보드에 복사되었습니다</div>'
+        var a_div = document.createElement("div");
+        a_div.innerHTML = alert;
+        $("body").append(a_div);
+        setTimeout(function() {
+            $("#clip-alert").fadeOut("normal", function() {
+                $(this).remove();
+            });
+        }, 1000);
+    })
+
     // comment event handler
     $('.comments-post').click(function() {
         var cnt = 0;
@@ -193,30 +237,6 @@ function displayContents(inStart, inEnd, inContent) {
     } else {
         fill_progress_circle(1);
     }
-
-    var aver_bandwidth = [
-        ["세종관", 61, 15.9, 13.6, "wGcNI2L"],
-        ["희망관", 41, 34.3, 50.9, "9BaU2z5"],
-        ["아름관", 26, 39.0, 45.8, "Q0b0V2W"],
-        ["갈릴레이관", 14, 12.4, 15.7, "imZl4og"],
-        ["미르관", 13, 12.8, 6.2, "LLJqfXf"]
-    ];
-
-    /* Overall stat */
-    for (var b in aver_bandwidth) {
-        var item = aver_bandwidth[b];
-
-        $("#overall-stat tbody").append(
-            '<tr onclick="handleOutboundLinkClicks(this)" href="./timeline.html?id=' + item[4] + '"' + '>\
-            <td>' + item[0] + '</td>\
-            <td>' + item[1] + '</td>\
-            <td>' + item[2] + '</td>\
-            <td>' + item[3] + '</td>\
-          </tr>'
-        );
-    }
-
-    drawBarChart();
 
 
     /* Comments */
@@ -467,4 +487,52 @@ function displayLegend(selector, legendEmt) {
         legend.append(div);
     }
     chart.append(legend);
+}
+
+/* @param idx int | index to insert disuse circle of timeline-progress
+   @param content obj | { tooltip, icon, label }
+   @usage
+   insert_tail_timeline_progress(2, {
+       tooltip: "참여수 부족으로 민원이 폐기되었습니다",
+       icon: "fa-times",
+       label: "민원폐기",
+   }) */
+function insert_tail_timeline_progress(idx, content) {
+    var circle_idx = idx * 2 - 1;
+    var html_arr = '<li><span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top"' +
+        'title="' + content.tooltip + '">' +
+        '<i class="fa fa-circle fa-stack-2x"></i>' +
+        '<i class="fa ' + content.icon + ' fa-stack-1x fa-inverse"></i></span>' +
+        '<div>' + content.label + '</div></li>';
+    $(".timeline-progress>li:gt(" + circle_idx + ")").remove();
+    $(".timeline-progress").append(html_arr);
+    $('[data-toggle="tooltip"]').tooltip();
+}
+
+/* Thx stackoverflow. (http://stackoverflow.com/a/1634841) */
+function remove_param(url, parameter) {
+    var urlparts = url.split('?');
+    if (urlparts.length >= 2) {
+        var prefix = encodeURIComponent(parameter) + '=';
+        var pars = urlparts[1].split(/[&;]/g);
+        for (var i = pars.length; i-- > 0;) {
+            if (pars[i].lastIndexOf(prefix, 0) !== -1)
+                pars.splice(i, 1);
+        }
+        url = urlparts[0] + (pars.length > 0 ? '?' + pars.join('&') : "");
+        return url;
+    } else {
+        return url;
+    }
+}
+
+/* http://stackoverflow.com/a/20420424 */
+function add_or_replace_param(url, paramName, paramValue) {
+    if (paramValue == null)
+        paramValue = '';
+    var pattern = new RegExp('\\b(' + paramName + '=).*?(&|$)')
+    if (url.search(pattern) >= 0) {
+        return url.replace(pattern, '$1' + paramValue + '$2');
+    }
+    return url + (url.indexOf('?') > 0 ? '&' : '?') + paramName + '=' + paramValue
 }
