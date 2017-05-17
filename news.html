@@ -41,6 +41,7 @@
     <script type="text/javascript" src="js/rally.js"></script>
     <script type="text/javascript" src="js/donutChart.js"></script>
     <script type="text/javascript" src="js/barChart.js"></script>
+    <script type="text/javascript" src="js/news.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js', {
@@ -99,65 +100,50 @@
             <div class="post">
                 <ul class="timeline-progress">
                     <li>
-                        <a href="#overall-stat">
+                        <a href="#">
                             <span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="제보 작성">
                             <i class="fa fa-circle fa-stack-2x"></i>
                             <i class="fa fa-pencil-square-o fa-stack-1x fa-inverse"></i>
                         </span>
-                            <div>제보 작성</div>
+                            <div>4/4 릴리즈</div>
                         </a>
                     </li>
-                    <li><i class="fa fa-chevron-right" aria-hidden="true"></i></li>
+                    <!--<li><i class="fa fa-chevron-right" aria-hidden="true"></i></li>
                     <li>
                         <span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="우리 건물에 충분한 제보가 쌓이면 개선을 요구하기 위해 정보통신팀에 민원이 보내집니다.">
                             <i class="fa fa-circle fa-stack-2x"></i>
                             <i class="fa fa-bar-chart fa-stack-1x fa-inverse"></i>
                         </span>
                         <div>민원 준비중</div>
-                    </li>
+                    </li>-->
                     <li><i class="fa fa-chevron-right" aria-hidden="true"></i></li>
                     <li>
-                        <span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="정보통신팀 전송">
+                        <a href="#stat">
+                            <span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="정보통신팀 전송">
                             <i class="fa fa-circle fa-stack-2x"></i>
                             <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
                         </span>
-                        <div>학교에 전송</div>
+                            <div>4/18 학교에 전송</div>
+                        </a>
                     </li>
                     <li><i class="fa fa-chevron-right" aria-hidden="true"></i></li>
                     <li>
-                        <span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="정보통신팀에서 민원에 대한 답변을 했습니다">
+                        <a href="#response">
+                            <span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="정보통신팀에서 민원에 대한 답변을 했습니다">
                             <i class="fa fa-circle fa-stack-2x"></i>
                             <i class="fa fa-reply fa-stack-1x fa-inverse"></i>
                         </span>
-                        <div>답변</div>
+                            <div>학교에서 답변</div>
+                        </a>
                     </li>
                 </ul>
 
                 <div class="loading"></div>
 
-                <div class="page-header">
-                    <h2>
-                        <i class="fa fa-building-o fa-2x" aria-hidden="true"></i> <span id="bldgName"></span>
-                    </h2>
-                    <ol class="breadcrumb">
-                        <li>이 건물의 지난 민원보기: </li>
-                    </ol>
-                </div>
-
-                <div id="sharing-intro" class="row participate-row">
-                    <p>[아, 쫌!]은 학생들이 자발적으로 제보한 데이터를 모아 인터넷을 개선하기 위해 학교에 민원의 형태로 학교에 전송합니다. 인터넷이 느릴 때, 카대전 글 작성/사감 선생님께 문의 하는 대신에 [아, 쫌!]의 쉽고 빠른(1분) 인터페이스를 통해 불편함을 제보하고 친구들을 모아 의견에 힘을 모아보세요.</p>
-                    <h4 style="margin-top: 30px;">문제에 공감하시나요? 1분을 투자해 이 캠페인에 힘을 실어주세요!</h4>
-                    <div style="text-align:center; margin-top:20px;">
-                        <a id="participate" href="./collect.html" onclick="trackOutboundLink('./collect.html','participate'); return false;" class="btn btn-success btn-lg">동참하기</a>
-                    </div>
-                </div>
 
                 <div class="alert alert-info" role="alert" id="respond">
                     <strong><i class="fa fa-check-square-o" aria-hidden="true"></i>정보통신팀 답변</strong><br><span class="respond-text">여기에 답변</span><br>
-                    <ul class="nav nav-pills nav-justified">
-                        <li role="presentation"><a data-toggle="pill" href="#like"><i class="fa fa-thumbs-o-up fa-4x" aria-hidden="true"></i><span class="answer-text">수고하셨습니다!</span></a></li>
-                        <li role="presentation"><a data-toggle="pill" href="#dislike"><i class="fa fa-thumbs-o-down fa-4x" aria-hidden="true"></i><span class="answer-text">아직도 느려요</span></a></li>
-                    </ul>
+
 
                     <!--<div class="row" style="margin-top: 10px;">
                         <div class="col-xs-6" style="text-align: center;">
@@ -169,40 +155,86 @@
                     </div>-->
                 </div>
 
-                <div class="tab-content">
-                    <div id="like" class="tab-pane fade">
-                        <h3>정보통신팀에 감사 메세지 보내기</h3>
-                        <div>
-                            <form style="margin-top: 30px;">
-                                <div class="form-group">
-                                    <textarea class="form-control status-box" rows="2" placeholder="감사합니다! 인터넷이 빨라졌어요"></textarea>
-                                </div>
-                            </form>
-                            <div class="button-group pull-right">
-                                <p class="counter">140</p>
-                                <a class="btn btn-primary comments-post like-comment disabled">Post</a>
-                            </div>
 
-                            <ul class="comments">
-                            </ul>
+                <!-- Response from school -->
+                <div class="post">
+                    <h2 class="page-header" id="response">
+                        <a href="#response" data-anchorjs-icon=""></a>학교에서 답변 도착</h2>
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta.
+                        Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque
+                        nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula
+                        lacinia aliquet. Mauris ipsum. Nulla metus metus, ullamcorper vel, tincidunt sed, euismod in, nibh. Quisque volutpat condimentum velit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
+                        Nam nec ante. Sed lacinia, urna non tincidunt mattis, tortor neque adipiscing diam, a cursus ipsum ante quis turpis. Nulla facilisi. Ut fringilla. Suspendisse potenti. Nunc feugiat mi a tellus consequat imperdiet. Vestibulum sapien.
+                        Proin quam. Etiam ultrices. Suspendisse in justo eu magna luctus suscipit. Sed lectus. Integer euismod lacus luctus magna. Quisque cursus, metus vitae pharetra auctor, sem massa mattis sem, at interdum magna augue eget diam. Vestibulum
+                        ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Morbi lacinia molestie dui. Praesent blandit dolor. Sed non quam. In vel mi sit amet augue congue elementum. Morbi in ipsum sit amet pede facilisis laoreet.
+                        Donec lacus nunc, viverra nec, blandit vel, egestas et, augue. Vestibulum tincidunt malesuada tellus. Ut ultrices ultrices enim. Curabitur sit amet mauris. Morbi in dui quis est pulvinar ullamcorper. Nulla facilisi. Integer lacinia
+                        sollicitudin massa. Cras metus. Sed aliquet risus a tortor. Integer id quam. Morbi mi. Quisque nisl felis, venenatis tristique, dignissim in, ultrices sit amet, augue. Proin sodales libero eget ante. Nulla quam. Aenean laoreet.
+                        Vestibulum nisi lectus, commodo ac, facilisis ac, ultricies eu, pede. Ut orci risus, accumsan porttitor, cursus quis, aliquet eget, justo. Sed pretium blandit orci. Ut eu diam at pede suscipit sodales. Aenean lectus elit, fermentum
+                        non, convallis id, sagittis at, neque.
+
+                        <h3>
+                            <i class="fa fa-building-o fa-2x" aria-hidden="true"></i> 세종관
+                        </h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus
+                            sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia
+                            nunc. Curabitur tortor. Pellentesque nibh.
+                        </p>
+
+                        <h3>
+                            <i class="fa fa-building-o fa-2x" aria-hidden="true"></i> 희망관
+                        </h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus
+                            sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia
+                            nunc. Curabitur tortor. Pellentesque nibh.
+                        </p>
+
+
+                        <ul class="nav nav-pills nav-justified">
+                            <li role="presentation"><a data-toggle="pill" href="#like"><i class="fa fa-thumbs-o-up fa-4x" aria-hidden="true"></i><span class="answer-text">수고하셨습니다!</span></a></li>
+                            <li role="presentation"><a data-toggle="pill" href="#dislike"><i class="fa fa-thumbs-o-down fa-4x" aria-hidden="true"></i><span class="answer-text">아직도 느려요</span></a></li>
+                        </ul>
+                    </p>
+
+                    <div class="tab-content">
+                        <div id="like" class="tab-pane fade">
+                            <h3>정보통신팀에 감사 메세지 보내기</h3>
+                            <div>
+                                <form style="margin-top: 30px;">
+                                    <div class="form-group">
+                                        <textarea class="form-control status-box" rows="2" placeholder="감사합니다! 인터넷이 빨라졌어요"></textarea>
+                                    </div>
+                                </form>
+                                <div class="button-group pull-right">
+                                    <p class="counter">140</p>
+                                    <a class="btn btn-primary comments-post like-comment disabled">Post</a>
+                                </div>
+
+                                <ul class="comments">
+                                </ul>
+                            </div>
                         </div>
-                    </div>
-                    <div id="dislike" class="tab-pane fade">
-                        <h3>이번 주 민원에 참여하기</h3>
-                        <div style="text-align:center; margin-top:20px;margin-bottom:20px;">
-                            <a href="./collect.html" onclick="trackOutboundLink('./collect.html','participate'); return false;" class="btn btn-success btn-lg">동참하기</a>
+                        <div id="dislike" class="tab-pane fade">
+                            <h3>이번 주 민원에 참여하기</h3>
+                            <div style="text-align:center; margin-top:20px;margin-bottom:20px;">
+                                <a href="./collect.html" onclick="trackOutboundLink('./collect.html','participate'); return false;" class="btn btn-success btn-lg">동참하기</a>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <!-- END Response from school -->
 
                 <!-- Statistics overview-->
-                <div style="margin-top:30px" id="overall-stat">
+                <div class="post">
+                    <h2 class="page-header" id="stat">
+                        <a href="#stat" data-anchorjs-icon=""></a>학교에 전송</h2>
+
                     <div class="row">
                         <div class="col-sm-8">
                             <p>아, 쫌 런칭 후 총 308개의 제보가 접수(5/12기준)되었습니다. 안정적인 인터넷은 학생들의 학습력과 직결된 문제이지만 많은 예산과 인력이 필요하다는 이유로 아직까지 학생들은 불편함을 겪고 있습니다. 운영진은 제보를 계속 모아 학교에 지속적으로 변화를 촉구할 것입니다.</p>
                             <div class="panel-body">
                                 <div class="table-responsive">
-                                    <table class="detailed-data table table-striped table-hover table-inbox">
+                                    <table class="overall-stat detailed-data table table-striped table-hover table-inbox">
                                         <thead>
                                             <tr>
                                                 <th>건물명</th>
@@ -219,6 +251,15 @@
                         <div class="col-sm-4">
                             <svg id="timeStat"></svg></div>
                     </div>
+                </div>
+                <!-- END Statistics overview-->
+
+                <!-- Statistics overview-->
+                <div class="post">
+                    <h2 class="page-header" id="launch">
+                        <a href="#launch" data-anchorjs-icon=""></a>아,쫌 런칭</h2>
+
+                    <p>4월 4일, 총학생회와 정보통신팀과의 긴 협력끝에 드디어 아,쫌이 세상에 알려졌습니다! 학교는 중복되고 산발된 제보에 집행력을 집중하지 못합니다. 정리되지 않은 정보로 문제 원인을 정확히 찾아내지 못합니다. 아,쫌은 짧은 시간에 인터넷 문제의 불편함을 제보 할 수 있게 하고 이를 학교함으로써 학교에 인터넷 문제 해결을 지속적으로 요청할 것입니다. </p>
                 </div>
                 <!-- END Statistics overview-->
 
