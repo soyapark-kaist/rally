@@ -1,0 +1,16 @@
+body {
+    position: relative;
+}
+
+ul {
+    background: white;
+}
+
+.timeline-progress {
+    position: fixed;
+    z-index: 99;
+}
+
+.timeline-progress .active .fa-circle {
+    color: orange;
+}

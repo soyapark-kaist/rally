@@ -1,4 +1,6 @@
 $(function() {
+    $('body').scrollspy({ target: ".timeline-progress" });
+
     var aver_bandwidth = [
         ["세종관", 61, 15.9, 13.6, "wGcNI2L"],
         ["희망관", 41, 34.3, 50.9, "9BaU2z5"],
@@ -20,6 +22,16 @@ $(function() {
           </tr>'
         );
     }
+
+    $('[data-spy="scroll"]').each(function() {
+        var $spy = $(this).scrollspy('refresh')
+            // alert();
+    })
+
+    $('body').on('activate.bs.scrollspy', function() {
+        // do something…
+        // console.log("test");
+    })
 
     drawBarChart();
 });
