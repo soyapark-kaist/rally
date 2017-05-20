@@ -1,3 +1,9 @@
+$(window).scroll(()=>{
+    var scroll = $(window).scrollTop();
+    var padding = scroll > 30 ? 0 : 30 - scroll;
+    $(".timeline-progress ul").css("padding-top", padding);
+})
+
 $(function() {
     $('body').scrollspy({ target: ".timeline-progress", offset: 200 });
 
