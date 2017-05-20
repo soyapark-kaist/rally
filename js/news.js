@@ -39,3 +39,12 @@ $(function() {
 
     drawBarChart();
 });
+
+function handleOutboundLinkClicks(event) {
+    ga('send', 'event', 'news', 'click', event.getAttribute("href"), {
+        'transport': 'beacon',
+        'hitCallback': function() {
+            document.location = event.getAttribute("href");
+        }
+    });
+}
