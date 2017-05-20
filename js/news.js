@@ -1,5 +1,9 @@
 $(function() {
-    $('body').scrollspy({ target: ".timeline-progress" });
+    $('body').scrollspy({ target: ".timeline-progress", offset: 200 });
+
+    // $('.timeline-progress').scrollspy({
+    //     offset: 500
+    // });
 
     var aver_bandwidth = [
         ["세종관", 61, 15.9, 13.6, "wGcNI2L"],
