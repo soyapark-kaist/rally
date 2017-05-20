@@ -7,9 +7,15 @@ ul {
 }
 
 .timeline-progress {
-    top: 0px;
+    /*top: 0px;*/
     position: fixed;
     z-index: 99;
+}
+
+.timeline-progress ul {
+    background: white;
+    padding-top: 50px;
+    top: 0px;
 }
 
 .timeline-progress .active .fa-circle {
