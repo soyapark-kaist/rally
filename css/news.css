@@ -24,3 +24,7 @@ ul {
 .timeline-progress .active .fa-circle {
     color: orange;
 }
+
+.nav > li > a {
+    padding: 10px 5px;
+}
