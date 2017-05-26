@@ -28,3 +28,20 @@ ul {
 .nav > li > a {
     padding: 10px 5px;
 }
+
+.media-body .fa+.fa {
+    margin-left: 20px;
+}
+
+.media-body .fa {
+    cursor: pointer;
+    color: #BDBDBD;
+}
+
+.media-body .fa-reply:hover {
+    color: #17BF63;
+}
+
+.media-body .fa-heart:hover {
+    color: #E85F37;
+}
