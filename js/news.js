@@ -1,10 +1,12 @@
-$(window).scroll(function(){
+$(window).scroll(function() {
     var scroll = $(window).scrollTop();
     var padding = scroll > 30 ? 0 : 30 - scroll;
     $(".timeline-progress ul").css("padding-top", padding);
 })
 
 $(function() {
+    initDB();
+
     $('body').scrollspy({ target: ".timeline-progress", offset: 200 });
 
     // $('.timeline-progress').scrollspy({
@@ -45,6 +47,13 @@ $(function() {
 
     drawBarChart();
 });
+
+function fetchComments() {
+    var commentsRef = firebase.database().ref('news/comments');
+    commentsRef.once("value").then(function(snapshot) {
+        var b = snapshot.val(); // data is here
+    });
+}
 
 function handleOutboundLinkClicks(event) {
     ga('send', 'event', 'news', 'click', event.getAttribute("href"), {
