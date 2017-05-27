@@ -66,8 +66,32 @@ function handleOutboundLinkClicks(event) {
 }
 
 $(document).ready(function(){
+    /* Build nested-comment */
     fetchComments();
+
+    /* Bind reply event */
+    $("body").on("click", ".fa-reply", function(){
+        add_reply(this)
+    });
 })
+
+function add_reply(clicked_reply) {
+    $("#like").remove();
+    $media_body = $(clicked_reply).parent();
+    var reply_html =
+    '<div id="like">'+
+        '<form style="margin-top: 10px;">'+
+            '<div class="form-group">'+
+                '<textarea class="form-control status-box" rows="2"></textarea>'+
+            '</div>'+
+        '</form>'+
+        '<div class="button-group" style="text-align:right">'+
+            '<p class="counter">140</p>'+
+            '<a class="btn btn-primary comments-post like-comment disabled">Post</a>'+
+        '</div>'+
+    '</div>';
+    $media_body.append($(reply_html));
+}
 
 /* @param {string} nc_id - id of root node. must be <ul>
 @param {object} news_json - object from database
