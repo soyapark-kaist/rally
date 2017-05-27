@@ -51,7 +51,8 @@ $(function() {
 function fetchComments() {
     var commentsRef = firebase.database().ref('news/comments');
     commentsRef.once("value").then(function(snapshot) {
-        var b = snapshot.val(); // data is here
+        var news_json = snapshot.val(); // data is here
+        append_nested_comment("nested-comment", news_json);
     });
 }
 
@@ -65,41 +66,7 @@ function handleOutboundLinkClicks(event) {
 }
 
 $(document).ready(function(){
-    /* Test json
-    Delete after backend implementation*/
-    var json = {
-        "news" : {
-            "comments" : {
-                "xoSjg9ZK" : {
-                    "comments" : {
-                        "8bRo3lz3" : {
-                            "email": "2id@",
-                            "content" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua",
-                            "dislike" : 0,
-                            "like" : 1,
-                            "time" : "2017-04-29T16:08:28",
-                            "type" : 1
-                        },
-                        "fbRo3lz3" : {
-                            "email": "3id@",
-                            "content" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua",
-                            "dislike" : 0,
-                            "like" : 1,
-                            "time" : "2017-04-30T16:08:28",
-                            "type" : 2
-                        }
-                    },
-                    "email": "1id@",
-                    "content" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua",
-                    "dislike" : 1,
-                    "like" : 2,
-                    "time" : "2017-04-27T16:08:28",
-                    "type" : 0
-                }
-            }
-        },
-    }
-    append_nested_comment("nested-comment", json.news);
+    fetchComments();
 })
 
 /* @param {string} nc_id - id of root node. must be <ul>
