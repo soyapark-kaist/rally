@@ -1,10 +1,12 @@
-$(window).scroll(function(){
+$(window).scroll(function() {
     var scroll = $(window).scrollTop();
     var padding = scroll > 30 ? 0 : 30 - scroll;
     $(".timeline-progress ul").css("padding-top", padding);
 })
 
 $(function() {
+    initDB();
+
     $('body').scrollspy({ target: ".timeline-progress", offset: 200 });
 
     // $('.timeline-progress').scrollspy({
@@ -46,6 +48,14 @@ $(function() {
     drawBarChart();
 });
 
+function fetchComments() {
+    var commentsRef = firebase.database().ref('news/comments');
+    commentsRef.once("value").then(function(snapshot) {
+        var news_json = snapshot.val(); // data is here
+        append_nested_comment("nested-comment", news_json);
+    });
+}
+
 function handleOutboundLinkClicks(event) {
     ga('send', 'event', 'news', 'click', event.getAttribute("href"), {
         'transport': 'beacon',
@@ -53,4 +63,107 @@ function handleOutboundLinkClicks(event) {
             document.location = event.getAttribute("href");
         }
     });
+}
+
+$(document).ready(function(){
+    /* Build nested-comment */
+    fetchComments();
+
+    /* Bind reply event */
+    $("body").on("click", ".fa-reply", function(){
+        add_reply(this)
+    });
+})
+
+function add_reply(clicked_reply) {
+    $("#like").remove();
+    $media_body = $(clicked_reply).parent();
+    var reply_html =
+    '<div id="like">'+
+        '<form style="margin-top: 10px;">'+
+            '<div class="form-group">'+
+                '<textarea class="form-control status-box" rows="2"></textarea>'+
+            '</div>'+
+        '</form>'+
+        '<div class="button-group" style="text-align:right">'+
+            '<p class="counter">140</p>'+
+            '<a class="btn btn-primary comments-post like-comment disabled">Post</a>'+
+        '</div>'+
+    '</div>';
+    $media_body.append($(reply_html));
+}
+
+/* @param {string} nc_id - id of root node. must be <ul>
+@param {object} news_json - object from database
+Traverse news_json and append recursively comments
+which has "content" key */
+function append_nested_comment (nc_id, news_json) {
+    /* deep copy */
+    var c_news_json = $.extend(true, {}, news_json);
+    /* traversal */
+    for (var key in c_news_json) {
+        /* if is_comment: append comment */
+        if(is_key(c_news_json[key], "content")) {
+            append_comment_html(nc_id, key, c_news_json[key]);
+        }
+        /* if is_leaf: break; */
+        if(typeof(c_news_json[key]) != "object") {
+            break;
+        }
+        /* Recursive call to child json */
+        var parent_id = (key != "comments") ? nc_id + "-" + key : nc_id;
+        append_nested_comment (parent_id, c_news_json[key])
+    }
+}
+
+function append_comment_html (parent_id, cid, news_json) {
+    var c_news_json = $.extend(true, {}, news_json);
+    var new_id = parent_id + "-" + cid;
+    delete c_news_json["comments"];
+
+    var icon = get_comment_icon(c_news_json.type);
+    var title = c_news_json.email;
+    var content = c_news_json.content;
+
+    /* Build comment html */
+    var html =
+    '<li class="media">'+
+        '<div class="media-left">'+
+            '<i class="fa fa-2x ' + icon + '" aria-hidden="true"></i>'+
+        '</div>'+
+            '<div class="media-body" id=' + new_id + '>'+
+            '<p class="media-heading">'+
+                title +
+                '<span class="comment-date"> · '+
+                    c_news_json.time.replace("T", " ")+
+                '</span>'+
+            '</p>'+
+            '<div id=' +'comment-' + new_id + '>'+
+                '<p>' + content + '</p>'+
+                '<i class="fa fa-reply" aria-hidden="true"></i>'+
+                '<i class="fa fa-chevron-up" aria-hidden="true"> ' + c_news_json.like + '</i>'+
+                '<i class="fa fa-chevron-down" aria-hidden="true"> '+ c_news_json.dislike +'</i>'+
+            '</div>'+
+        '</div>'+
+    '</li>';
+    var $html = $(html);
+
+    /* Append html */
+    $(document.getElementById(parent_id)).append($html);
+}
+
+function get_comment_icon(type) {
+    var icon;
+    if (type == 0) {
+        icon = "fa-lightbulb-o"
+    } else if (type == 1) {
+        icon = "fa-question"
+    } else {
+        icon = "fa-comment-o"
+    }
+    return icon;
+}
+
+function is_key(obj, key) {
+    return (Object.keys(obj).indexOf(key.toString()) !== -1);
 }
