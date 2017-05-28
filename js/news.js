@@ -4,7 +4,8 @@ $(window).scroll(function() {
     $(".timeline-progress ul").css("padding-top", padding);
 })
 
-var LOGIN = false;
+var LOGIN = false,
+    USERNAME = null;
 
 $(function() {
     // Show loading spinner
@@ -104,20 +105,26 @@ function checkLoginState(param1) {
 }
 
 // This is called to get fb Login Status.
-function checkLoginStateCallback(response, param1) {
+function checkLoginStateCallback(response) {
     console.log('statusChangeCallback');
     // The response object is returned with a status field that lets the
     // app know the current login status of the person.
     // Full docs on the response object can be found in the documentation
     // for FB.getLoginStatus().
+    debugger;
     if (response.status === 'connected') {
         // Logged into your app and Facebook.
         setLogin(true);
+        FB.api('/me', function(response) {
+            console.log('Successful login for: ' + response.name);
+            var USERNAME = response.name;
+
+            init_comments();
+        });
     } else {
         setLogin(false);
+        init_comments();
     }
-
-    init_comments();
 }
 
 function add_reply(clicked_reply) {
@@ -175,6 +182,14 @@ function init_comments() {
         $("#" + media_body_id).find(".media").show();
         $(this).remove();
     })
+
+}
+
+/* post a new comment to DB. */
+function postComment(inElement) {
+    if (!LOGIN) return;
+
+    var content = inElement.parentElement.parentElement.parentElement.getElementsByClassName("status-box")[0].value;
 }
 
 function get_reply_html() {
@@ -202,7 +217,7 @@ function get_reply_html() {
         '</form>' +
         '<div class="button-group" style="text-align:right">' +
         '<p class="counter">140</p>' +
-        '<a class="btn btn-primary comments-post like-comment disabled" tabindex="0" data-container="body" ' +
+        '<a class="btn btn-primary comments-post like-comment disabled" onclick="postComment(this)" tabindex="0" data-container="body" ' +
         'data-toggle="popover" data-trigger="focus" data-placement="top">Post</a>' +
         '</div>' +
         '</div>';
