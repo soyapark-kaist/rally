@@ -7,6 +7,9 @@ $(window).scroll(function() {
 var LOGIN = false;
 
 $(function() {
+    // Show loading spinner
+    toggleLoading(".loading");
+
     initDB();
 
     $('body').scrollspy({ target: ".timeline-progress", offset: 200 });
@@ -57,6 +60,8 @@ function fetchComments() {
     commentsRef.once("value").then(function(snapshot) {
         var news_json = snapshot.val(); // data is here
         append_nested_comment("nested-comment", news_json);
+
+        toggleLoading(".loading");
     });
 }
 
