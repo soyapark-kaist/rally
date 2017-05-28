@@ -78,6 +78,13 @@ $(document).ready(function(){
         if ($(e.target).parents("#like").length == 0) {
             $("#like").remove();
         }
+    });
+
+    /* Bind seemore event */
+    $("body").on("click", ".seemore-btn", function(){
+        var media_body_id = $(this).attr("id").replace("seemore-", "");
+        $("#" + media_body_id).find(".media").show();
+        $(this).remove();
     })
 })
 
@@ -129,15 +136,15 @@ function append_nested_comment (nc_id, news_json) {
             break;
         }
         /* Recursive call to child json */
-        var parent_id = (key != "comments") ? nc_id + "-" + key : nc_id;
+        var parent_id = (key != "comments") ? nc_id + "_" + key : nc_id;
         append_nested_comment (parent_id, c_news_json[key])
     }
 }
 
 function append_comment_html (parent_id, cid, news_json) {
     var c_news_json = $.extend(true, {}, news_json);
-    var new_id = parent_id + "-" + cid;
-    delete c_news_json["comments"];
+    var new_id = parent_id + "_" + cid;
+    var $parent = $(document.getElementById(parent_id));
 
     var icon = get_comment_icon(c_news_json.type);
     var title = c_news_json.email;
@@ -149,7 +156,7 @@ function append_comment_html (parent_id, cid, news_json) {
         '<div class="media-left">'+
             '<i class="fa fa-2x ' + icon + '" aria-hidden="true"></i>'+
         '</div>'+
-            '<div class="media-body" id=' + new_id + '>'+
+        '<div class="media-body" id=' + new_id + '>'+
             '<p class="media-heading">'+
                 title +
                 '<span class="comment-date"> · '+
@@ -167,7 +174,18 @@ function append_comment_html (parent_id, cid, news_json) {
     var $html = $(html);
 
     /* Append html */
-    $(document.getElementById(parent_id)).append($html);
+    if(is_key(c_news_json, "comments")
+        && $parent.is("ul") /*is root*/ ){
+        var see_more_html =
+        '<p class="seemore-btn" id="seemore-'+new_id+'">'+
+            '<i class="fa fa-caret-down" aria-hidden="true"></i>'+
+            ' 답글 더 보기'+
+        '</p>';
+        $html.find(".media-body").append($(see_more_html));
+    } else if (!$parent.is("ul")) {
+        $html.hide();
+    }
+    $parent.append($html);
 }
 
 function get_comment_icon(type) {

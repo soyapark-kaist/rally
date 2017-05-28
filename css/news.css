@@ -68,3 +68,9 @@ ul {
 .fa-question, .fa-lightbulb-o {
     margin: 0 6px;
 }
+
+.seemore-btn {
+    margin: 10px 0;
+    cursor: pointer;
+    color: #BDBDBD;
+}
