@@ -70,16 +70,13 @@ $(document).ready(function(){
     fetchComments();
 
     /* Bind reply-addition event */
-    var root_reply = true;
     add_root_reply();
     $("body").on("click", ".fa-reply", function(){
-        root_reply = false;
         add_reply(this);
     });
-    $(".content").click(function(){
-        if(!root_reply){
-            root_reply = true;
-            add_root_reply();
+    $(".content").click(function(e){
+        if ($(e.target).parents("#like").length == 0) {
+            $("#like").remove();
         }
     })
 })
@@ -93,8 +90,9 @@ function add_reply(clicked_reply) {
 
 function add_root_reply() {
     $("#like").remove();
-    var reply_html = get_reply_html();
-    $("#nested-comment").after($(reply_html));
+    var $reply_html = $(get_reply_html());
+    $reply_html.attr("id", "root-like");
+    $("#nested-comment").after($reply_html);
 }
 
 function get_reply_html() {
