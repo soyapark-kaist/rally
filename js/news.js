@@ -4,6 +4,8 @@ $(window).scroll(function() {
     $(".timeline-progress ul").css("padding-top", padding);
 })
 
+var LOGIN = false;
+
 $(function() {
     initDB();
 
@@ -47,26 +49,7 @@ $(function() {
 
     drawBarChart();
 
-    /* Build nested-comment */
-    fetchComments();
-
-    /* Bind reply-addition event */
-    add_root_reply();
-    $("body").on("click", ".fa-reply", function() {
-        add_reply(this);
-    });
-    $(".content").click(function(e) {
-        if ($(e.target).parents("#like").length == 0) {
-            $("#like").remove();
-        }
-    });
-
-    /* Bind seemore event */
-    $("body").on("click", ".seemore-btn", function() {
-        var media_body_id = $(this).attr("id").replace("seemore-", "");
-        $("#" + media_body_id).find(".media").show();
-        $(this).remove();
-    })
+    /* Flow: fb sdk install -> check login status -> fetch comments from DB then append and bind events */
 });
 
 function fetchComments() {
@@ -102,12 +85,45 @@ function countLetter(inElement) {
     }
 }
 
+function getLogin() { return LOGIN; }
+
+function setLogin(inVal) { LOGIN = inVal; }
+
+// This function is called when someone finishes with the Login
+// Button.  See the onlogin handler attached to it in the sample
+// code below.
+function checkLoginState(param1) {
+    FB.getLoginStatus(function(response) {
+        checkLoginStateCallback(response, param1);
+    });
+}
+
+// This is called to get fb Login Status.
+function checkLoginStateCallback(response, param1) {
+    console.log('statusChangeCallback');
+    // The response object is returned with a status field that lets the
+    // app know the current login status of the person.
+    // Full docs on the response object can be found in the documentation
+    // for FB.getLoginStatus().
+    if (response.status === 'connected') {
+        // Logged into your app and Facebook.
+        setLogin(true);
+    } else {
+        setLogin(false);
+    }
+
+    init_comments();
+}
+
 function add_reply(clicked_reply) {
     $("#like").remove();
     var $reply_html = $(get_reply_html());
     $media_body = $(clicked_reply).parent();
     $media_body.append($reply_html);
-    init_popover($reply_html.find(".comments-post"));
+
+    //Suggest login only when the user is not currently logged in
+    if (!getLogin())
+        init_popover($reply_html.find(".comments-post"));
 }
 
 function add_root_reply() {
@@ -115,12 +131,15 @@ function add_root_reply() {
     var $reply_html = $(get_reply_html());
     $reply_html.attr("id", "root-like");
     $("#nested-comment").after($reply_html);
-    init_popover($reply_html.find(".comments-post"));
+
+    //Suggest login only when the user is not currently logged in
+    if (!getLogin())
+        init_popover($reply_html.find(".comments-post"));
 }
 
 function init_popover($x) {
     var popover_html =
-        '<i class="fa fa-facebook fa-2x" aria-hidden="true"></i>' +
+        '<a href="javascript:void(0);" onclick="fbLogin()"><i class="fa fa-facebook fa-2x" aria-hidden="true"></i></a>' +
         '<i class="fa fa-google fa-2x" aria-hidden="true"></i>' +
         '<i class="fa fa-twitter fa-2x" aria-hidden="true"></i>'
     $x.popover({
@@ -129,6 +148,28 @@ function init_popover($x) {
         title: '로그인',
         delay: { show: 0, hide: 250 },
     });
+}
+
+function init_comments() {
+    fetchComments();
+
+    /* Bind reply-addition event */
+    add_root_reply();
+    $("body").on("click", ".fa-reply", function() {
+        add_reply(this);
+    });
+    $(".content").click(function(e) {
+        if ($(e.target).parents("#like").length == 0) {
+            $("#like").remove();
+        }
+    });
+
+    /* Bind seemore event */
+    $("body").on("click", ".seemore-btn", function() {
+        var media_body_id = $(this).attr("id").replace("seemore-", "");
+        $("#" + media_body_id).find(".media").show();
+        $(this).remove();
+    })
 }
 
 function get_reply_html() {
