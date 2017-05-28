@@ -78,3 +78,15 @@ ul {
 #comment-to {
     margin-left: 10px;
 }
+
+.popover-content i+i {
+    margin-left: 10px;
+}
+
+.popover-content i {
+    cursor: pointer;
+}
+
+.popover-title {
+    text-align: center;
+}

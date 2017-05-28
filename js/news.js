@@ -90,9 +90,10 @@ $(document).ready(function(){
 
 function add_reply(clicked_reply) {
     $("#like").remove();
-    var reply_html = get_reply_html();
+    var $reply_html = $(get_reply_html());
     $media_body = $(clicked_reply).parent();
-    $media_body.append($(reply_html));
+    $media_body.append($reply_html);
+    init_popover($reply_html.find(".comments-post"));
 }
 
 function add_root_reply() {
@@ -100,6 +101,20 @@ function add_root_reply() {
     var $reply_html = $(get_reply_html());
     $reply_html.attr("id", "root-like");
     $("#nested-comment").after($reply_html);
+    init_popover($reply_html.find(".comments-post"));
+}
+
+function init_popover($x){
+    var popover_html =
+    '<i class="fa fa-facebook fa-2x" aria-hidden="true"></i>'+
+    '<i class="fa fa-google fa-2x" aria-hidden="true"></i>'+
+    '<i class="fa fa-twitter fa-2x" aria-hidden="true"></i>'
+    $x.popover({
+        html: true,
+        content: popover_html,
+        title: '로그인',
+        delay: { show: 0, hide: 250 },
+    });
 }
 
 function get_reply_html() {
@@ -127,7 +142,8 @@ function get_reply_html() {
         '</form>'+
         '<div class="button-group" style="text-align:right">'+
             '<p class="counter">140</p>'+
-            '<a class="btn btn-primary comments-post like-comment disabled">Post</a>'+
+            '<a class="btn btn-primary comments-post like-comment" tabindex="0" data-container="body" '+
+            'data-toggle="popover" data-trigger="focus" data-placement="top">Post</a>'+
         '</div>'+
     '</div>';
     return reply_html;
