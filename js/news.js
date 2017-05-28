@@ -65,23 +65,23 @@ function handleOutboundLinkClicks(event) {
     });
 }
 
-$(document).ready(function(){
+$(document).ready(function() {
     /* Build nested-comment */
     fetchComments();
 
     /* Bind reply-addition event */
     add_root_reply();
-    $("body").on("click", ".fa-reply", function(){
+    $("body").on("click", ".fa-reply", function() {
         add_reply(this);
     });
-    $(".content").click(function(e){
+    $(".content").click(function(e) {
         if ($(e.target).parents("#like").length == 0) {
             $("#like").remove();
         }
     });
 
     /* Bind seemore event */
-    $("body").on("click", ".seemore-btn", function(){
+    $("body").on("click", ".seemore-btn", function() {
         var media_body_id = $(this).attr("id").replace("seemore-", "");
         $("#" + media_body_id).find(".media").show();
         $(this).remove();
@@ -104,11 +104,11 @@ function add_root_reply() {
     init_popover($reply_html.find(".comments-post"));
 }
 
-function init_popover($x){
+function init_popover($x) {
     var popover_html =
-    '<i class="fa fa-facebook fa-2x" aria-hidden="true"></i>'+
-    '<i class="fa fa-google fa-2x" aria-hidden="true"></i>'+
-    '<i class="fa fa-twitter fa-2x" aria-hidden="true"></i>'
+        '<i class="fa fa-facebook fa-2x" aria-hidden="true"></i>' +
+        '<i class="fa fa-google fa-2x" aria-hidden="true"></i>' +
+        '<i class="fa fa-twitter fa-2x" aria-hidden="true"></i>'
     $x.popover({
         html: true,
         content: popover_html,
@@ -119,33 +119,33 @@ function init_popover($x){
 
 function get_reply_html() {
     var reply_html =
-    '<div id="like">'+
-        '<form class="form-inline"><div class="form-group">'+
-            '<label class="radio-inline">'+
-                '<input type="radio" name="comment-type" id="comment-question" value="comment-question"> 질문'+
-            '</label>'+
-            '<label class="radio-inline">'+
-                '<input type="radio" name="comment-type" id="comment-suggestion" value="comment-suggestion"> 제안'+
-            '</label>'+
-            '<label class="radio-inline">'+
-                '<input type="radio" name="comment-type" id="comment-else" value="comment-else"> 그 외'+
-            '</label>'+
-            '<span style="margin-left: 14px;">'+
-                '<label for="comment-to"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></label>'+
-                '<input type="text" class="form-control" id="comment-to" placeholder="아무나">'+
-            '</span>'+
-        '</div></form>'+
-        '<form style="margin-top: 10px;">'+
-            '<div class="form-group">'+
-                '<textarea class="form-control status-box" rows="2"></textarea>'+
-            '</div>'+
-        '</form>'+
-        '<div class="button-group" style="text-align:right">'+
-            '<p class="counter">140</p>'+
-            '<a class="btn btn-primary comments-post like-comment" tabindex="0" data-container="body" '+
-            'data-toggle="popover" data-trigger="focus" data-placement="top">Post</a>'+
-        '</div>'+
-    '</div>';
+        '<div id="like">' +
+        '<form class="form-inline"><div class="form-group">' +
+        '<label class="radio-inline">' +
+        '<input type="radio" name="comment-type" id="comment-question" value="comment-question" checked> 질문' +
+        '</label>' +
+        '<label class="radio-inline">' +
+        '<input type="radio" name="comment-type" id="comment-suggestion" value="comment-suggestion"> 제안' +
+        '</label>' +
+        '<label class="radio-inline">' +
+        '<input type="radio" name="comment-type" id="comment-else" value="comment-else"> 그 외' +
+        '</label>' +
+        '</div></form>' +
+        '<form style="margin-top: 10px;">' +
+        '<span class="form-inline" style="margin-left: 14px;">' +
+        '<label for="comment-to"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></label>' +
+        '<input type="text" class="form-control" id="comment-to" placeholder="아무나">' +
+        '</span>' +
+        '<div class="form-group">' +
+        '<textarea class="form-control status-box" rows="2"></textarea>' +
+        '</div>' +
+        '</form>' +
+        '<div class="button-group" style="text-align:right">' +
+        '<p class="counter">140</p>' +
+        '<a class="btn btn-primary comments-post like-comment" tabindex="0" data-container="body" ' +
+        'data-toggle="popover" data-trigger="focus" data-placement="top">Post</a>' +
+        '</div>' +
+        '</div>';
     return reply_html;
 }
 
@@ -153,26 +153,26 @@ function get_reply_html() {
 @param {object} news_json - object from database
 Traverse news_json and append recursively comments
 which has "content" key */
-function append_nested_comment (nc_id, news_json) {
+function append_nested_comment(nc_id, news_json) {
     /* deep copy */
     var c_news_json = $.extend(true, {}, news_json);
     /* traversal */
     for (var key in c_news_json) {
         /* if is_comment: append comment */
-        if(is_key(c_news_json[key], "content")) {
+        if (is_key(c_news_json[key], "content")) {
             append_comment_html(nc_id, key, c_news_json[key]);
         }
         /* if is_leaf: break; */
-        if(typeof(c_news_json[key]) != "object") {
+        if (typeof(c_news_json[key]) != "object") {
             break;
         }
         /* Recursive call to child json */
         var parent_id = (key != "comments") ? nc_id + "_" + key : nc_id;
-        append_nested_comment (parent_id, c_news_json[key])
+        append_nested_comment(parent_id, c_news_json[key])
     }
 }
 
-function append_comment_html (parent_id, cid, news_json) {
+function append_comment_html(parent_id, cid, news_json) {
     var c_news_json = $.extend(true, {}, news_json);
     var new_id = parent_id + "_" + cid;
     var $parent = $(document.getElementById(parent_id));
@@ -183,35 +183,35 @@ function append_comment_html (parent_id, cid, news_json) {
 
     /* Build comment html */
     var html =
-    '<li class="media">'+
-        '<div class="media-left">'+
-            '<i class="fa fa-2x ' + icon + '" aria-hidden="true"></i>'+
-        '</div>'+
-        '<div class="media-body" id=' + new_id + '>'+
-            '<p class="media-heading">'+
-                title +
-                '<span class="comment-date"> · '+
-                    c_news_json.time.replace("T", " ")+
-                '</span>'+
-            '</p>'+
-            '<div id=' +'comment-' + new_id + '>'+
-                '<p>' + content + '</p>'+
-                '<i class="fa fa-reply" aria-hidden="true"></i>'+
-                '<i class="fa fa-chevron-up" aria-hidden="true"> ' + c_news_json.like + '</i>'+
-                '<i class="fa fa-chevron-down" aria-hidden="true"> '+ c_news_json.dislike +'</i>'+
-            '</div>'+
-        '</div>'+
-    '</li>';
+        '<li class="media">' +
+        '<div class="media-left">' +
+        '<i class="fa fa-2x ' + icon + '" aria-hidden="true"></i>' +
+        '</div>' +
+        '<div class="media-body" id=' + new_id + '>' +
+        '<p class="media-heading">' +
+        title +
+        '<span class="comment-date"> · ' +
+        c_news_json.time.replace("T", " ") +
+        '</span>' +
+        '</p>' +
+        '<div id=' + 'comment-' + new_id + '>' +
+        '<p>' + content + '</p>' +
+        '<i class="fa fa-reply" aria-hidden="true"></i>' +
+        '<i class="fa fa-chevron-up" aria-hidden="true"> ' + c_news_json.like + '</i>' +
+        '<i class="fa fa-chevron-down" aria-hidden="true"> ' + c_news_json.dislike + '</i>' +
+        '</div>' +
+        '</div>' +
+        '</li>';
     var $html = $(html);
 
     /* Append html */
-    if(is_key(c_news_json, "comments")
-        && $parent.is("ul") /*is root*/ ){
+    if (is_key(c_news_json, "comments") &&
+        $parent.is("ul") /*is root*/ ) {
         var see_more_html =
-        '<p class="seemore-btn" id="seemore-'+new_id+'">'+
-            '<i class="fa fa-caret-down" aria-hidden="true"></i>'+
-            ' 답글 더 보기'+
-        '</p>';
+            '<p class="seemore-btn" id="seemore-' + new_id + '">' +
+            '<i class="fa fa-caret-down" aria-hidden="true"></i>' +
+            ' 답글 더 보기' +
+            '</p>';
         $html.find(".media-body").append($(see_more_html));
     } else if (!$parent.is("ul")) {
         $html.hide();
