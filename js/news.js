@@ -171,7 +171,8 @@ function init_comments() {
         add_reply(this);
     });
     $(".content").click(function(e) {
-        if ($(e.target).parents("#like").length == 0) {
+        if ($(e.target).parents("#like").length == 0
+            && !$(e.target).is("#like")) {
             $("#like").remove();
         }
     });
