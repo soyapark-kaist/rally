@@ -69,15 +69,35 @@ $(document).ready(function(){
     /* Build nested-comment */
     fetchComments();
 
-    /* Bind reply event */
+    /* Bind reply-addition event */
+    var root_reply = true;
+    add_root_reply();
     $("body").on("click", ".fa-reply", function(){
-        add_reply(this)
+        root_reply = false;
+        add_reply(this);
     });
+    $(".content").click(function(){
+        if(!root_reply){
+            root_reply = true;
+            add_root_reply();
+        }
+    })
 })
 
 function add_reply(clicked_reply) {
     $("#like").remove();
+    var reply_html = get_reply_html();
     $media_body = $(clicked_reply).parent();
+    $media_body.append($(reply_html));
+}
+
+function add_root_reply() {
+    $("#like").remove();
+    var reply_html = get_reply_html();
+    $("#nested-comment").after($(reply_html));
+}
+
+function get_reply_html() {
     var reply_html =
     '<div id="like">'+
         '<form style="margin-top: 10px;">'+
@@ -90,7 +110,7 @@ function add_reply(clicked_reply) {
             '<a class="btn btn-primary comments-post like-comment disabled">Post</a>'+
         '</div>'+
     '</div>';
-    $media_body.append($(reply_html));
+    return reply_html;
 }
 
 /* @param {string} nc_id - id of root node. must be <ul>
