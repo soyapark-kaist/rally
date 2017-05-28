@@ -46,26 +46,7 @@ $(function() {
     })
 
     drawBarChart();
-});
 
-function fetchComments() {
-    var commentsRef = firebase.database().ref('news/comments');
-    commentsRef.once("value").then(function(snapshot) {
-        var news_json = snapshot.val(); // data is here
-        append_nested_comment("nested-comment", news_json);
-    });
-}
-
-function handleOutboundLinkClicks(event) {
-    ga('send', 'event', 'news', 'click', event.getAttribute("href"), {
-        'transport': 'beacon',
-        'hitCallback': function() {
-            document.location = event.getAttribute("href");
-        }
-    });
-}
-
-$(document).ready(function() {
     /* Build nested-comment */
     fetchComments();
 
@@ -86,7 +67,40 @@ $(document).ready(function() {
         $("#" + media_body_id).find(".media").show();
         $(this).remove();
     })
-})
+});
+
+function fetchComments() {
+    var commentsRef = firebase.database().ref('news/comments');
+    commentsRef.once("value").then(function(snapshot) {
+        var news_json = snapshot.val(); // data is here
+        append_nested_comment("nested-comment", news_json);
+    });
+}
+
+function handleOutboundLinkClicks(event) {
+    ga('send', 'event', 'news', 'click', event.getAttribute("href"), {
+        'transport': 'beacon',
+        'hitCallback': function() {
+            document.location = event.getAttribute("href");
+        }
+    });
+}
+
+function countLetter(inElement) {
+    var postLength = inElement.textLength;
+    var charactersLeft = 140 - postLength;
+    inElement.getElementsByClassName("status-box");
+
+    inElement.parentElement.parentElement.parentElement.getElementsByClassName("counter")[0].innerHTML = charactersLeft;
+
+    if (charactersLeft < 0) {
+        inElement.parentElement.parentElement.parentElement.getElementsByClassName("comments-post")[0].classList += " disabled";
+    } else if (charactersLeft == 140) {
+        inElement.parentElement.parentElement.parentElement.getElementsByClassName("comments-post")[0].classList += " disabled";
+    } else {
+        inElement.parentElement.parentElement.parentElement.getElementsByClassName("comments-post")[0].classList.remove("disabled");
+    }
+}
 
 function add_reply(clicked_reply) {
     $("#like").remove();
@@ -137,15 +151,16 @@ function get_reply_html() {
         '<input type="text" class="form-control" id="comment-to" placeholder="아무나">' +
         '</span>' +
         '<div class="form-group">' +
-        '<textarea class="form-control status-box" rows="2"></textarea>' +
+        '<textarea class="form-control status-box" onkeyup="countLetter(this)" rows="2"></textarea>' +
         '</div>' +
         '</form>' +
         '<div class="button-group" style="text-align:right">' +
         '<p class="counter">140</p>' +
-        '<a class="btn btn-primary comments-post like-comment" tabindex="0" data-container="body" ' +
+        '<a class="btn btn-primary comments-post like-comment disabled" tabindex="0" data-container="body" ' +
         'data-toggle="popover" data-trigger="focus" data-placement="top">Post</a>' +
         '</div>' +
         '</div>';
+
     return reply_html;
 }
 
