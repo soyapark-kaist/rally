@@ -105,6 +105,21 @@ function add_root_reply() {
 function get_reply_html() {
     var reply_html =
     '<div id="like">'+
+        '<form class="form-inline"><div class="form-group">'+
+            '<label class="radio-inline">'+
+                '<input type="radio" name="comment-type" id="comment-question" value="comment-question"> 질문'+
+            '</label>'+
+            '<label class="radio-inline">'+
+                '<input type="radio" name="comment-type" id="comment-suggestion" value="comment-suggestion"> 제안'+
+            '</label>'+
+            '<label class="radio-inline">'+
+                '<input type="radio" name="comment-type" id="comment-else" value="comment-else"> 그 외'+
+            '</label>'+
+            '<span style="margin-left: 14px;">'+
+                '<label for="comment-to"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></label>'+
+                '<input type="text" class="form-control" id="comment-to" placeholder="아무나">'+
+            '</span>'+
+        '</div></form>'+
         '<form style="margin-top: 10px;">'+
             '<div class="form-group">'+
                 '<textarea class="form-control status-box" rows="2"></textarea>'+
