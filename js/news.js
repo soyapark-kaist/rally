@@ -69,17 +69,72 @@ $(document).ready(function(){
     /* Build nested-comment */
     fetchComments();
 
-    /* Bind reply event */
+    /* Bind reply-addition event */
+    add_root_reply();
     $("body").on("click", ".fa-reply", function(){
-        add_reply(this)
+        add_reply(this);
     });
+    $(".content").click(function(e){
+        if ($(e.target).parents("#like").length == 0) {
+            $("#like").remove();
+        }
+    });
+
+    /* Bind seemore event */
+    $("body").on("click", ".seemore-btn", function(){
+        var media_body_id = $(this).attr("id").replace("seemore-", "");
+        $("#" + media_body_id).find(".media").show();
+        $(this).remove();
+    })
 })
 
 function add_reply(clicked_reply) {
     $("#like").remove();
+    var $reply_html = $(get_reply_html());
     $media_body = $(clicked_reply).parent();
+    $media_body.append($reply_html);
+    init_popover($reply_html.find(".comments-post"));
+}
+
+function add_root_reply() {
+    $("#like").remove();
+    var $reply_html = $(get_reply_html());
+    $reply_html.attr("id", "root-like");
+    $("#nested-comment").after($reply_html);
+    init_popover($reply_html.find(".comments-post"));
+}
+
+function init_popover($x){
+    var popover_html =
+    '<i class="fa fa-facebook fa-2x" aria-hidden="true"></i>'+
+    '<i class="fa fa-google fa-2x" aria-hidden="true"></i>'+
+    '<i class="fa fa-twitter fa-2x" aria-hidden="true"></i>'
+    $x.popover({
+        html: true,
+        content: popover_html,
+        title: '로그인',
+        delay: { show: 0, hide: 250 },
+    });
+}
+
+function get_reply_html() {
     var reply_html =
     '<div id="like">'+
+        '<form class="form-inline"><div class="form-group">'+
+            '<label class="radio-inline">'+
+                '<input type="radio" name="comment-type" id="comment-question" value="comment-question"> 질문'+
+            '</label>'+
+            '<label class="radio-inline">'+
+                '<input type="radio" name="comment-type" id="comment-suggestion" value="comment-suggestion"> 제안'+
+            '</label>'+
+            '<label class="radio-inline">'+
+                '<input type="radio" name="comment-type" id="comment-else" value="comment-else"> 그 외'+
+            '</label>'+
+            '<span style="margin-left: 14px;">'+
+                '<label for="comment-to"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></label>'+
+                '<input type="text" class="form-control" id="comment-to" placeholder="아무나">'+
+            '</span>'+
+        '</div></form>'+
         '<form style="margin-top: 10px;">'+
             '<div class="form-group">'+
                 '<textarea class="form-control status-box" rows="2"></textarea>'+
@@ -87,10 +142,11 @@ function add_reply(clicked_reply) {
         '</form>'+
         '<div class="button-group" style="text-align:right">'+
             '<p class="counter">140</p>'+
-            '<a class="btn btn-primary comments-post like-comment disabled">Post</a>'+
+            '<a class="btn btn-primary comments-post like-comment" tabindex="0" data-container="body" '+
+            'data-toggle="popover" data-trigger="focus" data-placement="top">Post</a>'+
         '</div>'+
     '</div>';
-    $media_body.append($(reply_html));
+    return reply_html;
 }
 
 /* @param {string} nc_id - id of root node. must be <ul>
@@ -111,15 +167,15 @@ function append_nested_comment (nc_id, news_json) {
             break;
         }
         /* Recursive call to child json */
-        var parent_id = (key != "comments") ? nc_id + "-" + key : nc_id;
+        var parent_id = (key != "comments") ? nc_id + "_" + key : nc_id;
         append_nested_comment (parent_id, c_news_json[key])
     }
 }
 
 function append_comment_html (parent_id, cid, news_json) {
     var c_news_json = $.extend(true, {}, news_json);
-    var new_id = parent_id + "-" + cid;
-    delete c_news_json["comments"];
+    var new_id = parent_id + "_" + cid;
+    var $parent = $(document.getElementById(parent_id));
 
     var icon = get_comment_icon(c_news_json.type);
     var title = c_news_json.email;
@@ -131,7 +187,7 @@ function append_comment_html (parent_id, cid, news_json) {
         '<div class="media-left">'+
             '<i class="fa fa-2x ' + icon + '" aria-hidden="true"></i>'+
         '</div>'+
-            '<div class="media-body" id=' + new_id + '>'+
+        '<div class="media-body" id=' + new_id + '>'+
             '<p class="media-heading">'+
                 title +
                 '<span class="comment-date"> · '+
@@ -149,7 +205,18 @@ function append_comment_html (parent_id, cid, news_json) {
     var $html = $(html);
 
     /* Append html */
-    $(document.getElementById(parent_id)).append($html);
+    if(is_key(c_news_json, "comments")
+        && $parent.is("ul") /*is root*/ ){
+        var see_more_html =
+        '<p class="seemore-btn" id="seemore-'+new_id+'">'+
+            '<i class="fa fa-caret-down" aria-hidden="true"></i>'+
+            ' 답글 더 보기'+
+        '</p>';
+        $html.find(".media-body").append($(see_more_html));
+    } else if (!$parent.is("ul")) {
+        $html.hide();
+    }
+    $parent.append($html);
 }
 
 function get_comment_icon(type) {
