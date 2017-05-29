@@ -5,6 +5,7 @@ $(window).scroll(function() {
 })
 
 var LOGIN = false,
+    USERID = '',
     USERNAME = '',
     EMAIL = '';
 
@@ -62,8 +63,20 @@ function fetchComments() {
     commentsRef.once("value").then(function(snapshot) {
         var news_json = snapshot.val(); // data is here
         append_nested_comment("nested-comment", news_json);
+        fetchUserLog();
 
         toggleLoading(".loading");
+    });
+}
+
+function fetchUserLog() {
+    var userRef = firebase.database().ref('news/like/' + USERID);
+    userRef.once("value").then(function(snapshot) {
+        var user_json = snapshot.val(); // data is here
+
+        for (var l in user_json) {
+            $(".comment-" + l + " .fa-chevron-up").addClass("active");
+        }
     });
 }
 
@@ -120,6 +133,7 @@ function checkLoginStateCallback(response) {
             fields: 'email,name'
         }, function(response) {
             console.log('Successful login for: ' + response.name);
+            USERID = response.id;
             USERNAME = response.name;
             EMAIL = response.email;
 
@@ -182,6 +196,36 @@ function init_comments() {
         }
     });
 
+    /* Bind like(vote) event */
+    $("body").on("click", ".fa.fa-chevron-up", function() {
+        /* If it's alreay incremented, prevent reincrement. */
+        if ($(this).hasClass("active")) return;
+
+        /* highlight color */
+        $(this).addClass("active");
+
+        /* increment */
+        var like_num = parseInt($(this).text().replace(" ", "")) + 1;
+        $(this).text(like_num);
+
+        var parent_id,
+            comment_id;
+
+        // if the comment is root
+        if ($(this).parent().attr("id").split("_").length == 2) parent_id = '', comment_id = $(this).parent().attr("id").split("_")[1];
+        else parent_id = $(this).parent().attr("id").split("_")[1],
+            comment_id = $(this).parent().attr("id").split("_")[2];
+
+        // Check whether the user is authenticated at firebase
+        var user = firebase.auth().currentUser;
+        if (!user) {
+            firebase.auth().signInAnonymously().then(function(user) {
+                postVote(comment_id, parent_id, like_num);
+            });
+        } else postVote(comment_id, parent_id, like_num);
+
+    });
+
     /* Bind seemore event */
     $("body").on("click", ".seemore-btn", function() {
         var media_body_id = $(this).attr("id").replace("seemore-", "");
@@ -189,6 +233,44 @@ function init_comments() {
         $(this).remove();
     })
 
+    /* Bind comment category event */
+    $('a[data-toggle="pill"]').on('shown.bs.tab', function(e) {
+        var target = $(e.target).attr("value") // activated tab
+
+        //if all panel is on
+        if (!target)
+            $(".media").show();
+        else {
+            $(".media").hide();
+            $(".comment-" + target).show();
+        }
+
+    });
+}
+
+function postVote(inCommentID, inParentID, inLikeNum) {
+    var pRef = firebase.database().ref("news/comments/" + (inParentID ? inParentID + "/comments/" + inCommentID : inCommentID));
+    pRef.update({
+        "like": inLikeNum
+    }, function(error) {
+        if (error) {
+            console.log(error);
+        } else {
+            // when post to DB is successful
+            console.log("successfully voted");
+        }
+    });
+
+    var uRef = firebase.database().ref("news/like/" + USERID + "/" + inCommentID);
+    uRef.set(true,
+        function(error) {
+            if (error) {
+                console.log(error);
+            } else { // if successfully posted a new comments clear textarea and turn off loading spinner. 
+
+            }
+
+        });
 }
 
 /* post a new comment to DB. */
@@ -308,12 +390,12 @@ function append_comment_html(parent_id, cid, news_json) {
     var $parent = $(document.getElementById(parent_id));
 
     var icon = get_comment_icon(c_news_json.type);
-    var title = c_news_json.email;
+    var title = c_news_json.email.substring(0, 3) + "****";
     var content = c_news_json.content;
 
     /* Build comment html */
     var html =
-        '<li class="media">' +
+        '<li class="media comment-' + getClassPostfix(c_news_json.type) + ' ">' +
         '<div class="media-left">' +
         '<i class="fa fa-2x ' + icon + '" aria-hidden="true"></i>' +
         '</div>' +
@@ -324,11 +406,11 @@ function append_comment_html(parent_id, cid, news_json) {
         c_news_json.time.replace("T", " ") +
         '</span>' +
         '</p>' +
-        '<div id=' + 'comment-' + new_id + '>' +
+        '<div id=' + 'comment-' + new_id + ' class=' + 'comment-' + cid + '>' +
         '<p>' + content + '</p>' +
         '<i class="fa fa-reply" aria-hidden="true"></i>' +
         '<i class="fa fa-chevron-up" aria-hidden="true"> ' + c_news_json.like + '</i>' +
-        '<i class="fa fa-chevron-down" aria-hidden="true"> ' + c_news_json.dislike + '</i>' +
+        // '<i class="fa fa-chevron-down" aria-hidden="true"> ' + c_news_json.dislike + '</i>' +
         '</div>' +
         '</div>' +
         '</li>';
@@ -359,6 +441,16 @@ function get_comment_icon(type) {
         icon = "fa-comment-o"
     }
     return icon;
+}
+
+function getClassPostfix(type) {
+    if (type == 0) {
+        return "suggest"
+    } else if (type == 1) {
+        return "question"
+    } else {
+        return "comment"
+    }
 }
 
 function is_key(obj, key) {
