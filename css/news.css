@@ -29,6 +29,14 @@ ul {
     padding: 10px 5px;
 }
 
+.nav.nav-pills li {
+    display: table-cell !important;
+}
+
+.nav-pills>li.active>a {
+    background-color: orange;
+}
+
 .media-body .fa+.fa {
     margin-left: 20px;
 }

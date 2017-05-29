@@ -232,6 +232,20 @@ function init_comments() {
         $("#" + media_body_id).find(".media").show();
         $(this).remove();
     })
+
+    /* Bind comment category event */
+    $('a[data-toggle="pill"]').on('shown.bs.tab', function(e) {
+        var target = $(e.target).attr("value") // activated tab
+
+        //if all panel is on
+        if (!target)
+            $(".media").show();
+        else {
+            $(".media").hide();
+            $(".comment-" + target).show();
+        }
+
+    });
 }
 
 function postVote(inCommentID, inParentID, inLikeNum) {
@@ -381,7 +395,7 @@ function append_comment_html(parent_id, cid, news_json) {
 
     /* Build comment html */
     var html =
-        '<li class="media">' +
+        '<li class="media comment-' + getClassPostfix(c_news_json.type) + ' ">' +
         '<div class="media-left">' +
         '<i class="fa fa-2x ' + icon + '" aria-hidden="true"></i>' +
         '</div>' +
@@ -427,6 +441,16 @@ function get_comment_icon(type) {
         icon = "fa-comment-o"
     }
     return icon;
+}
+
+function getClassPostfix(type) {
+    if (type == 0) {
+        return "suggest"
+    } else if (type == 1) {
+        return "question"
+    } else {
+        return "comment"
+    }
 }
 
 function is_key(obj, key) {
