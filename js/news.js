@@ -5,7 +5,8 @@ $(window).scroll(function() {
 })
 
 var LOGIN = false,
-    USERNAME = null;
+    USERNAME = '',
+    EMAIL = '';
 
 $(function() {
     // Show loading spinner
@@ -111,13 +112,16 @@ function checkLoginStateCallback(response) {
     // app know the current login status of the person.
     // Full docs on the response object can be found in the documentation
     // for FB.getLoginStatus().
-    debugger;
     if (response.status === 'connected') {
         // Logged into your app and Facebook.
         setLogin(true);
-        FB.api('/me', function(response) {
+        FB.api('/me', {
+            locale: 'en_US',
+            fields: 'email,name'
+        }, function(response) {
             console.log('Successful login for: ' + response.name);
-            var USERNAME = response.name;
+            USERNAME = response.name;
+            EMAIL = response.email;
 
             init_comments();
         });
@@ -187,9 +191,43 @@ function init_comments() {
 
 /* post a new comment to DB. */
 function postComment(inElement) {
-    if (!LOGIN) return;
+    if (!LOGIN) return; // check fb authentication
 
-    var content = inElement.parentElement.parentElement.parentElement.getElementsByClassName("status-box")[0].value;
+    // Check whether the user is authenticated at firebase
+    var user = firebase.auth().currentUser;
+    if (!user) {
+        firebase.auth().signInAnonymously().then(function(user) {
+            postCommentCallback(inElement);
+        });
+    } else postCommentCallback(inElement);
+}
+
+function postCommentCallback(inElement) {
+    // turn on loading spinner. 
+    toggleLoading(".loading");
+
+    var content = inElement.parentElement.parentElement.getElementsByClassName("status-box")[0].value;
+    console.log(USERNAME, EMAIL, content);
+    debugger;
+    var playersRef = firebase.database().ref("news/comments/" + generateID(8)); /* UID for a new comments. */
+
+    playersRef.set({
+            "type": $("input[name='comment-type']:checked").attr("value"),
+            "content": content,
+            "time": new Date().toString(),
+            "email": EMAIL + "/rally/" + USERNAME,
+            "like": 0,
+            "dislike": 0
+        },
+        function(error) {
+            if (error) {
+                console.log(error);
+            } else { // if successfully posted a new comments clear textarea and turn off loading spinner. 
+                inElement.parentElement.parentElement.getElementsByClassName("status-box")[0].value = "";
+                toggleLoading(".loading");
+            }
+
+        });
 }
 
 function get_reply_html() {
@@ -197,13 +235,13 @@ function get_reply_html() {
         '<div id="like">' +
         '<form class="form-inline"><div class="form-group">' +
         '<label class="radio-inline">' +
-        '<input type="radio" name="comment-type" id="comment-question" value="comment-question" checked> 질문' +
+        '<input type="radio" value="0" name="comment-type" id="comment-question" value="comment-question" checked> 질문' +
         '</label>' +
         '<label class="radio-inline">' +
-        '<input type="radio" name="comment-type" id="comment-suggestion" value="comment-suggestion"> 제안' +
+        '<input type="radio" value="1" name="comment-type" id="comment-suggestion" value="comment-suggestion"> 제안' +
         '</label>' +
         '<label class="radio-inline">' +
-        '<input type="radio" name="comment-type" id="comment-else" value="comment-else"> 그 외' +
+        '<input type="radio" value="2" name="comment-type" id="comment-else" value="comment-else"> 그 외' +
         '</label>' +
         '</div></form>' +
         '<form style="margin-top: 10px;">' +
