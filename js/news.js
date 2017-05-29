@@ -397,7 +397,7 @@ function append_comment_html(parent_id, cid, news_json) {
         '<p>' + content + '</p>' +
         '<i class="fa fa-reply" aria-hidden="true"></i>' +
         '<i class="fa fa-chevron-up" aria-hidden="true"> ' + c_news_json.like + '</i>' +
-        '<i class="fa fa-chevron-down" aria-hidden="true"> ' + c_news_json.dislike + '</i>' +
+        // '<i class="fa fa-chevron-down" aria-hidden="true"> ' + c_news_json.dislike + '</i>' +
         '</div>' +
         '</div>' +
         '</li>';
