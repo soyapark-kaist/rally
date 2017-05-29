@@ -75,7 +75,6 @@ function fetchUserLog() {
         var user_json = snapshot.val(); // data is here
 
         for (var l in user_json) {
-            console.log(l);
             $(".comment-" + l + " .fa-chevron-up").addClass("active");
         }
     });
@@ -377,7 +376,7 @@ function append_comment_html(parent_id, cid, news_json) {
     var $parent = $(document.getElementById(parent_id));
 
     var icon = get_comment_icon(c_news_json.type);
-    var title = c_news_json.email;
+    var title = c_news_json.email.substring(0, 3) + "****";
     var content = c_news_json.content;
 
     /* Build comment html */
