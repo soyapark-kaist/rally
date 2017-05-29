@@ -144,8 +144,9 @@ function add_reply(clicked_reply) {
 
 function add_root_reply() {
     $("#like").remove();
-    var $reply_html = $(get_reply_html());
+    var $reply_html = $(get_reply_html(1));
     $reply_html.attr("id", "root-like");
+    $reply_html.find(".postfix-icon").attr("id", "root-like-postfix");
     $("#nested-comment").after($reply_html);
 
     //Suggest login only when the user is not currently logged in
@@ -175,7 +176,8 @@ function init_comments() {
         add_reply(this);
     });
     $(".content").click(function(e) {
-        if ($(e.target).parents("#like").length == 0) {
+        if ($(e.target).parents("#like").length == 0
+            && !$(e.target).is("#like")) {
             $("#like").remove();
         }
     });
@@ -230,7 +232,13 @@ function postCommentCallback(inElement) {
         });
 }
 
-function get_reply_html() {
+function get_reply_html(type) {
+    var postfix;
+    if (type == 0) {
+        postfix = "fa-exclamation"
+    } else if (type == 1) {
+        postfix = "fa-question"
+    }
     var reply_html =
         '<div id="like">' +
         '<form class="form-inline"><div class="form-group">' +
@@ -245,9 +253,10 @@ function get_reply_html() {
         '</label>' +
         '</div></form>' +
         '<form style="margin-top: 10px;">' +
-        '<span class="form-inline" style="margin-left: 14px;">' +
+        '<span class="form-inline">' +
         '<label for="comment-to"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></label>' +
         '<input type="text" class="form-control" id="comment-to" placeholder="아무나">' +
+        '<i id="like-postfix" class="postfix-icon fa fa-3x ' + postfix + '" aria-hidden="true"></i>' +
         '</span>' +
         '<div class="form-group">' +
         '<textarea class="form-control status-box" onkeyup="countLetter(this)" rows="2"></textarea>' +

@@ -75,8 +75,10 @@ ul {
     color: #BDBDBD;
 }
 
-#comment-to {
-    margin-left: 10px;
+@media (min-width: 768px) {
+    #comment-to {
+        margin-left: 10px;
+    }
 }
 
 .popover-content i+i {
@@ -93,4 +95,17 @@ ul {
 
 #like {
     margin: 3px;
+}
+
+textarea.form-control {
+    margin-top: 10px;
+    padding-right: 35px;
+}
+
+.postfix-icon {
+    position: relative;
+    float: right;
+    top: 50px;
+    right: 10px;
+    color: #555555;
 }
