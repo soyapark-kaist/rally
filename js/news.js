@@ -206,9 +206,9 @@ function postCommentCallback(inElement) {
     // turn on loading spinner. 
     toggleLoading(".loading");
 
-    var content = inElement.parentElement.parentElement.parentElement.getElementsByClassName("status-box")[0].value;
+    var content = inElement.parentElement.parentElement.getElementsByClassName("status-box")[0].value;
     console.log(USERNAME, EMAIL, content);
-
+    debugger;
     var playersRef = firebase.database().ref("news/comments/" + generateID(8)); /* UID for a new comments. */
 
     playersRef.set({
@@ -222,7 +222,8 @@ function postCommentCallback(inElement) {
         function(error) {
             if (error) {
                 console.log(error);
-            } else { // if successfully posted a new comments turn off loading spinner. 
+            } else { // if successfully posted a new comments clear textarea and turn off loading spinner. 
+                inElement.parentElement.parentElement.getElementsByClassName("status-box")[0].value = "";
                 toggleLoading(".loading");
             }
 
