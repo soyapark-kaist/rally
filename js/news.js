@@ -246,7 +246,20 @@ function init_comments() {
         }
 
     });
+
+    $("body").on("click", ".comment-add-report", function() {
+        var uRef = firebase.database().ref("news/report/" + firebase.auth().currentUser.uid);
+        uRef.once("value").then(function(snapshot) {
+            var report = snapshot.val(); // bldg/activity/OS/ping/down/up
+
+            if (!report) console.log("suggest to report now!");
+
+            $(this).parent().find(".report-display").append("<p>최근 제보 내용이 있다면 여기 추가될 것" + '<button onclick="this.parentElement.remove()" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></p>');
+        });
+
+    });
 }
+
 
 function postVote(inCommentID, inParentID, inLikeNum) {
     var pRef = firebase.database().ref("news/comments/" + (inParentID ? inParentID + "/comments/" + inCommentID : inCommentID));
@@ -261,7 +274,7 @@ function postVote(inCommentID, inParentID, inLikeNum) {
         }
     });
 
-    var uRef = firebase.database().ref("news/like/" + USERID + "/" + inCommentID);
+    var uRef = firebase.database().ref("news/like/" + (USERID ? USERID : firebase.auth().currentUser.uid) + "/" + inCommentID);
     uRef.set(true,
         function(error) {
             if (error) {
@@ -347,6 +360,8 @@ function get_reply_html(type) {
         '<input type="text" class="form-control" id="comment-to" placeholder="아무나">' +
         '<i id="like-postfix" class="postfix-icon fa fa-3x ' + postfix + '" aria-hidden="true"></i>' +
         '</span>' +
+        '<p class="comment-add-report">+ 내 최근 제보 추가하기</p>' +
+        '<div class="report-display"></div>' +
         '<div class="form-group">' +
         '<textarea class="form-control status-box" onkeyup="countLetter(this)" rows="2"></textarea>' +
         '</div>' +
