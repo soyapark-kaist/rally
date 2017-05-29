@@ -536,7 +536,17 @@ function pushUser(user) {
                 if (error) {
                     console.log(error);
                 } else {
-                    routeToTimeline(BLDG[$('.building-list tr.warning').attr("bldg")].url);
+                    /* Save the user's report with firebase UID. */
+                    var userRef = firebase.database().ref("news/report/" + user.uid);
+                    userRef.set([$('.building-list tr.warning').attr("bldg"), $(".activity.select img").attr("type"), $(".operation-system").text(), $("#speedo-ping .data .time").text(), $("#speedo-ping .data .time").text(), $(".data.download").text(), $(".data.upload").text()].join("/"), // bldg/activity/OS/ping/down/up
+                        function(error) {
+                            if (error) {
+                                console.log(error);
+                            } else {
+                                routeToTimeline(BLDG[$('.building-list tr.warning').attr("bldg")].url);
+                            }
+
+                        });
                 }
 
             });
@@ -561,7 +571,17 @@ function pushUser(user) {
             if (error) {
                 console.log(error);
             } else {
-                routeToTimeline(BLDG[$('.building-list tr.warning').attr("bldg")].url);
+                /* Save the user's report with firebase UID. */
+                var userRef = firebase.database().ref("news/report/" + user.uid);
+                userRef.set([$('.building-list tr.warning').attr("bldg"), "연결 불능", "-", "-", "-"].join("/"), // bldg/activity/OS/ping/down/up
+                    function(error) {
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            routeToTimeline(BLDG[$('.building-list tr.warning').attr("bldg")].url);
+                        }
+
+                    });
             }
 
         });
