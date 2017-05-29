@@ -193,7 +193,25 @@ function init_comments() {
         $(this).addClass("active");
 
         /* increment */
-        $(this).text(parseInt($(this).text().replace(" ", "")) + 1);
+        var like_num = parseInt($(this).text().replace(" ", "")) + 1;
+        $(this).text(like_num);
+
+        var parent_id,
+            comment_id;
+
+        // if the comment is root
+        if ($(this).parent().attr("id").split("_").length == 2) parent_id = '', comment_id = $(this).parent().attr("id").split("_")[1];
+        else parent_id = $(this).parent().attr("id").split("_")[1],
+            comment_id = $(this).parent().attr("id").split("_")[2];
+
+        // Check whether the user is authenticated at firebase
+        var user = firebase.auth().currentUser;
+        if (!user) {
+            firebase.auth().signInAnonymously().then(function(user) {
+                postVote(comment_id, parent_id, like_num);
+            });
+        } else postVote(comment_id, parent_id, like_num);
+
     });
 
     /* Bind seemore event */
@@ -202,6 +220,20 @@ function init_comments() {
         $("#" + media_body_id).find(".media").show();
         $(this).remove();
     })
+}
+
+function postVote(inCommentID, inParentID, inLikeNum) {
+    var pRef = firebase.database().ref("news/comments/" + (inParentID ? inParentID + "/comments/" + inCommentID : inCommentID));
+    pRef.update({
+        "like": inLikeNum
+    }, function(error) {
+        if (error) {
+            console.log(error);
+        } else {
+            // when post to DB is successful
+            console.log("successfully voted");
+        }
+    });
 }
 
 /* post a new comment to DB. */
