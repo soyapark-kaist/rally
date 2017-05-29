@@ -25,7 +25,7 @@ ul {
     color: orange;
 }
 
-.nav > li > a {
+.nav>li>a {
     padding: 10px 5px;
 }
 
@@ -33,8 +33,9 @@ ul {
     margin-left: 20px;
 }
 
-.media-body
-.fa-reply, .fa-chevron-up, .fa-chevron-down {
+.media-body .fa-reply,
+.fa-chevron-up,
+.fa-chevron-down {
     cursor: pointer;
     color: #BDBDBD;
 }
@@ -44,6 +45,10 @@ ul {
 }
 
 .media-body .fa-chevron-up:hover {
+    color: #29b6f6;
+}
+
+.media-body .fa-chevron-up.active {
     color: #29b6f6;
 }
 
@@ -64,8 +69,8 @@ ul {
     color: #505050;
 }
 
-.media-left
-.fa-question, .fa-lightbulb-o {
+.media-left .fa-question,
+.fa-lightbulb-o {
     margin: 0 6px;
 }
 

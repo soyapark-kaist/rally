@@ -5,6 +5,7 @@ $(window).scroll(function() {
 })
 
 var LOGIN = false,
+    USERID = '',
     USERNAME = '',
     EMAIL = '';
 
@@ -120,6 +121,7 @@ function checkLoginStateCallback(response) {
             fields: 'email,name'
         }, function(response) {
             console.log('Successful login for: ' + response.name);
+            USERID = response.id;
             USERNAME = response.name;
             EMAIL = response.email;
 
@@ -182,13 +184,24 @@ function init_comments() {
         }
     });
 
+    /* Bind like(vote) event */
+    $("body").on("click", ".fa.fa-chevron-up", function() {
+        /* If it's alreay incremented, prevent reincrement. */
+        if ($(this).hasClass("active")) return;
+
+        /* highlight color */
+        $(this).addClass("active");
+
+        /* increment */
+        $(this).text(parseInt($(this).text().replace(" ", "")) + 1);
+    });
+
     /* Bind seemore event */
     $("body").on("click", ".seemore-btn", function() {
         var media_body_id = $(this).attr("id").replace("seemore-", "");
         $("#" + media_body_id).find(".media").show();
         $(this).remove();
     })
-
 }
 
 /* post a new comment to DB. */
