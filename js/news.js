@@ -63,8 +63,21 @@ function fetchComments() {
     commentsRef.once("value").then(function(snapshot) {
         var news_json = snapshot.val(); // data is here
         append_nested_comment("nested-comment", news_json);
+        fetchUserLog();
 
         toggleLoading(".loading");
+    });
+}
+
+function fetchUserLog() {
+    var userRef = firebase.database().ref('news/like/' + USERID);
+    userRef.once("value").then(function(snapshot) {
+        var user_json = snapshot.val(); // data is here
+
+        for (var l in user_json) {
+            console.log(l);
+            $(".comment-" + l + " .fa-chevron-up").addClass("active");
+        }
     });
 }
 
@@ -234,6 +247,17 @@ function postVote(inCommentID, inParentID, inLikeNum) {
             console.log("successfully voted");
         }
     });
+
+    var uRef = firebase.database().ref("news/like/" + USERID + "/" + inCommentID);
+    uRef.set(true,
+        function(error) {
+            if (error) {
+                console.log(error);
+            } else { // if successfully posted a new comments clear textarea and turn off loading spinner. 
+
+            }
+
+        });
 }
 
 /* post a new comment to DB. */
@@ -369,7 +393,7 @@ function append_comment_html(parent_id, cid, news_json) {
         c_news_json.time.replace("T", " ") +
         '</span>' +
         '</p>' +
-        '<div id=' + 'comment-' + new_id + '>' +
+        '<div id=' + 'comment-' + new_id + ' class=' + 'comment-' + cid + '>' +
         '<p>' + content + '</p>' +
         '<i class="fa fa-reply" aria-hidden="true"></i>' +
         '<i class="fa fa-chevron-up" aria-hidden="true"> ' + c_news_json.like + '</i>' +
