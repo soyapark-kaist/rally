@@ -176,8 +176,8 @@ function init_comments() {
         add_reply(this);
     });
     $(".content").click(function(e) {
-        if ($(e.target).parents("#like").length == 0
-            && !$(e.target).is("#like")) {
+        if ($(e.target).parents("#like").length == 0 &&
+            !$(e.target).is("#like")) {
             $("#like").remove();
         }
     });
@@ -208,10 +208,17 @@ function postCommentCallback(inElement) {
     // turn on loading spinner. 
     toggleLoading(".loading");
 
-    var content = inElement.parentElement.parentElement.getElementsByClassName("status-box")[0].value;
-    console.log(USERNAME, EMAIL, content);
+    var new_comment_elem = inElement.parentElement.parentElement,
+        content = new_comment_elem.getElementsByClassName("status-box")[0].value,
+        parent_id = '';
+    // if a new comment is root comment
+    if (new_comment_elem.id == "root-like") {}
+    // if a new comment has a parent
+    else { parent_id = new_comment_elem.parentElement.id.split("comment_")[1]; }
     debugger;
-    var playersRef = firebase.database().ref("news/comments/" + generateID(8)); /* UID for a new comments. */
+    console.log(USERNAME, EMAIL, content);
+
+    var playersRef = firebase.database().ref("news/comments/" + (parent_id ? parent_id + "/comments/" : "") + generateID(8)); /* UID for a new comments. */
 
     playersRef.set({
             "type": $("input[name='comment-type']:checked").attr("value"),
@@ -225,7 +232,7 @@ function postCommentCallback(inElement) {
             if (error) {
                 console.log(error);
             } else { // if successfully posted a new comments clear textarea and turn off loading spinner. 
-                inElement.parentElement.parentElement.getElementsByClassName("status-box")[0].value = "";
+                new_comment_elem.getElementsByClassName("status-box")[0].value = "";
                 toggleLoading(".loading");
             }
 
