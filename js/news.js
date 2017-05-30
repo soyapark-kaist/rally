@@ -245,9 +245,9 @@ function init_comments() {
             comment_id;
 
         // if the comment is root
-        if ($(this).parent().attr("id").split("_").length == 2) parent_id = '', comment_id = $(this).parent().attr("id").split("_")[1];
-        else parent_id = $(this).parent().attr("id").split("_")[1],
-            comment_id = $(this).parent().attr("id").split("_")[2];
+        if ($(this).parent().parent().attr("id").split("_").length == 2) parent_id = '', comment_id = $(this).parent().parent().attr("id").split("_")[1];
+        else parent_id = $(this).parent().parent().attr("id").split("_")[1],
+            comment_id = $(this).parent().parent().attr("id").split("_")[2];
 
         // Check whether the user is authenticated at firebase
         var user = firebase.auth().currentUser;
