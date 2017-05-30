@@ -198,15 +198,25 @@ function init_comments() {
 
     /* Bind like(vote) event */
     $("body").on("click", ".fa.fa-chevron-up", function() {
-        /* If it's alreay incremented, prevent reincrement. */
-        if ($(this).hasClass("active")) return;
+        var like_num = 0;
+        /* If it's alreay up voted, cancel and decrement the vote. */
+        if ($(this).hasClass("active")) { // cancel vote
+            /* dehighlight color */
+            $(this).removeClass("active");
 
-        /* highlight color */
-        $(this).addClass("active");
+            /* decrement */
+            $(this).text(parseInt($(this).text().replace(" ", "")) - 1);
 
-        /* increment */
-        var like_num = parseInt($(this).text().replace(" ", "")) + 1;
-        $(this).text(like_num);
+            like_num = -1;
+        } else { // up vote
+            /* highlight color */
+            $(this).addClass("active");
+
+            /* increment */
+            $(this).text(parseInt($(this).text().replace(" ", "")) + 1);
+
+            like_num = 1;
+        }
 
         var parent_id,
             comment_id;
@@ -260,30 +270,25 @@ function init_comments() {
     });
 }
 
-
-function postVote(inCommentID, inParentID, inLikeNum) {
-    var pRef = firebase.database().ref("news/comments/" + (inParentID ? inParentID + "/comments/" + inCommentID : inCommentID));
-    pRef.update({
-        "like": inLikeNum
-    }, function(error) {
-        if (error) {
-            console.log(error);
-        } else {
-            // when post to DB is successful
-            console.log("successfully voted");
-        }
+function postVote(inCommentID, inParentID, inLikeNum) { // inLikeNum 1 when upvote, -1 when down vote
+    var pRef = firebase.database().ref("news/comments/" + (inParentID ? inParentID + "/comments/" + inCommentID : inCommentID) + "/like");
+    pRef.transaction(function(searches) {
+        return (searches || 0) + inLikeNum;
     });
 
     var uRef = firebase.database().ref("news/like/" + (USERID ? USERID : firebase.auth().currentUser.uid) + "/" + inCommentID);
-    uRef.set(true,
-        function(error) {
-            if (error) {
-                console.log(error);
-            } else { // if successfully posted a new comments clear textarea and turn off loading spinner. 
+    if (inLikeNum == 1)
+        uRef.set(true,
+            function(error) {
+                if (error) {
+                    console.log(error);
+                } else { // if successfully posted a new comments clear textarea and turn off loading spinner. 
 
-            }
+                }
 
-        });
+            });
+
+    else uRef.remove();
 }
 
 /* post a new comment to DB. */
