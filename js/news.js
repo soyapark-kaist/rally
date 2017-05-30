@@ -208,9 +208,11 @@ function add_root_reply() {
 
 function init_popover($x) {
     var popover_html =
-        '<a href="javascript:void(0);" onclick="fbLogin()"><i class="fa fa-facebook fa-2x" aria-hidden="true"></i></a>' +
-        '<i class="fa fa-google fa-2x" aria-hidden="true"></i>' +
-        '<i class="fa fa-twitter fa-2x" aria-hidden="true"></i>'
+        '<a href="javascript:void(0);" onclick="fbLogin()"><i class="fa fa-facebook fa-2x" aria-hidden="true"></i></a>'
+        /*+
+                '<i class="fa fa-google fa-2x" aria-hidden="true"></i>' +
+                '<i class="fa fa-twitter fa-2x" aria-hidden="true"></i>' */
+
     $x.popover({
         html: true,
         content: popover_html,
@@ -316,10 +318,14 @@ function init_comments() {
 
             var report_radio = "";
             for (var r in report) {
-                if (report[r].activity)
-                    report_radio += ("<input type='radio' name='report-radio'/> " + ['<i class="fa fa-building-o" aria-hidden="true"></i> ' + BLDG[report[r].bldg].name, report[r].activity, report[r].download + "Mbps", report[r].upload + "Mbps"].join(", ") + "<br/>");
-
-                else report_radio += ("<input type='radio' name='report-radio'/> " + ['<i class="fa fa-building-o" aria-hidden="true"></i> ' + BLDG[report[r].bldg].name, "연능불능", report[r].os, report[r].web].join(", ") + "<br/>");
+                var report_txt;
+                if (report[r].activity) {
+                    report_txt = [BLDG[report[r].bldg].name, report[r].activity, report[r].download + "Mbps", report[r].upload + "Mbps"].join(", ");
+                    report_radio += ("<input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "<br/>");
+                } else {
+                    report_txt = [BLDG[report[r].bldg].name, "연능불능", report[r].os, report[r].web].join(", ");
+                    report_radio += ("<input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "<br/>");
+                }
             }
 
             report_display.append('<p> <button onclick="this.parentElement.remove()" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + report_radio + '</p>');
@@ -363,6 +369,10 @@ function postCommentCallback(inElement) {
         content = new_comment_elem.getElementsByClassName("status-box")[0].value,
         parent_id = '';
 
+    // append report if existg
+    if (new_comment_elem.querySelector("input[name='report-radio']:checked"))
+        content = "<strong>" + new_comment_elem.querySelector("input[name='report-radio']:checked").value + "</strong> " + content;
+
     // if a new comment is root comment
     if (new_comment_elem.id != "root-like") {
         parent_id = new_comment_elem.parentElement.id.split("comment_")[1];
@@ -385,6 +395,9 @@ function postCommentCallback(inElement) {
     var parent_id = (parent_id == '') ? root_id : root_id + "_" + parent_id;
     append_comment_html(parent_id, comment_key, news_json, true);
 
+    debugger;
+    prettifyTweet(".comment-" + comment_key + " p");
+
     console.log(USERNAME, EMAIL, content);
     playersRef.set(news_json, function(error) {
         if (error) {
@@ -393,7 +406,7 @@ function postCommentCallback(inElement) {
             // if successfully posted a new comments clear textarea and turn off loading spinner. 
             new_comment_elem.getElementsByClassName("status-box")[0].value = "";
             toggleLoading(".loading");
-         }
+        }
     });
 }
 
@@ -412,10 +425,10 @@ function get_reply_html(type) {
         '</label>' +
         '</div></form>' +
         '<form style="margin-top: 10px;">' +
-        '<span class="form-inline">' +
-        '<label for="comment-to"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></label>' +
-        '<input type="text" class="form-control" id="comment-to" placeholder="아무나">' +
-        '</span>' +
+        // '<span class="form-inline">' +
+        // '<label for="comment-to"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></label>' +
+        // '<input type="text" class="form-control" id="comment-to" placeholder="아무나">' +
+        // '</span>' +
         '<p class="comment-add-report">+ 최근 제보 인용하기</p>' +
         '<div class="report-display"></div>' +
         '<div class="form-group">' +
@@ -440,14 +453,21 @@ function append_nested_comment(nc_id, news_json) {
 
     /* Allow only one nested comment */
     var depth = nc_id.split("_").length - 1;
-    if(depth >= 2){
+    if (depth >= 2) {
         return;
     }
 
     /* deep copy */
     var c_news_json = $.extend(true, {}, news_json);
+
+    /* sort by time.  */
+    var keysSorted = Object.keys(c_news_json).sort(function(a, b) {
+        return new Date(c_news_json[a].time) - new Date(c_news_json[b].time);
+    })
+
     /* traversal */
-    for (var key in c_news_json) {
+    for (var i in keysSorted) {
+        var key = keysSorted[i];
         /* if is_comment: append comment */
         if (is_key(c_news_json[key], "content")) {
             append_comment_html(nc_id, key, c_news_json[key], false);
@@ -468,12 +488,12 @@ function append_comment_html(parent_id, cid, news_json, visible) {
     var $parent = $(document.getElementById(parent_id));
 
     var icon = get_comment_icon(c_news_json.type);
-    var title = c_news_json.email.substring(0, 3) + "****";
+    var title = c_news_json.email.indexOf("kaistusc") != -1 ? "학부총학생회" : c_news_json.email.substring(0, 3) + "****";
     var content = c_news_json.content;
 
     /* Build comment html */
     var html =
-        '<li class="media comment-' + getClassPostfix(c_news_json.type) + ' ">' +
+        '<li class="media comment-' + getClassPostfix(c_news_json.type) + (c_news_json.email.indexOf("kaistusc") != -1 ? " media-emphasized" : "") + ' ">' +
         '<div class="media-left">' +
         '<i class="fa fa-2x ' + icon + '" aria-hidden="true"></i>' +
         '</div>' +
@@ -481,7 +501,7 @@ function append_comment_html(parent_id, cid, news_json, visible) {
         '<p class="media-heading">' +
         title +
         '<span class="comment-date"> · ' +
-        c_news_json.time +
+        c_news_json.time.split(" GMT")[0] +
         '</span>' +
         '</p>' +
         '<div id=' + 'comment-' + new_id + ' class=' + '"tweet comment-' + cid + '">' +
@@ -508,11 +528,12 @@ function append_comment_html(parent_id, cid, news_json, visible) {
     } else if (!$parent.is("ul")) {
         /* Del reply btn at nested comment */
         $html.find(".fa-reply").remove();
-        if(!visible){
+        if (!visible) {
             $html.hide();
         }
     }
     $parent.append($html);
+
 }
 
 function get_comment_icon(type) {
