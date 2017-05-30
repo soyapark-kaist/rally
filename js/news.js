@@ -82,6 +82,10 @@ function fetchComments() {
         /* Styling for hash,@,url */
         prettifyTweet('.tweet p');
 
+        /* Suggest login when the user attempts to vote before */
+        if (!getLogin())
+            init_popover($(".tweet a"));
+
         toggleLoading(".loading");
     });
 }
@@ -129,9 +133,9 @@ function setLogin(inVal) { LOGIN = inVal; }
 // This function is called when someone finishes with the Login
 // Button.  See the onlogin handler attached to it in the sample
 // code below.
-function checkLoginState(param1) {
+function checkLoginState() {
     FB.getLoginStatus(function(response) {
-        checkLoginStateCallback(response, param1);
+        checkLoginStateCallback(response);
     });
 }
 
@@ -215,6 +219,8 @@ function init_comments() {
 
     /* Bind like(vote) event */
     $("body").on("click", ".fa.fa-chevron-up", function() {
+        if (!getLogin()) return;
+
         var like_num = 0;
         /* If it's alreay up voted, cancel and decrement the vote. */
         if ($(this).hasClass("active")) { // cancel vote
@@ -310,7 +316,7 @@ function postVote(inCommentID, inParentID, inLikeNum) { // inLikeNum 1 when upvo
 
 /* post a new comment to DB. */
 function postComment(inElement) {
-    if (!LOGIN) return; // check fb authentication
+    if (!getLogin()) return; // check fb authentication
 
     // Check whether the user is authenticated at firebase
     var user = firebase.auth().currentUser;
@@ -446,7 +452,8 @@ function append_comment_html(parent_id, cid, news_json) {
         '<div id=' + 'comment-' + new_id + ' class=' + '"tweet comment-' + cid + '">' +
         '<p>' + content + '</p>' +
         '<i class="fa fa-reply" aria-hidden="true"></i>' +
-        '<i class="fa fa-chevron-up" aria-hidden="true"> ' + c_news_json.like + '</i>' +
+        '<a class="btn" tabindex="0" data-container="body" data-toggle="popover" data-trigger="focus" data-placement="top">' +
+        '<i class="fa fa-chevron-up" aria-hidden="true"> ' + c_news_json.like + '</i></a>' +
         // '<i class="fa fa-chevron-down" aria-hidden="true"> ' + c_news_json.dislike + '</i>' +
         '</div>' +
         '</div>' +
