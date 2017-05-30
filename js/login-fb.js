@@ -76,6 +76,8 @@ function getFbUserData() {
 
             setLogin(true);
 
+            fetchUserLog();
+
             // hide popover
             $(document).on('focus', ':not(.popover)', function() {
                 $('.popover').popover('hide');

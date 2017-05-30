@@ -55,6 +55,15 @@ $(function() {
 
     drawBarChart();
 
+    // Check whether the user is authenticated at firebase
+    var user = firebase.auth().currentUser;
+    if (!user) {
+        firebase.auth().signInAnonymously().then(function(user) {
+            setFirebaseID(user.uid)
+        });
+    } else setFirebaseID(user.uid);
+
+
     /* Flow: fb sdk install -> check login status -> fetch comments from DB then append and bind events */
 });
 
@@ -129,6 +138,15 @@ function countLetter(inElement) {
 function getLogin() { return LOGIN; }
 
 function setLogin(inVal) { LOGIN = inVal; }
+
+function getFirebaseID() {
+    if (firebase.auth().currentUser.uid) return firebase.auth().currentUser.uid;
+    return null;
+}
+
+function setFirebaseID(inID) {
+    FIREBASE_ID = inID;
+}
 
 // This function is called when someone finishes with the Login
 // Button.  See the onlogin handler attached to it in the sample
@@ -249,13 +267,8 @@ function init_comments() {
         else parent_id = $(this).parent().parent().attr("id").split("_")[1],
             comment_id = $(this).parent().parent().attr("id").split("_")[2];
 
-        // Check whether the user is authenticated at firebase
-        var user = firebase.auth().currentUser;
-        if (!user) {
-            firebase.auth().signInAnonymously().then(function(user) {
-                postVote(comment_id, parent_id, like_num);
-            });
-        } else postVote(comment_id, parent_id, like_num);
+
+        postVote(comment_id, parent_id, like_num);
 
     });
 
@@ -318,13 +331,7 @@ function postVote(inCommentID, inParentID, inLikeNum) { // inLikeNum 1 when upvo
 function postComment(inElement) {
     if (!getLogin()) return; // check fb authentication
 
-    // Check whether the user is authenticated at firebase
-    var user = firebase.auth().currentUser;
-    if (!user) {
-        firebase.auth().signInAnonymously().then(function(user) {
-            postCommentCallback(inElement);
-        });
-    } else postCommentCallback(inElement);
+    postCommentCallback(inElement);
 }
 
 function postCommentCallback(inElement) {
