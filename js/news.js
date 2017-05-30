@@ -385,6 +385,9 @@ function postCommentCallback(inElement) {
     var parent_id = (parent_id == '') ? root_id : root_id + "_" + parent_id;
     append_comment_html(parent_id, comment_key, news_json, true);
 
+    debugger;
+    prettifyTweet(".comment-" + comment_key + " p");
+
     console.log(USERNAME, EMAIL, content);
     playersRef.set(news_json, function(error) {
         if (error) {
@@ -393,7 +396,7 @@ function postCommentCallback(inElement) {
             // if successfully posted a new comments clear textarea and turn off loading spinner. 
             new_comment_elem.getElementsByClassName("status-box")[0].value = "";
             toggleLoading(".loading");
-         }
+        }
     });
 }
 
@@ -440,7 +443,7 @@ function append_nested_comment(nc_id, news_json) {
 
     /* Allow only one nested comment */
     var depth = nc_id.split("_").length - 1;
-    if(depth >= 2){
+    if (depth >= 2) {
         return;
     }
 
@@ -508,11 +511,12 @@ function append_comment_html(parent_id, cid, news_json, visible) {
     } else if (!$parent.is("ul")) {
         /* Del reply btn at nested comment */
         $html.find(".fa-reply").remove();
-        if(!visible){
+        if (!visible) {
             $html.hide();
         }
     }
     $parent.append($html);
+
 }
 
 function get_comment_icon(type) {
