@@ -333,32 +333,39 @@ function postCommentCallback(inElement) {
     var new_comment_elem = inElement.parentElement.parentElement,
         content = new_comment_elem.getElementsByClassName("status-box")[0].value,
         parent_id = '';
+
     // if a new comment is root comment
-    if (new_comment_elem.id == "root-like") {}
-    // if a new comment has a parent
-    else { parent_id = new_comment_elem.parentElement.id.split("comment_")[1]; }
-    debugger;
+    if (new_comment_elem.id != "root-like") {
+        parent_id = new_comment_elem.parentElement.id.split("comment_")[1];
+    }
+
+    var comment_key = generateID(8);
+    /* UID for a new comments. */
+    var playersRef = firebase.database().ref("news/comments/" + (parent_id ? parent_id + "/comments/" : "") + comment_key);
+    var news_json = {
+        "type": $("input[name='comment-type']:checked").attr("value"),
+        "content": content,
+        "time": new Date().toString(),
+        "email": EMAIL + "/rally/" + USERNAME,
+        "like": 0,
+        "dislike": 0
+    };
+
+    /* Append at front */
+    var root_id = "nested-comment"
+    var parent_id = (parent_id == '') ? root_id : root_id + "_" + parent_id;
+    append_comment_html(parent_id, comment_key, news_json, true);
+
     console.log(USERNAME, EMAIL, content);
-
-    var playersRef = firebase.database().ref("news/comments/" + (parent_id ? parent_id + "/comments/" : "") + generateID(8)); /* UID for a new comments. */
-
-    playersRef.set({
-            "type": $("input[name='comment-type']:checked").attr("value"),
-            "content": content,
-            "time": new Date().toString(),
-            "email": EMAIL + "/rally/" + USERNAME,
-            "like": 0,
-            "dislike": 0
-        },
-        function(error) {
-            if (error) {
-                console.log(error);
-            } else { // if successfully posted a new comments clear textarea and turn off loading spinner. 
-                new_comment_elem.getElementsByClassName("status-box")[0].value = "";
-                toggleLoading(".loading");
-            }
-
-        });
+    playersRef.set(news_json, function(error) {
+        if (error) {
+            console.log(error);
+        } else {
+            // if successfully posted a new comments clear textarea and turn off loading spinner. 
+            new_comment_elem.getElementsByClassName("status-box")[0].value = "";
+            toggleLoading(".loading");
+         }
+    });
 }
 
 function get_reply_html(type) {
@@ -414,7 +421,7 @@ function append_nested_comment(nc_id, news_json) {
     for (var key in c_news_json) {
         /* if is_comment: append comment */
         if (is_key(c_news_json[key], "content")) {
-            append_comment_html(nc_id, key, c_news_json[key]);
+            append_comment_html(nc_id, key, c_news_json[key], false);
         }
         /* if is_leaf: break; */
         if (typeof(c_news_json[key]) != "object") {
@@ -426,7 +433,7 @@ function append_nested_comment(nc_id, news_json) {
     }
 }
 
-function append_comment_html(parent_id, cid, news_json) {
+function append_comment_html(parent_id, cid, news_json, visible) {
     var c_news_json = $.extend(true, {}, news_json);
     var new_id = parent_id + "_" + cid;
     var $parent = $(document.getElementById(parent_id));
@@ -472,7 +479,9 @@ function append_comment_html(parent_id, cid, news_json) {
     } else if (!$parent.is("ul")) {
         /* Del reply btn at nested comment */
         $html.find(".fa-reply").remove();
-        $html.hide();
+        if(!visible){
+            $html.hide();
+        }
     }
     $parent.append($html);
 }
