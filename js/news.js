@@ -294,19 +294,31 @@ function init_comments() {
     });
 
     $("body").on("click", ".comment-add-report", function() {
-        var uRef = firebase.database().ref("news/report/" + firebase.auth().currentUser.uid);
+        var uRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-"));
+        var report_display = $(this).parent().find(".report-display");
+
+        if (report_display.find("p").length) return;
+
         uRef.once("value").then(function(snapshot) {
             var report = snapshot.val(); // bldg/activity/OS/ping/down/up
 
             if (!report) { // no recent report
-                var answer = confirm("최근 제보가 없습니다. 지금 제보(1분)하러 가시겠어요?")
+                var answer = confirm("오늘 인터넷 불편 제보가 없습니다. 지금 제보(1분)하러 가시겠어요?")
                 if (answer)
                     window.location = "./collect.html";
 
                 else return;
             }
 
-            $(this).parent().find(".report-display").append("<p>최근 제보 내용이 있다면 여기 추가될 것" + '<button onclick="this.parentElement.remove()" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></p>');
+            var report_radio = "";
+            for (var r in report) {
+                if (report[r].activity)
+                    report_radio += ("<input type='radio' name='report-radio'/> " + ['<i class="fa fa-building-o" aria-hidden="true"></i> ' + BLDG[report[r].bldg].name, report[r].activity, report[r].download + "Mbps", report[r].upload + "Mbps"].join(", ") + "<br/>");
+
+                else report_radio += ("<input type='radio' name='report-radio'/> " + ['<i class="fa fa-building-o" aria-hidden="true"></i> ' + BLDG[report[r].bldg].name, "연능불능", report[r].os, report[r].web].join(", ") + "<br/>");
+            }
+
+            report_display.append('<p> <button onclick="this.parentElement.remove()" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + report_radio + '</p>');
         });
 
     });
@@ -401,7 +413,7 @@ function get_reply_html(type) {
         '<input type="text" class="form-control" id="comment-to" placeholder="아무나">' +
         '<i id="like-postfix" class="postfix-icon fa fa-3x ' + postfix + '" aria-hidden="true"></i>' +
         '</span>' +
-        '<p class="comment-add-report">+ 내 최근 제보 추가하기</p>' +
+        '<p class="comment-add-report">+ 최근 제보 인용하기</p>' +
         '<div class="report-display"></div>' +
         '<div class="form-group">' +
         '<textarea class="form-control status-box" onkeyup="countLetter(this)" rows="2"></textarea>' +
