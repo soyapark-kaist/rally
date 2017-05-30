@@ -84,7 +84,7 @@ function fetchComments() {
 
         /* Suggest login when the user attempts to vote before */
         if (!getLogin())
-            init_popover($(".tweet a"));
+            init_popover($(".tweet .fa-chevron-up"));
 
         toggleLoading(".loading");
     });
@@ -444,9 +444,10 @@ function append_comment_html(parent_id, cid, news_json) {
         '<div id=' + 'comment-' + new_id + ' class=' + '"tweet comment-' + cid + '">' +
         '<p>' + content + '</p>' +
         '<i class="fa fa-reply" aria-hidden="true"></i>' +
-        '<a class="btn" tabindex="0" data-container="body" data-toggle="popover" data-trigger="focus" data-placement="top">' +
-        '<i class="fa fa-chevron-up" aria-hidden="true"> ' + c_news_json.like + '</i></a>' +
-        // '<i class="fa fa-chevron-down" aria-hidden="true"> ' + c_news_json.dislike + '</i>' +
+        '<i class="fa fa-chevron-up" aria-hidden="true" tabindex="0" ' +
+        'data-container="body" data-toggle="popover" data-trigger="focus" data-placement="top">' +
+        c_news_json.like +
+        '</i>' +
         '</div>' +
         '</div>' +
         '</li>';
