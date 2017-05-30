@@ -181,7 +181,6 @@ function add_root_reply() {
     $("#like").remove();
     var $reply_html = $(get_reply_html(1));
     $reply_html.attr("id", "root-like");
-    $reply_html.find(".postfix-icon").attr("id", "root-like-postfix");
     $("#nested-comment").after($reply_html);
 
     //Suggest login only when the user is not currently logged in
@@ -363,12 +362,6 @@ function postCommentCallback(inElement) {
 }
 
 function get_reply_html(type) {
-    var postfix;
-    if (type == 0) {
-        postfix = "fa-exclamation"
-    } else if (type == 1) {
-        postfix = "fa-question"
-    }
     var reply_html =
         '<div id="like">' +
         '<form class="form-inline"><div class="form-group">' +
@@ -386,7 +379,6 @@ function get_reply_html(type) {
         '<span class="form-inline">' +
         '<label for="comment-to"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></label>' +
         '<input type="text" class="form-control" id="comment-to" placeholder="아무나">' +
-        '<i id="like-postfix" class="postfix-icon fa fa-3x ' + postfix + '" aria-hidden="true"></i>' +
         '</span>' +
         '<p class="comment-add-report">+ 내 최근 제보 추가하기</p>' +
         '<div class="report-display"></div>' +
@@ -446,7 +438,7 @@ function append_comment_html(parent_id, cid, news_json) {
         '<p class="media-heading">' +
         title +
         '<span class="comment-date"> · ' +
-        c_news_json.time.replace("T", " ") +
+        c_news_json.time +
         '</span>' +
         '</p>' +
         '<div id=' + 'comment-' + new_id + ' class=' + '"tweet comment-' + cid + '">' +
