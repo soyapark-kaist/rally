@@ -415,10 +415,10 @@ function get_reply_html(type) {
         '</label>' +
         '</div></form>' +
         '<form style="margin-top: 10px;">' +
-        '<span class="form-inline">' +
-        '<label for="comment-to"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></label>' +
-        '<input type="text" class="form-control" id="comment-to" placeholder="아무나">' +
-        '</span>' +
+        // '<span class="form-inline">' +
+        // '<label for="comment-to"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></label>' +
+        // '<input type="text" class="form-control" id="comment-to" placeholder="아무나">' +
+        // '</span>' +
         '<p class="comment-add-report">+ 최근 제보 인용하기</p>' +
         '<div class="report-display"></div>' +
         '<div class="form-group">' +
