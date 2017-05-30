@@ -58,12 +58,29 @@ $(function() {
     /* Flow: fb sdk install -> check login status -> fetch comments from DB then append and bind events */
 });
 
+/* Should call this function every time new comments appended. */
+function prettifyTweet(inSelector) {
+    tweetParser(inSelector, {
+        urlClass: "tweet_link", //this is default
+        userClass: "tweet_user",
+        hashtagClass: "tweet_hashtag", //this is default
+        target: "_blank", //this is default
+        searchWithHashtags: false, //this is default
+        parseUsers: true,
+        parseHashtags: true,
+        parseUrls: true
+    });
+}
+
 function fetchComments() {
     var commentsRef = firebase.database().ref('news/comments');
     commentsRef.once("value").then(function(snapshot) {
         var news_json = snapshot.val(); // data is here
         append_nested_comment("nested-comment", news_json);
         fetchUserLog();
+
+        /* Styling for hash,@,url */
+        prettifyTweet('.tweet p');
 
         toggleLoading(".loading");
     });
@@ -426,7 +443,7 @@ function append_comment_html(parent_id, cid, news_json) {
         c_news_json.time.replace("T", " ") +
         '</span>' +
         '</p>' +
-        '<div id=' + 'comment-' + new_id + ' class=' + 'comment-' + cid + '>' +
+        '<div id=' + 'comment-' + new_id + ' class=' + '"tweet comment-' + cid + '">' +
         '<p>' + content + '</p>' +
         '<i class="fa fa-reply" aria-hidden="true"></i>' +
         '<i class="fa fa-chevron-up" aria-hidden="true"> ' + c_news_json.like + '</i>' +
