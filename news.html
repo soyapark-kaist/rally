@@ -29,6 +29,7 @@
     <link rel="stylesheet" href="css/theme.css" />
     <link rel="stylesheet" href="css/collect.css" />
     <link rel="stylesheet" href="css/timeline.css" />
+    <link rel="stylesheet" href="css/lineChart.css" />
     <link rel="stylesheet" href="css/news.css" />
 
     <script src="js/jquery.min.js"></script>
@@ -38,9 +39,14 @@
 
     <script src="js/d3.min.js"></script>
 
+    <script src="js/nvtooltip.js"></script>
+    <script src="js/d3legend.js"></script>
+    <script src="js/d3line.js"></script>
+    <script src="js/d3linewithlegend.js"></script>
+
     <script type="text/javascript" src="js/conf.js"></script>
     <script type="text/javascript" src="js/rally.js"></script>
-    <script type="text/javascript" src="js/donutChart.js"></script>
+    <script type="text/javascript" src="js/lineChart.js"></script>
     <script type="text/javascript" src="js/barChart.js"></script>
     <script type="text/javascript" src="js/news.js"></script>
     <script type="text/javascript" src="js/login-fb.js"></script>
@@ -146,6 +152,15 @@
 
             <div class="alert alert-info" role="alert" id="respond">
                 <strong><i class="fa fa-check-square-o" aria-hidden="true"></i>정보통신팀 답변</strong><br><span class="respond-text">여기에 답변</span><br>
+            </div>
+
+            <div class="post">
+                <div class="container" style="word-break: break-all; animation: smooth-entry-btn 1.5s">
+                    <h3>아,쫌!은 참여형 민원 사이트입니다. 학내 인터넷 문제에 집중하여 자고싶당.... 놀고싶당 우히히히히ㅣ히ㅣㅣㅣㅣ </h3>
+                </div>
+                <div id="report-chart">
+                    <svg></svg>
+                </div>
             </div>
 
 
