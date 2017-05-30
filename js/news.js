@@ -488,12 +488,12 @@ function append_comment_html(parent_id, cid, news_json, visible) {
     var $parent = $(document.getElementById(parent_id));
 
     var icon = get_comment_icon(c_news_json.type);
-    var title = c_news_json.email.substring(0, 3) + "****";
+    var title = c_news_json.email.indexOf("kaistusc") != -1 ? "학부총학생회" : c_news_json.email.substring(0, 3) + "****";
     var content = c_news_json.content;
 
     /* Build comment html */
     var html =
-        '<li class="media comment-' + getClassPostfix(c_news_json.type) + ' ">' +
+        '<li class="media comment-' + getClassPostfix(c_news_json.type) + (c_news_json.email.indexOf("kaistusc") != -1 ? " media-emphasized" : "") + ' ">' +
         '<div class="media-left">' +
         '<i class="fa fa-2x ' + icon + '" aria-hidden="true"></i>' +
         '</div>' +
