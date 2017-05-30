@@ -151,3 +151,11 @@ textarea.form-control {
 .tweet_hashtag {
     color: palevioletred;
 }
+
+.media { 
+    padding: 5px 15px;
+}
+
+.media-emphasized {
+    background-color: whitesmoke;
+}
