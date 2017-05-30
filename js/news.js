@@ -491,7 +491,7 @@ function append_comment_html(parent_id, cid, news_json, visible) {
         '<p class="media-heading">' +
         title +
         '<span class="comment-date"> · ' +
-        c_news_json.time +
+        c_news_json.time.split(" GMT")[0] +
         '</span>' +
         '</p>' +
         '<div id=' + 'comment-' + new_id + ' class=' + '"tweet comment-' + cid + '">' +
