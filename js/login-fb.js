@@ -43,22 +43,10 @@ function statusChangeCallback(response) {
     // for FB.getLoginStatus().
     if (response.status === 'connected') {
         // Logged into your app and Facebook.
-        testAPI();
     } else {
         // The person is not logged into your app or we are unable to tell.
-        document.getElementById('status').innerHTML = 'Please log ' +
-            'into this app.';
+        console.log('Please log into this app.');
     }
-}
-
-// Here we run a very simple test of the Graph API after login is
-// successful.  See statusChangeCallback() for when this call is made.
-function testAPI() {
-    console.log('Welcome!  Fetching your information.... ');
-    FB.api('/me', function(response) {
-        console.log('Successful login for: ' + response.name);
-
-    });
 }
 
 // Facebook login with JavaScript SDK
@@ -68,10 +56,10 @@ function fbLogin() {
             // Get and display the user profile data
             getFbUserData();
         } else {
-            document.getElementById('status').innerHTML = 'User cancelled login or did not fully authorize.';
+            console.log("not logged in yet");
         }
     }, {
-        scope: 'first_name,last_name,email'
+        scope: 'email'
     });
 }
 
@@ -79,9 +67,18 @@ function fbLogin() {
 function getFbUserData() {
     FB.api('/me', {
             locale: 'en_US',
-            fields: 'first_name,last_name,email'
+            fields: 'name,email'
         },
         function(response) {
-            console.log('<p><b>FB ID:</b> ' + response.id + '</p><p><b>Name:</b> ' + response.first_name + ' ' + response.last_name + '</p><p><b>Email:</b> ' + response.email + '</p><p><b>Gender:</b> ' + response.gender + '</p><p><b>Locale:</b> ' + response.locale + '</p><p><b>Picture:</b> <img src="' + response.picture.data.url + '"/></p><p><b>FB Profile:</b> <a target="_blank" href="' + response.link + '">click to view profile</a></p>');
+            USERID = response.id;
+            USERNAME = response.name;
+            EMAIL = response.email;
+
+            setLogin(true);
+
+            // hide popover
+            $(document).on('focus', ':not(.popover)', function() {
+                $('.popover').popover('hide');
+            });
         });
 }
