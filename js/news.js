@@ -208,9 +208,11 @@ function add_root_reply() {
 
 function init_popover($x) {
     var popover_html =
-        '<a href="javascript:void(0);" onclick="fbLogin()"><i class="fa fa-facebook fa-2x" aria-hidden="true"></i></a>' +
-        '<i class="fa fa-google fa-2x" aria-hidden="true"></i>' +
-        '<i class="fa fa-twitter fa-2x" aria-hidden="true"></i>'
+        '<a href="javascript:void(0);" onclick="fbLogin()"><i class="fa fa-facebook fa-2x" aria-hidden="true"></i></a>'
+        /*+
+                '<i class="fa fa-google fa-2x" aria-hidden="true"></i>' +
+                '<i class="fa fa-twitter fa-2x" aria-hidden="true"></i>' */
+
     $x.popover({
         html: true,
         content: popover_html,
@@ -316,10 +318,14 @@ function init_comments() {
 
             var report_radio = "";
             for (var r in report) {
-                if (report[r].activity)
-                    report_radio += ("<input type='radio' name='report-radio'/> " + ['<i class="fa fa-building-o" aria-hidden="true"></i> ' + BLDG[report[r].bldg].name, report[r].activity, report[r].download + "Mbps", report[r].upload + "Mbps"].join(", ") + "<br/>");
-
-                else report_radio += ("<input type='radio' name='report-radio'/> " + ['<i class="fa fa-building-o" aria-hidden="true"></i> ' + BLDG[report[r].bldg].name, "연능불능", report[r].os, report[r].web].join(", ") + "<br/>");
+                var report_txt;
+                if (report[r].activity) {
+                    report_txt = [BLDG[report[r].bldg].name, report[r].activity, report[r].download + "Mbps", report[r].upload + "Mbps"].join(", ");
+                    report_radio += ("<input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "<br/>");
+                } else {
+                    report_txt = [BLDG[report[r].bldg].name, "연능불능", report[r].os, report[r].web].join(", ");
+                    report_radio += ("<input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "<br/>");
+                }
             }
 
             report_display.append('<p> <button onclick="this.parentElement.remove()" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + report_radio + '</p>');
@@ -362,6 +368,10 @@ function postCommentCallback(inElement) {
     var new_comment_elem = inElement.parentElement.parentElement,
         content = new_comment_elem.getElementsByClassName("status-box")[0].value,
         parent_id = '';
+
+    // append report if existg
+    if (new_comment_elem.querySelector("input[name='report-radio']:checked"))
+        content = "<strong>" + new_comment_elem.querySelector("input[name='report-radio']:checked").value + "</strong> " + content;
 
     // if a new comment is root comment
     if (new_comment_elem.id != "root-like") {
