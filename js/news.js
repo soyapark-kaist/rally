@@ -401,6 +401,13 @@ function get_reply_html(type) {
 Traverse news_json and append recursively comments
 which has "content" key */
 function append_nested_comment(nc_id, news_json) {
+
+    /* Allow only one nested comment */
+    var depth = nc_id.split("_").length - 1;
+    if(depth >= 2){
+        return;
+    }
+
     /* deep copy */
     var c_news_json = $.extend(true, {}, news_json);
     /* traversal */
@@ -463,6 +470,8 @@ function append_comment_html(parent_id, cid, news_json) {
             '</p>';
         $html.find(".media-body").append($(see_more_html));
     } else if (!$parent.is("ul")) {
+        /* Del reply btn at nested comment */
+        $html.find(".fa-reply").remove();
         $html.hide();
     }
     $parent.append($html);
