@@ -298,7 +298,13 @@ function init_comments() {
         uRef.once("value").then(function(snapshot) {
             var report = snapshot.val(); // bldg/activity/OS/ping/down/up
 
-            if (!report) console.log("suggest to report now!");
+            if (!report) { // no recent report
+                var answer = confirm("최근 제보가 없습니다. 지금 제보(1분)하러 가시겠어요?")
+                if (answer)
+                    window.location = "./collect.html";
+
+                else return;
+            }
 
             $(this).parent().find(".report-display").append("<p>최근 제보 내용이 있다면 여기 추가될 것" + '<button onclick="this.parentElement.remove()" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></p>');
         });
