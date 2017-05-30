@@ -449,8 +449,15 @@ function append_nested_comment(nc_id, news_json) {
 
     /* deep copy */
     var c_news_json = $.extend(true, {}, news_json);
+
+    /* sort by time.  */
+    var keysSorted = Object.keys(c_news_json).sort(function(a, b) {
+        return new Date(c_news_json[a].time) - new Date(c_news_json[b].time);
+    })
+
     /* traversal */
-    for (var key in c_news_json) {
+    for (var i in keysSorted) {
+        var key = keysSorted[i];
         /* if is_comment: append comment */
         if (is_key(c_news_json[key], "content")) {
             append_comment_html(nc_id, key, c_news_json[key], false);
