@@ -143,3 +143,11 @@ textarea.form-control {
     right: 10px;
     color: #555555;
 }
+
+.tweet_user {
+    color: orange;
+}
+
+.tweet_hashtag {
+    color: palevioletred;
+}

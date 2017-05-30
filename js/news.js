@@ -58,12 +58,33 @@ $(function() {
     /* Flow: fb sdk install -> check login status -> fetch comments from DB then append and bind events */
 });
 
+/* Should call this function every time new comments appended. */
+function prettifyTweet(inSelector) {
+    tweetParser(inSelector, {
+        urlClass: "tweet_link", //this is default
+        userClass: "tweet_user",
+        hashtagClass: "tweet_hashtag", //this is default
+        target: "_blank", //this is default
+        searchWithHashtags: false, //this is default
+        parseUsers: true,
+        parseHashtags: true,
+        parseUrls: true
+    });
+}
+
 function fetchComments() {
     var commentsRef = firebase.database().ref('news/comments');
     commentsRef.once("value").then(function(snapshot) {
         var news_json = snapshot.val(); // data is here
         append_nested_comment("nested-comment", news_json);
         fetchUserLog();
+
+        /* Styling for hash,@,url */
+        prettifyTweet('.tweet p');
+
+        /* Suggest login when the user attempts to vote before */
+        if (!getLogin())
+            init_popover($(".tweet a"));
 
         toggleLoading(".loading");
     });
@@ -112,9 +133,9 @@ function setLogin(inVal) { LOGIN = inVal; }
 // This function is called when someone finishes with the Login
 // Button.  See the onlogin handler attached to it in the sample
 // code below.
-function checkLoginState(param1) {
+function checkLoginState() {
     FB.getLoginStatus(function(response) {
-        checkLoginStateCallback(response, param1);
+        checkLoginStateCallback(response);
     });
 }
 
@@ -198,15 +219,27 @@ function init_comments() {
 
     /* Bind like(vote) event */
     $("body").on("click", ".fa.fa-chevron-up", function() {
-        /* If it's alreay incremented, prevent reincrement. */
-        if ($(this).hasClass("active")) return;
+        if (!getLogin()) return;
 
-        /* highlight color */
-        $(this).addClass("active");
+        var like_num = 0;
+        /* If it's alreay up voted, cancel and decrement the vote. */
+        if ($(this).hasClass("active")) { // cancel vote
+            /* dehighlight color */
+            $(this).removeClass("active");
 
-        /* increment */
-        var like_num = parseInt($(this).text().replace(" ", "")) + 1;
-        $(this).text(like_num);
+            /* decrement */
+            $(this).text(parseInt($(this).text().replace(" ", "")) - 1);
+
+            like_num = -1;
+        } else { // up vote
+            /* highlight color */
+            $(this).addClass("active");
+
+            /* increment */
+            $(this).text(parseInt($(this).text().replace(" ", "")) + 1);
+
+            like_num = 1;
+        }
 
         var parent_id,
             comment_id;
@@ -260,35 +293,30 @@ function init_comments() {
     });
 }
 
-
-function postVote(inCommentID, inParentID, inLikeNum) {
-    var pRef = firebase.database().ref("news/comments/" + (inParentID ? inParentID + "/comments/" + inCommentID : inCommentID));
-    pRef.update({
-        "like": inLikeNum
-    }, function(error) {
-        if (error) {
-            console.log(error);
-        } else {
-            // when post to DB is successful
-            console.log("successfully voted");
-        }
+function postVote(inCommentID, inParentID, inLikeNum) { // inLikeNum 1 when upvote, -1 when down vote
+    var pRef = firebase.database().ref("news/comments/" + (inParentID ? inParentID + "/comments/" + inCommentID : inCommentID) + "/like");
+    pRef.transaction(function(searches) {
+        return (searches || 0) + inLikeNum;
     });
 
     var uRef = firebase.database().ref("news/like/" + (USERID ? USERID : firebase.auth().currentUser.uid) + "/" + inCommentID);
-    uRef.set(true,
-        function(error) {
-            if (error) {
-                console.log(error);
-            } else { // if successfully posted a new comments clear textarea and turn off loading spinner. 
+    if (inLikeNum == 1)
+        uRef.set(true,
+            function(error) {
+                if (error) {
+                    console.log(error);
+                } else { // if successfully posted a new comments clear textarea and turn off loading spinner. 
 
-            }
+                }
 
-        });
+            });
+
+    else uRef.remove();
 }
 
 /* post a new comment to DB. */
 function postComment(inElement) {
-    if (!LOGIN) return; // check fb authentication
+    if (!getLogin()) return; // check fb authentication
 
     // Check whether the user is authenticated at firebase
     var user = firebase.auth().currentUser;
@@ -421,10 +449,11 @@ function append_comment_html(parent_id, cid, news_json) {
         c_news_json.time.replace("T", " ") +
         '</span>' +
         '</p>' +
-        '<div id=' + 'comment-' + new_id + ' class=' + 'comment-' + cid + '>' +
+        '<div id=' + 'comment-' + new_id + ' class=' + '"tweet comment-' + cid + '">' +
         '<p>' + content + '</p>' +
         '<i class="fa fa-reply" aria-hidden="true"></i>' +
-        '<i class="fa fa-chevron-up" aria-hidden="true"> ' + c_news_json.like + '</i>' +
+        '<a class="btn" tabindex="0" data-container="body" data-toggle="popover" data-trigger="focus" data-placement="top">' +
+        '<i class="fa fa-chevron-up" aria-hidden="true"> ' + c_news_json.like + '</i></a>' +
         // '<i class="fa fa-chevron-down" aria-hidden="true"> ' + c_news_json.dislike + '</i>' +
         '</div>' +
         '</div>' +
