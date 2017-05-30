@@ -55,6 +55,15 @@ $(function() {
 
     drawBarChart();
 
+    // Check whether the user is authenticated at firebase
+    var user = firebase.auth().currentUser;
+    if (!user) {
+        firebase.auth().signInAnonymously().then(function(user) {
+            setFirebaseID(user.uid)
+        });
+    } else setFirebaseID(user.uid);
+
+
     /* Flow: fb sdk install -> check login status -> fetch comments from DB then append and bind events */
 });
 
@@ -129,6 +138,15 @@ function countLetter(inElement) {
 function getLogin() { return LOGIN; }
 
 function setLogin(inVal) { LOGIN = inVal; }
+
+function getFirebaseID() {
+    if (firebase.auth().currentUser.uid) return firebase.auth().currentUser.uid;
+    return null;
+}
+
+function setFirebaseID(inID) {
+    FIREBASE_ID = inID;
+}
 
 // This function is called when someone finishes with the Login
 // Button.  See the onlogin handler attached to it in the sample
@@ -280,13 +298,31 @@ function init_comments() {
     });
 
     $("body").on("click", ".comment-add-report", function() {
-        var uRef = firebase.database().ref("news/report/" + firebase.auth().currentUser.uid);
+        var uRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-"));
+        var report_display = $(this).parent().find(".report-display");
+
+        if (report_display.find("p").length) return;
+
         uRef.once("value").then(function(snapshot) {
             var report = snapshot.val(); // bldg/activity/OS/ping/down/up
 
-            if (!report) console.log("suggest to report now!");
+            if (!report) { // no recent report
+                var answer = confirm("오늘 인터넷 불편 제보가 없습니다. 지금 제보(1분)하러 가시겠어요?")
+                if (answer)
+                    window.location = "./collect.html";
 
-            $(this).parent().find(".report-display").append("<p>최근 제보 내용이 있다면 여기 추가될 것" + '<button onclick="this.parentElement.remove()" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></p>');
+                else return;
+            }
+
+            var report_radio = "";
+            for (var r in report) {
+                if (report[r].activity)
+                    report_radio += ("<input type='radio' name='report-radio'/> " + ['<i class="fa fa-building-o" aria-hidden="true"></i> ' + BLDG[report[r].bldg].name, report[r].activity, report[r].download + "Mbps", report[r].upload + "Mbps"].join(", ") + "<br/>");
+
+                else report_radio += ("<input type='radio' name='report-radio'/> " + ['<i class="fa fa-building-o" aria-hidden="true"></i> ' + BLDG[report[r].bldg].name, "연능불능", report[r].os, report[r].web].join(", ") + "<br/>");
+            }
+
+            report_display.append('<p> <button onclick="this.parentElement.remove()" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + report_radio + '</p>');
         });
 
     });
@@ -307,7 +343,6 @@ function postVote(inCommentID, inParentID, inLikeNum) { // inLikeNum 1 when upvo
                 } else { // if successfully posted a new comments clear textarea and turn off loading spinner. 
 
                 }
-
             });
 
     else uRef.remove();
@@ -317,13 +352,7 @@ function postVote(inCommentID, inParentID, inLikeNum) { // inLikeNum 1 when upvo
 function postComment(inElement) {
     if (!getLogin()) return; // check fb authentication
 
-    // Check whether the user is authenticated at firebase
-    var user = firebase.auth().currentUser;
-    if (!user) {
-        firebase.auth().signInAnonymously().then(function(user) {
-            postCommentCallback(inElement);
-        });
-    } else postCommentCallback(inElement);
+    postCommentCallback(inElement);
 }
 
 function postCommentCallback(inElement) {
@@ -387,7 +416,7 @@ function get_reply_html(type) {
         '<label for="comment-to"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></label>' +
         '<input type="text" class="form-control" id="comment-to" placeholder="아무나">' +
         '</span>' +
-        '<p class="comment-add-report">+ 내 최근 제보 추가하기</p>' +
+        '<p class="comment-add-report">+ 최근 제보 인용하기</p>' +
         '<div class="report-display"></div>' +
         '<div class="form-group">' +
         '<textarea class="form-control status-box" onkeyup="countLetter(this)" rows="2"></textarea>' +
