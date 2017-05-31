@@ -1,5 +1,5 @@
 var dbLoaded = false;
-var isSafari = detectBrowser();
+var isSafari = (detectBrowser() == 'safari' ? true : false);
 var users;
 var filteredCnt = 0; // # of signature filtered
 var petitionID = generateID(8);

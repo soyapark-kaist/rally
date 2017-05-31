@@ -172,9 +172,9 @@ function detectOS() {
 }
 
 function detectBrowser() {
-    var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
-    return isSafari;
+    if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) return 'safari';
+    else if (/Firefox/.test(window.navigator.userAgent)) return 'firefox';
+    return 'unknown';
 }
 
 function fromLatLngToPoint(latLng) {
@@ -187,6 +187,10 @@ function fromLatLngToPoint(latLng) {
 
 function toggleLoading(inSelector) {
     $(inSelector).toggleClass("loader");
+}
+
+function toggleFixedLoading(inSelector) {
+    $(inSelector).toggleClass("fixed-loader");
 }
 
 function setProgressbar(inNow, inMax) {

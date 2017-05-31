@@ -6,21 +6,6 @@ ul {
     background: white;
 }
 
-.timeline-progress {
-    /*top: 0px;*/
-    position: fixed;
-    z-index: 99;
-}
-
-.timeline-progress ul {
-    background: white;
-    padding-top: 30px;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
-}
-
 .timeline-progress .active .fa-circle {
     color: orange;
 }
@@ -152,10 +137,38 @@ textarea.form-control {
     color: palevioletred;
 }
 
-.media { 
+.media {
     padding: 5px 15px;
 }
 
 .media-emphasized {
     background-color: whitesmoke;
+}
+
+.fixed-loader {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #ff6c40;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }

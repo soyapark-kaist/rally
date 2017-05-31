@@ -27,10 +27,10 @@
 
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="css/theme.css" />
-    <link rel="stylesheet" href="css/collect.css" />
     <link rel="stylesheet" href="css/timeline.css" />
     <link rel="stylesheet" href="css/lineChart.css" />
     <link rel="stylesheet" href="css/news.css" />
+
 
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
@@ -107,8 +107,8 @@
     <!-- Content -->
     <div class="content">
         <div class="container">
-            <div class="timeline-progress">
-                <ul data-spy="affix" class="nav">
+            <div class="timeline-progress" style="position: fixed;z-index: 99;">
+                <ul data-spy="affix" class="nav" style="background: white;padding-top: 30px;top: 0px;left: 0px;width: 100%;box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);">
                     <li>
                         <a href="#launch">
                             <span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="bottom" title="제보 작성">
@@ -149,15 +149,13 @@
                 </ul>
             </div>
 
-            <div class="loading"></div>
 
-
-            <div class="alert alert-info" role="alert" id="respond">
+            <!--<div class="alert alert-info" role="alert" id="respond">
                 <strong><i class="fa fa-check-square-o" aria-hidden="true"></i>정보통신팀 답변</strong><br><span class="respond-text">여기에 답변</span><br>
-            </div>
+            </div>-->
 
             <div class="post">
-                <div class="container" style="word-break: break-all; animation: smooth-entry-btn 2s">
+                <div class="hello-msg container" style="display:none;word-break: break-all; animation: smooth-entry-btn 2s">
                     <h3>아,쫌!은 참여형 민원 사이트입니다. 학내 인터넷 문제에 집중하여 구성원이 문제를 인지하고 해결해가는 것을 목표로 하고 있습니다. </h3>
                 </div>
                 <div id="report-chart">
@@ -218,9 +216,9 @@
                 </div>
             </div>
             <!-- END Response from school -->
-
-            <ul id="nested-comment" class="media-list"></ul>
             <div class="loading"></div>
+            <ul id="nested-comment" class="media-list"></ul>
+
 
             <!-- Statistics overview-->
             <div class="post">

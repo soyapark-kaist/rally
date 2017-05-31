@@ -69,6 +69,11 @@ function drawBarChart() {
         .attr("width", spaceForLabels + chartWidth + spaceForLegend)
         .attr("height", chartHeight);
 
+    chart.append("text")
+        .attr("text-anchor", "middle") // this makes it easy to centre the text as the transform is applied to the anchor
+        .attr("transform", "translate(" + (chartWidth) + "," + (chartHeight - (20 / 3)) + ")") // centre below axis
+        .text("시간별 인터넷 불편 제보 갯수");
+
     // Create bars
     var bar = chart.selectAll("g")
         .data(zippedData)

@@ -9,9 +9,13 @@ var LOGIN = false,
     USERNAME = '',
     EMAIL = '';
 
+$(document).ready(function() {
+    $(".hello-msg").show();
+});
+
 $(function() {
     // Show loading spinner
-    toggleLoading(".loading");
+    toggleFixedLoading(".loading");
 
     initDB();
 
@@ -63,7 +67,6 @@ $(function() {
         });
     } else setFirebaseID(user.uid);
 
-
     /* Flow: fb sdk install -> check login status -> fetch comments from DB then append and bind events */
 });
 
@@ -95,7 +98,7 @@ function fetchComments() {
         if (!getLogin())
             init_popover($(".tweet .fa-chevron-up"));
 
-        toggleLoading(".loading");
+        toggleFixedLoading(".loading");
     });
 }
 
@@ -152,6 +155,19 @@ function setFirebaseID(inID) {
 // Button.  See the onlogin handler attached to it in the sample
 // code below.
 function checkLoginState() {
+    if (detectBrowser() == 'firefox') {
+        var request = indexedDB.open("MyTestDatabase");
+        request.onerror = function(event) {
+            //private Mode
+            alert("현재 웹 브라우저가 프라이빗 모드로 되어있어 포럼 참여 기능에 제약이 있을 수 있습니다. ");
+
+            //turn off loader
+            toggleFixedLoading(".loading");
+
+            $("#nested-comment").append("<li style='color:red;'>파이어폭스 프라이빗 모드에선 포럼 참여 기능이 지원되지 않습니다.</li>");
+        };
+    }
+
     FB.getLoginStatus(function(response) {
         checkLoginStateCallback(response);
     });
@@ -363,7 +379,7 @@ function postComment(inElement) {
 
 function postCommentCallback(inElement) {
     // turn on loading spinner. 
-    toggleLoading(".loading");
+    toggleFixedLoading(".loading");
 
     var new_comment_elem = inElement.parentElement.parentElement,
         content = new_comment_elem.getElementsByClassName("status-box")[0].value,
@@ -406,7 +422,7 @@ function postCommentCallback(inElement) {
         } else {
             // if successfully posted a new comments clear textarea and turn off loading spinner. 
             new_comment_elem.getElementsByClassName("status-box")[0].value = "";
-            toggleLoading(".loading");
+            toggleFixedLoading(".loading");
         }
     });
 }
