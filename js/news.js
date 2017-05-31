@@ -367,22 +367,24 @@ function postCommentCallback(inElement) {
 
     var new_comment_elem = inElement.parentElement.parentElement,
         content = new_comment_elem.getElementsByClassName("status-box")[0].value,
-        parent_id = '';
+        parent_id = '',
+        comment_type;
 
     // append report if existg
     if (new_comment_elem.querySelector("input[name='report-radio']:checked"))
         content = "<strong>" + new_comment_elem.querySelector("input[name='report-radio']:checked").value + "</strong> " + content;
 
-    // if a new comment is root comment
+    // if a new comment is not root comment
     if (new_comment_elem.id != "root-like") {
         parent_id = new_comment_elem.parentElement.id.split("comment_")[1];
-    }
+        comment_type = 2;
+    } else comment_type = new_comment_elem.querySelector("input[name='comment-type']:checked").value;
 
     var comment_key = generateID(8);
     /* UID for a new comments. */
     var playersRef = firebase.database().ref("news/comments/" + (parent_id ? parent_id + "/comments/" : "") + comment_key);
     var news_json = {
-        "type": $("input[name='comment-type']:checked").attr("value"),
+        "type": comment_type,
         "content": content,
         "time": new Date().toString(),
         "email": EMAIL + "/rally/" + USERNAME,
@@ -395,7 +397,6 @@ function postCommentCallback(inElement) {
     var parent_id = (parent_id == '') ? root_id : root_id + "_" + parent_id;
     append_comment_html(parent_id, comment_key, news_json, true);
 
-    debugger;
     prettifyTweet(".comment-" + comment_key + " p");
 
     console.log(USERNAME, EMAIL, content);
@@ -411,19 +412,21 @@ function postCommentCallback(inElement) {
 }
 
 function get_reply_html(type) {
+
     var reply_html =
         '<div id="like">' +
-        '<form class="form-inline"><div class="form-group">' +
-        '<label class="radio-inline">' +
-        '<input type="radio" value="0" name="comment-type" id="comment-question" value="comment-question" checked> 질문' +
-        '</label>' +
-        '<label class="radio-inline">' +
-        '<input type="radio" value="1" name="comment-type" id="comment-suggestion" value="comment-suggestion"> 제안' +
-        '</label>' +
-        '<label class="radio-inline">' +
-        '<input type="radio" value="2" name="comment-type" id="comment-else" value="comment-else"> 그 외' +
-        '</label>' +
-        '</div></form>' +
+        (type == 1 ? // add comment radio only for root comment
+            ('<form class="form-inline"><div class="form-group">' +
+                '<label class="radio-inline">' +
+                '<input type="radio" value="0" name="comment-type" id="comment-question" value="comment-question" checked> 질문' +
+                '</label>' +
+                '<label class="radio-inline">' +
+                '<input type="radio" value="1" name="comment-type" id="comment-suggestion" value="comment-suggestion"> 제안' +
+                '</label>' +
+                '<label class="radio-inline">' +
+                '<input type="radio" value="2" name="comment-type" id="comment-else" value="comment-else"> 그 외' +
+                '</label>' +
+                '</div></form>') : "") +
         '<form style="margin-top: 10px;">' +
         // '<span class="form-inline">' +
         // '<label for="comment-to"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></label>' +
