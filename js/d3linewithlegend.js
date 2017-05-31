@@ -8,7 +8,7 @@ function d3LineWithLegend() {
         color = d3.scale.category10().range(),
         dispatch = d3.dispatch('showTooltip', 'hideTooltip');
 
-    var x = d3.scale.linear(),
+    var x = d3.time.scale(),
         y = d3.scale.linear(),
         xAxis = d3.svg.axis().scale(x).orient('bottom'),
         yAxis = d3.svg.axis().scale(y).orient('left'),
@@ -21,7 +21,9 @@ function d3LineWithLegend() {
             var series = data.filter(function(d) { return !d.disabled })
                 .map(function(d) { return d.data });
 
-            x.domain(d3.extent(d3.merge(series), function(d) { return d[0] }))
+            var minDate = new Date(2017, 3, 4),
+                maxDate = new Date(2017, 4, 29);
+            x.domain([minDate, maxDate])
                 .range([0, width - margin.left - margin.right]);
 
             y.domain(d3.extent(d3.merge(series), function(d) { return d[1] }))
