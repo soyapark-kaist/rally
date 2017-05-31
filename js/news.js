@@ -580,5 +580,8 @@ function getClassPostfix(type) {
 }
 
 function is_key(obj, key) {
-    return (Object.keys(obj).indexOf(key.toString()) !== -1);
+    /* if is_leaf: break; */
+    if (typeof(c_news_json[key]) != "object") return (Object.keys(obj).indexOf(key.toString()) !== -1);
+
+    return false;
 }
