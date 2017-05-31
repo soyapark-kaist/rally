@@ -321,7 +321,7 @@ function init_comments() {
         var uRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-"));
         var report_display = $(this).parent().find(".report-display");
 
-        if (report_display.find("p").length) return;
+        if (report_display.find("div").length) return;
 
         uRef.once("value").then(function(snapshot) {
             var report = snapshot.val(); // bldg/activity/OS/ping/down/up
@@ -339,14 +339,14 @@ function init_comments() {
                 var report_txt;
                 if (report[r].activity) {
                     report_txt = [BLDG[report[r].bldg].name, report[r].activity, report[r].download + "Mbps", report[r].upload + "Mbps"].join(", ");
-                    report_radio += ("<input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "<br/>");
+                    report_radio += ("<div class='radio'><label><input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "</label></div>");
                 } else {
-                    report_txt = [BLDG[report[r].bldg].name, "연능불능", report[r].os, report[r].web].join(", ");
-                    report_radio += ("<input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "<br/>");
+                    report_txt = [BLDG[report[r].bldg].name, "연결불능", report[r].os, report[r].web].join(", ");
+                    report_radio += ("<div class='radio'><label><input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "</label></div>");
                 }
             }
 
-            report_display.append('<p> <button onclick="this.parentElement.remove()" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + report_radio + '</p>');
+            report_display.append('<div class="recent-report"><button onclick="this.parentElement.remove()" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + report_radio + '</div>');
         });
 
     });

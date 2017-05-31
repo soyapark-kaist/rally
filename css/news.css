@@ -15,7 +15,13 @@ ul {
 }
 
 .nav.nav-pills li {
-    display: table-cell !important;
+    display: inline-table;
+    width: 24%;
+    margin: 0;
+}
+
+.comment-nav-text {
+    display: block!important;
 }
 
 .nav-pills>li.active>a {
@@ -86,7 +92,7 @@ ul {
     width: 100%;
 }
 
-.report-display p {
+.recent-report {
     margin-top: 5px;
     background-color: #fff;
     border: 1px solid #d8d8d8;
@@ -131,10 +137,12 @@ textarea.form-control {
 
 .tweet_user {
     color: orange;
+    cursor: pointer;
 }
 
 .tweet_hashtag {
     color: palevioletred;
+    cursor: pointer;
 }
 
 .media {
@@ -171,4 +179,9 @@ textarea.form-control {
     100% {
         transform: rotate(360deg);
     }
+}
+
+.comment-add-report {
+    cursor: pointer;
+    color: #337ab7;
 }
