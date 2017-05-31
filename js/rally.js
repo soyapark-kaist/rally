@@ -189,6 +189,10 @@ function toggleLoading(inSelector) {
     $(inSelector).toggleClass("loader");
 }
 
+function toggleFixedLoading(inSelector) {
+    $(inSelector).toggleClass("fixed-loader");
+}
+
 function setProgressbar(inNow, inMax) {
     // aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"
     $(".progress-bar").css("width", (inNow / inMax * 100) + "%").attr("aria-valuenow", inNow);

@@ -11,7 +11,7 @@ var LOGIN = false,
 
 $(function() {
     // Show loading spinner
-    toggleLoading(".loading");
+    toggleFixedLoading(".loading");
 
     initDB();
 
@@ -95,7 +95,7 @@ function fetchComments() {
         if (!getLogin())
             init_popover($(".tweet .fa-chevron-up"));
 
-        toggleLoading(".loading");
+        toggleFixedLoading(".loading");
     });
 }
 
@@ -363,7 +363,7 @@ function postComment(inElement) {
 
 function postCommentCallback(inElement) {
     // turn on loading spinner. 
-    toggleLoading(".loading");
+    toggleFixedLoading(".loading");
 
     var new_comment_elem = inElement.parentElement.parentElement,
         content = new_comment_elem.getElementsByClassName("status-box")[0].value,
@@ -406,7 +406,7 @@ function postCommentCallback(inElement) {
         } else {
             // if successfully posted a new comments clear textarea and turn off loading spinner. 
             new_comment_elem.getElementsByClassName("status-box")[0].value = "";
-            toggleLoading(".loading");
+            toggleFixedLoading(".loading");
         }
     });
 }
