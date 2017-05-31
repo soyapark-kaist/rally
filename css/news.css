@@ -18,6 +18,7 @@ ul {
     display: inline-table;
     width: 24%;
     margin: 0;
+    cursor: pointer;
 }
 
 .comment-nav-text {
@@ -26,6 +27,10 @@ ul {
 
 .nav-pills>li.active>a {
     background-color: orange;
+}
+
+.nav-comment {
+    margin-bottom: 20px;
 }
 
 .media-body .fa+.fa {
@@ -184,4 +189,14 @@ textarea.form-control {
 .comment-add-report {
     cursor: pointer;
     color: #337ab7;
+}
+
+.hello-msg {
+    word-break: break-all;
+    max-width: 662px;
+    padding: 10px 0;
+}
+
+.hello-msg > h3 {
+    line-height: 1.5;
 }
