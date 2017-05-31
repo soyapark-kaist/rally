@@ -68,8 +68,7 @@
                 parseUrls: true
             }, args);
 
-        Array.prototype.forEach.call(elt, el => {
-
+        jQuery.each(elt, function(index, el) {
             const REGEX_URL = /(?:\s)(f|ht)tps?:\/\/([^\s\t\r\n<]*[^\s\t\r\n<)*_,\.])/g, //regex for urls
                 REGEX_USER = /\B@([a-zA-Z0-9-ㄱ-ㅎ|ㅏ-ㅣ|가-힣_]+)/g, //regex for @users
                 REGEX_HASHTAG = /\B(#[á-úÁ-Úä-üÄ-Üa-zA-Z0-9-ㄱ-ㅎ|ㅏ-ㅣ|가-힣_]+)/g; //regex for #hashtags
