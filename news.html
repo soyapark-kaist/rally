@@ -27,10 +27,8 @@
 
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="css/theme.css" />
-    <link rel="stylesheet" href="css/collect.css" />
-    <link rel="stylesheet" href="css/timeline.css" />
-    <link rel="stylesheet" href="css/lineChart.css" />
     <link rel="stylesheet" href="css/news.css" />
+    <link rel="stylesheet" href="css/lineChart.css" />
 
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
@@ -107,8 +105,8 @@
     <!-- Content -->
     <div class="content">
         <div class="container">
-            <div class="timeline-progress">
-                <ul data-spy="affix" class="nav">
+            <div class="timeline-progress" style="position: fixed;z-index: 99;">
+                <ul data-spy="affix" class="nav" style="background: white;padding-top: 30px;top: 0px;left: 0px;width: 100%;box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);">
                     <li>
                         <a href="#launch">
                             <span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="bottom" title="제보 작성">
@@ -150,9 +148,9 @@
             </div>
 
 
-            <div class="alert alert-info" role="alert" id="respond">
+            <!--<div class="alert alert-info" role="alert" id="respond">
                 <strong><i class="fa fa-check-square-o" aria-hidden="true"></i>정보통신팀 답변</strong><br><span class="respond-text">여기에 답변</span><br>
-            </div>
+            </div>-->
 
             <div class="post">
                 <div class="container" style="word-break: break-all; animation: smooth-entry-btn 2s">

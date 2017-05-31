@@ -6,21 +6,6 @@ ul {
     background: white;
 }
 
-.timeline-progress {
-    /*top: 0px;*/
-    position: fixed;
-    z-index: 99;
-}
-
-.timeline-progress ul {
-    background: white;
-    padding-top: 30px;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
-}
-
 .timeline-progress .active .fa-circle {
     color: orange;
 }
