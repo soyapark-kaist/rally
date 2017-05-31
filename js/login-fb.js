@@ -18,7 +18,6 @@ window.fbAsyncInit = function() {
     //    your app or not.
     //
     // These three cases are handled in the callback function.
-
     checkLoginState();
 
 };
