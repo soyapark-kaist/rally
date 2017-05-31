@@ -20,6 +20,11 @@ $(document).ready(function() {
         .attr('height', height(margin))
         .call(chart);
 
+    // svg.append("text")
+    //     .attr("text-anchor", "middle") // this makes it easy to centre the text as the transform is applied to the anchor
+    //     .attr("transform", "translate(" + (width(margin) / 2) + "," + (height(margin) - (20 / 3)) + ")") // centre below axis
+    //     .text("Date");
+
 
     chart.dispatch.on('showTooltip', function(e) {
         var offset = $('#report-chart').offset(), // { left: 0, top: 0 }
