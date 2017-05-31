@@ -9,6 +9,10 @@ var LOGIN = false,
     USERNAME = '',
     EMAIL = '';
 
+$(document).ready(function() {
+    $(".hello-msg").show();
+});
+
 $(function() {
     // Show loading spinner
     toggleFixedLoading(".loading");
