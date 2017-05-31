@@ -125,7 +125,7 @@ function handleOutboundLinkClicks(event) {
 }
 
 function countLetter(inElement) {
-    var postLength = inElement.textLength;
+    var postLength = inElement.textContent.length;
     var charactersLeft = 140 - postLength;
     inElement.getElementsByClassName("status-box");
 
