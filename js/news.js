@@ -89,7 +89,9 @@ function fetchComments() {
     commentsRef.once("value").then(function(snapshot) {
         var news_json = snapshot.val(); // data is here
         append_nested_comment("nested-comment", news_json);
-        fetchUserLog();
+
+        if (getLogin())
+            fetchUserLog();
 
         /* Styling for hash,@,url */
         prettifyTweet('.tweet p');
