@@ -35,7 +35,7 @@ function drawBarChart() {
         barHeight = 15,
         groupHeight = barHeight * data.series.length,
         gapBetweenGroups = 2,
-        spaceForLabels = 0,
+        spaceForLabels = 50,
         spaceForLegend = 150;
 
     // Zip the series data together (first values, second values, etc.)
@@ -60,8 +60,13 @@ function drawBarChart() {
     var yAxis = d3.svg.axis()
         .scale(y)
         .tickFormat('')
-        .tickSize(0)
+        .tickSize(10)
         .orient("left");
+
+    // var xAxis = d3.svg.axis()
+    //     .scale(x)
+    //     .orient("left")
+    //     .tickSize(10);
 
 
     // Specify the chart area and dimensions
@@ -71,7 +76,7 @@ function drawBarChart() {
 
     chart.append("text")
         .attr("text-anchor", "middle") // this makes it easy to centre the text as the transform is applied to the anchor
-        .attr("transform", "translate(" + (chartWidth) + "," + (chartHeight - (20 / 3)) + ")") // centre below axis
+        .attr("transform", "translate(" + (chartWidth + 40) + "," + (chartHeight - (20 / 3)) + ")") // centre below axis
         .text("시간별 인터넷 불편 제보 갯수");
 
     // Create bars
@@ -114,8 +119,7 @@ function drawBarChart() {
         .attr("y", groupHeight / 2)
         .attr("dy", ".35em")
         .text(function(d, i) {
-            if (i % data.series.length === 0)
-                return data.labels[Math.floor(i / data.series.length)];
+            if (i % data.series.length === 0 && i % 3 == 0) return data.labels[Math.floor(i / data.series.length)];
             else
                 return ""
         });
