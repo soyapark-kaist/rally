@@ -70,7 +70,7 @@
 //     );
 // });
 
-var CACHE_VERSION = 8;
+var CACHE_VERSION = 9;
 var CURRENT_CACHES = {
     prefetch: 'prefetch-cache-v' + CACHE_VERSION
 };
@@ -86,16 +86,19 @@ self.addEventListener('install', function(event) {
         'petition.html',
         'timeline.html',
         'login.html',
+        'news.html',
         'js/jquery.min.js',
         'js/bootstrap.min.js',
         'js/rally.js',
         'js/collect.js',
         'js/barChart.js',
         'js/donutChart.js',
+        'js/fb-sdk.js',
         'js/login.js',
         'js/petition.js',
         'js/others.js',
         'js/timeline.js',
+        'js/news.js',
         'css/bootstrap.min.css',
         'css/font-awesome.min.css',
         'css/custom.css',
@@ -103,6 +106,7 @@ self.addEventListener('install', function(event) {
         'css/collect.css',
         'css/timeline.css',
         'css/petition.css',
+        'css/news.css',
         'img/achome_beta_brand.png',
         'img/ios.png'
     ];
