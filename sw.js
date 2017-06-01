@@ -70,7 +70,7 @@
 //     );
 // });
 
-var CACHE_VERSION = 9;
+var CACHE_VERSION = 10;
 var CURRENT_CACHES = {
     prefetch: 'prefetch-cache-v' + CACHE_VERSION
 };
@@ -94,6 +94,7 @@ self.addEventListener('install', function(event) {
         'js/barChart.js',
         'js/donutChart.js',
         'js/fb-sdk.js',
+        'js/login-fb.js',
         'js/login.js',
         'js/petition.js',
         'js/others.js',
