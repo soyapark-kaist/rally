@@ -309,10 +309,10 @@ function init_comments() {
 
         //if all panel is on
         if (!target)
-            $(".media").show();
+            $("#nested-comment>.media").show();
         else {
             $(".media").hide();
-            $(".comment-" + target).show();
+            $("#nested-comment>.comment-" + target).show();
         }
 
     });
