@@ -93,6 +93,7 @@ self.addEventListener('install', function(event) {
         'js/collect.js',
         'js/barChart.js',
         'js/donutChart.js',
+        'js/fb-sdk.js',
         'js/login.js',
         'js/petition.js',
         'js/others.js',
