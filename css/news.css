@@ -197,6 +197,16 @@ textarea.form-control {
     padding: 10px 0;
 }
 
-.hello-msg > h3 {
+.hello-msg>h3 {
     line-height: 1.5;
+}
+
+.carousel-inner .item {
+    height: 240px;
+}
+
+.carousel-inner .item img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto
 }
