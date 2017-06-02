@@ -159,6 +159,7 @@ $(document).ready(function() {
         sin2.push([39, 0, "랜섬웨어 사태 발발"]);
         sin2.push([46, 0, "아,쫌 점검"]);
         sin2.push([50, 0, "축제"]);
+        sin2.push([55, 0, "세종관 차단기 고장"]);
 
         return [{
                 data: sin,
