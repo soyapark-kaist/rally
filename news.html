@@ -169,34 +169,132 @@
             <div class="post">
                 <h2 class="page-header" id="response">
                     <a href="#response" data-anchorjs-icon=""></a>학교에서 답변 도착</h2>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta.
-                    Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque
-                    nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula
-                    lacinia aliquet. Mauris ipsum. Nulla metus metus, ullamcorper vel, tincidunt sed, euismod in, nibh. Quisque volutpat condimentum velit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nam
-                    nec ante. Sed lacinia, urna non tincidunt mattis, tortor neque adipiscing diam, a cursus ipsum ante quis turpis. Nulla facilisi. Ut fringilla. Suspendisse potenti. Nunc feugiat mi a tellus consequat imperdiet. Vestibulum sapien. Proin
-                    quam. Etiam ultrices. Suspendisse in justo eu magna luctus suscipit. Sed lectus. Integer euismod lacus luctus magna. Quisque cursus, metus vitae pharetra auctor, sem massa mattis sem, at interdum magna augue eget diam. Vestibulum ante
-                    ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Morbi lacinia molestie dui. Praesent blandit dolor. Sed non quam. In vel mi sit amet augue congue elementum. Morbi in ipsum sit amet pede facilisis laoreet. Donec
-                    lacus nunc, viverra nec, blandit vel, egestas et, augue. Vestibulum tincidunt malesuada tellus. Ut ultrices ultrices enim. Curabitur sit amet mauris. Morbi in dui quis est pulvinar ullamcorper. Nulla facilisi. Integer lacinia sollicitudin
-                    massa. Cras metus. Sed aliquet risus a tortor. Integer id quam. Morbi mi. Quisque nisl felis, venenatis tristique, dignissim in, ultrices sit amet, augue. Proin sodales libero eget ante. Nulla quam. Aenean laoreet. Vestibulum nisi
-                    lectus, commodo ac, facilisis ac, ultricies eu, pede. Ut orci risus, accumsan porttitor, cursus quis, aliquet eget, justo. Sed pretium blandit orci. Ut eu diam at pede suscipit sodales. Aenean lectus elit, fermentum non, convallis
-                    id, sagittis at, neque.
-                </p>
                 <h3>
-                    <i class="fa fa-building-o fa-2x" aria-hidden="true"></i> 세종관
+                    1. 학교 네트워크 구성도
                 </h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed
-                    augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur
-                    tortor. Pellentesque nibh.
+                <img src="img/campus.png" />
+                <img src="img/dorm.png" />
+                <p>
+                    - 학교의 네트워크 구성은 캠퍼스망, 기숙사망, 문지 캠퍼스 망, 도곡동 캠퍼스 망, 화암 기숙사 망으로 구분되어 있으며 기숙사망과 캠퍼스 망은 각각의 관문라우터에 서 연동되어 있음
+                    <br/> - 문지캠퍼스는 캠퍼스 망의 Core Backbone에 직접 연동되어 있고 도곡 캠퍼스나 화암기숙사는 별도의 네트워크로 학교 망에 연동되지 않음
+                    <br/>- 인터넷 연동 현황
+                </p>
+                <div class="table-responsive">
+                    <table class="internet-status table table-striped table-hover table-inbox">
+                        <thead>
+                            <tr>
+                                <th>구분</th>
+                                <th>인터넷 연결 대역폭</th>
+                                <th>비고</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>캠퍼스망</td>
+                                <td>4Gbps</td>
+                                <td>KT</td>
+                            </tr>
+                            <tr>
+                                <td>기숙사망</td>
+                                <td>3Gbps</td>
+                                <td>KT</td>
+                            </tr>
+                            <tr>
+                                <td>문지캠퍼스</td>
+                                <td>10Gbps</td>
+                                <td>캠퍼스망 코어백본에 연동</td>
+                            </tr>
+                            <tr>
+                                <td>화암기숙사</td>
+                                <td>100Mbps</td>
+                                <td>교육망</td>
+                            </tr>
+                            <tr>
+                                <td>도곡캠퍼스(서울)</td>
+                                <td>70Mbps</td>
+                                <td>교육망</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>
+                    2. 생활관 트래픽 현황
+                </h3>
+                <p>[생활관 인터넷 대역폭 2G에서 3G로 확대한 후의 상황입니다]
+                    <br/><br/>현재 트래픽 정책 제어는 안하고 있는 상황에서 최고 피크치 약 2.8G의 사용량을 보여주고 있습니다.
+                </p>
+
+                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                    <!-- Indicators -->
+                    <ol class="carousel-indicators">
+                        <li data-target="#carousel-example-generic" data-slide-to="0"></li>
+                        <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                        <li data-target="#carousel-example-generic" data-slide-to="2" class="active"></li>
+                        <li data-target="#carousel-example-generic" data-slide-to="3"></li>
+                    </ol>
+
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner" role="listbox">
+                        <div class="item" style=" height: 240px;">
+                            <img src="img/traffic/0104.png" alt="1월 4일(수): 약 2.7G 최대치를 보이고 있음.">
+                            <div class="carousel-caption">
+                                <p>1월 4일(수): 약 2.7G 최대치를 보이고 있음.</p>
+                            </div>
+                        </div>
+                        <div class="item" style=" height: 240px;">
+                            <img src="img/traffic/0105.png">
+                            <div class="carousel-caption">
+                                <p>1월 5일(목): 약 2.7G 최대치를 보이고 있음.</p>
+                            </div>
+                        </div>
+                        <div class="item active">
+                            <img src="img/traffic/0510.png">
+                            <div class="carousel-caption">
+                                <p>5월 10일(수): 선거 다음날 4G 대역 최고치를 기록함(인터넷을 통한 선거방송의 영향으로 추측됨)</p>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <img src="img/traffic/0601.png">
+                            <div class="carousel-caption">
+                                <p>6월 1일(목)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Controls -->
+                    <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+
+                <h3>
+                    3. 현재 기숙사 네트워크 현황
+                </h3>
+                <p>
+                    ■ 기숙사 전체 인터넷 현황
+                    <br/> - 기숙사 인터넷은 KT와 3Gbps로 연동에 있고 위의 그래프에서 보듯이 최대 4Gbps이상 사용 중에 있으며 특히 야간 시간대에 트래픽이 상승함을 알 수 있음
+                    <br/> - 기숙사에서 사용되고 있는 어플리케이션 별 트래픽(아래도표 참조)
+                    <br/> - 트래픽 제어 : 학교에서는 특정한 사용자가 과도하게 대역폭을 선점하는 것을 막고 모든 사용자 균등하게 사용할 수 있도록 주간의 시간에는 제어를 하지 않 고 사용량이 급격히 증가하는 야간시간대에 개인당 50Mbps로 제어하고 있음
+                    <br/> - 또한 P2P제어는 주간에는 제어를 하지 않고 야간시간에만 300Mbps로 제어하 고 있음 (아래 도표 참조)
                 </p>
 
                 <h3>
-                    <i class="fa fa-building-o fa-2x" aria-hidden="true"></i> 희망관
+                    <i class="fa fa-building-o fa-2x" aria-hidden="true"></i> 희망관, 다솜관
                 </h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed
-                    augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur
-                    tortor. Pellentesque nibh.
+                <p> - 다솜관 네트워크(유, 무선) 장비는 장비의 노후화로 인하여 사용자에게 원활한 지원을 하지 못하고 있음<br/> - 현재 기숙사 지역중에 제일 네트워크 환경이 열악한 지역으로 이를 개선하고자 학교측에 예산요청을 하고 있는 중이며, 특히 해당부서와 긴밀하게 협조하여 빠른시간내에 네트워크 환경을 개선하고자 하고 있음
                 </p>
+
+                <h3>
+                    <i class="fa fa-building-o fa-2x" aria-hidden="true"></i> 세종관
+                </h3>
+                <p>일전에 야간시간에 세종관 3, 5동의 통신실 전원을 제공하는 차단기가 떨 어져 긴급하게 학교 전기실 및 장비점검을 통해 복구하였고, 5동의 경우는 벽전 원에서 분리하여 전기배전반에서 직접 배선을 하여 별도의 콘센트에 연결하여 전 원장애를 조치하였듯이, 이러한 물리적인 돌발 장애로 인한 네트워크 서비스의 중단이 될 수 있고, 때로는 사용자의 부주의로 해당건물 전체 네트워크에 영향을 주어 장애가 발생될 수 있으므로 이점
+                    시용자도 네트워크를 이용에 참고가 됐으 면 함. </p>
 
 
                 <ul class="nav nav-pills nav-justified nav-comment">
