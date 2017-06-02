@@ -70,7 +70,7 @@
 //     );
 // });
 
-var CACHE_VERSION = 10;
+var CACHE_VERSION = 11;
 var CURRENT_CACHES = {
     prefetch: 'prefetch-cache-v' + CACHE_VERSION
 };
@@ -105,6 +105,7 @@ self.addEventListener('install', function(event) {
         'css/custom.css',
         'css/theme.css',
         'css/collect.css',
+        'css/lineChart.css',
         'css/timeline.css',
         'css/petition.css',
         'css/news.css',
