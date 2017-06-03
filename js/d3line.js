@@ -2,7 +2,7 @@ function d3Line() {
     var margin = { top: 0, right: 0, bottom: 0, left: 0 },
         width = 400,
         height = 300,
-        dotRadius = function() { return 2.5 },
+        dotRadius = function() { return 5 },
         color = d3.scale.category10().range(),
         id = Math.floor(Math.random() * 10000), //Create semi-unique ID incase user doesn't select one
         x = d3.scale.linear(),
@@ -169,7 +169,8 @@ function d3Line() {
                 );
 
 
-            var points = lines.selectAll('circle.point')
+            var line0 = wrap.select('.lines').selectAll('.line-0');
+            var points = line0.selectAll('circle.point')
                 .data(function(d) { return d.data });
             points.enter().append('circle')
                 .attr('cx', function(d) { return x0(d[0]) })
@@ -180,6 +181,23 @@ function d3Line() {
                 .attr('cx', function(d) { return x(d[0]) })
                 .attr('cy', function(d) { return y(d[1]) })
                 .attr('r', dotRadius());
+
+            var line1 = wrap.select('.lines').selectAll('.line-1');
+            var points = line1.selectAll('rect.point')
+                .data(function(d) { return d.data });
+            points.enter().append('rect')
+                .attr('width', function(d) { return 12; })
+                .attr('height', function(d) { return 12; })
+                .attr('x', function(d) { return x0(d[0]) - 6 })
+                .attr('y', function(d) { return y0(d[1]) - 6 });
+            points.exit().remove();
+            points.attr('class', function(d, i) { return 'point point-' + i });
+            d3.transition(points)
+                .attr('width', function(d) { return 12; })
+                .attr('height', function(d) { return 12; })
+                .attr('x', function(d) { return x(d[0]) - 6 })
+                .attr('y', function(d) { return y(d[1]) - 6 });
+
 
         });
 

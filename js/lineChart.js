@@ -20,10 +20,10 @@ $(document).ready(function() {
         .attr('height', height(margin))
         .call(chart);
 
-    // svg.append("text")
-    //     .attr("text-anchor", "middle") // this makes it easy to centre the text as the transform is applied to the anchor
-    //     .attr("transform", "translate(" + (width(margin) / 2) + "," + (height(margin) - (20 / 3)) + ")") // centre below axis
-    //     .text("Date");
+    svg.append("text")
+        .attr("text-anchor", "middle") // this makes it easy to centre the text as the transform is applied to the anchor
+        .attr("transform", "translate(" + (25) + "," + (height(margin) / 2) + ")") // centre below axis
+        .text("제보 갯수");
 
 
     chart.dispatch.on('showTooltip', function(e) {

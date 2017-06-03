@@ -57,6 +57,68 @@ $(function() {
         // console.log("test");
     })
 
+    $(".timeline-progress a").on('click', function(event) {
+        // Make sure this.hash has a value before overriding default behavior
+        if (this.hash !== "") {
+            // Prevent default anchor click behavior
+            event.preventDefault();
+
+            // Store hash
+            var hash = this.hash;
+
+            // Using jQuery's animate() method to add smooth page scroll
+            // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
+            $('html, body').animate({
+                scrollTop: $(hash).offset().top - 80
+            }, 800, function() {
+
+                // Add hash (#) to URL when done scrolling (default click behavior)
+                window.location.hash = hash;
+            });
+
+        } // End if
+
+    });
+
+    // fb share button listener
+    $(".fb-share").click(function() {
+        window.open(
+            "http://www.facebook.com/sharer/sharer.php?u=" + (window.location.origin + window.location.pathname) + "&sharing=true"
+        );
+    })
+    $(".link-share").click(function() {
+        var share_url = window.location.origin + window.location.pathname;
+
+        /* iOS case (it does not support clipboard copy) */
+        if (detectOS() == "ios") {
+            $("#ios-url").val(share_url);
+            $('#ios-prompt-modal').modal();
+            setTimeout(function() {
+                $("#ios-url").select();
+            }, 500);
+            return;
+        }
+
+        var $temp = $("<input>");
+        $("body").append($temp);
+        $temp.val(share_url).select();
+        document.execCommand("copy");
+        $temp.remove();
+        var alert = '<div id="clip-alert" class="alert alert-warning alert-dismissible ' +
+            'col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-xs-10 col-xs-offset-1" role="alert">' +
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+            '<span aria-hidden="true">&times;</span>' +
+            '</button>클립보드에 복사되었습니다</div>'
+        var a_div = document.createElement("div");
+        a_div.innerHTML = alert;
+        $("body").append(a_div);
+        setTimeout(function() {
+            $("#clip-alert").fadeOut("normal", function() {
+                $(this).remove();
+            });
+        }, 1000);
+    })
+
     drawBarChart();
 
     // Check whether the user is authenticated at firebase
@@ -226,7 +288,7 @@ function add_root_reply() {
 
 function init_popover($x) {
     var popover_html =
-        '<a href="javascript:void(0);" onclick="fbLogin()"><i class="fa fa-facebook fa-2x" aria-hidden="true"></i></a>'
+        '<a href="javascript:void(0);" onclick="fbLogin()"><i class="fa fa-facebook-square fa-2x" aria-hidden="true"></i></a>'
         /*+
                 '<i class="fa fa-google fa-2x" aria-hidden="true"></i>' +
                 '<i class="fa fa-twitter fa-2x" aria-hidden="true"></i>' */
