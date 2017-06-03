@@ -172,13 +172,16 @@
                 <h3>
                     1. 학교 네트워크 구성도
                 </h3>
-                <img src="img/campus.png" />
-                <img src="img/dorm.png" />
-                <p>
-                    - 학교의 네트워크 구성은 캠퍼스망, 기숙사망, 문지 캠퍼스 망, 도곡동 캠퍼스 망, 화암 기숙사 망으로 구분되어 있으며 기숙사망과 캠퍼스 망은 각각의 관문라우터에서 연동되어 있음
-                    <br/> - 문지캠퍼스는 캠퍼스 망의 Core Backbone에 직접 연동되어 있고 도곡 캠퍼스나 화암기숙사는 별도의 네트워크로 학교 망에 연동되지 않음
-                    <br/>- 인터넷 연동 현황
-                </p>
+                <div class="col s12">
+                    <img style="width: 100%;" src="img/campus.png" />
+                    <img style="width: 100%;" src="img/dorm.png" />
+                </div>
+                <div class="article-text">
+                    <p>학교의 네트워크 구성은 캠퍼스망, 기숙사망, 문지 캠퍼스 망, 도곡동 캠퍼스 망, 화암 기숙사 망으로 구분되어 있으며 기숙사망과 캠퍼스 망은 각각의 관문라우터에서 연동되어 있음.</p>
+                    <p>문지캠퍼스는 캠퍼스 망의 Core Backbone에 직접 연동되어 있고 도곡 캠퍼스나 화암기숙사는 별도의 네트워크로 학교 망에 연동되지 않음.</p>
+                </div>
+                <br/>
+                <h4 style="text-align:center">인터넷 연동 현황</h4>
                 <div class="table-responsive">
                     <table class="internet-status table table-striped table-hover table-inbox">
                         <thead>
@@ -218,12 +221,10 @@
                     </table>
                 </div>
 
-                <h3>
-                    2. 생활관 트래픽 현황
-                </h3>
-                <p>[생활관 인터넷 대역폭 2G에서 3G로 확대한 후의 상황입니다]
-                    <br/><br/>현재 트래픽 정책 제어는 안하고 있는 상황에서 최고 피크치 약 2.8G의 사용량을 보여주고 있습니다.
-                </p>
+                <div class="article-text">
+                    <h3>2. 생활관 트래픽 현황</h3>
+                    <p>생활관 인터넷 대역폭 2G에서 3G로 확대한 후의 상황입니다. 현재 트래픽 정책 제어는 안하고 있는 상황에서 최고 피크치 약 2.8G의 사용량을 보여주고 있습니다.</p>
+                </div>
 
                 <div id="carousel-traffic" class="carousel slide" data-ride="carousel">
                     <!-- Indicators -->
@@ -289,16 +290,16 @@
                     </a>
                 </div>
 
-                <h3>
-                    3. 현재 기숙사 네트워크 현황
-                </h3>
-                <p>
-                    ■ 기숙사 전체 인터넷 현황
-                    <br/> - 기숙사 인터넷은 KT와 3Gbps로 연동에 있고 위의 그래프에서 보듯이 최대 4Gbps이상 사용 중에 있으며 특히 야간 시간대에 트래픽이 상승함을 알 수 있음
-                    <br/> - 기숙사에서 사용되고 있는 어플리케이션 별 트래픽(아래도표 참조)
-                    <br/> - 트래픽 제어 : 학교에서는 특정한 사용자가 과도하게 대역폭을 선점하는 것을 막고 모든 사용자 균등하게 사용할 수 있도록 주간의 시간에는 제어를 하지 않고 사용량이 급격히 증가하는 야간시간대에 개인당 50Mbps로 제어하고 있음
-                    <br/> - 또한 P2P제어는 주간에는 제어를 하지 않고 야간시간에만 300Mbps로 제어하고 있음 (아래 도표 참조)
-                </p>
+                <div class="article-text">
+                    <h3>3. 현재 기숙사 네트워크 현황</h3>
+                    <h4>가. 기숙사 전체 인터넷 현황</h4>
+                    <ul>
+                        <li>기숙사 인터넷은 KT와 3Gbps로 연동에 있고 위의 그래프에서 보듯이 최대 4Gbps이상 사용 중에 있으며 특히 야간 시간대에 트래픽이 상승함을 알 수 있음</li>
+                        <li>기숙사에서 사용되고 있는 어플리케이션 별 트래픽 (아래도표 참조)</li>
+                        <li>트래픽 제어 : 학교에서는 특정한 사용자가 과도하게 대역폭을 선점하는 것을 막고 모든 사용자 균등하게 사용할 수 있도록 주간의 시간에는 제어를 하지 않고 사용량이 급격히 증가하는 야간시간대에 개인당 50Mbps로 제어하고 있음</li>
+                        <li>또한 P2P제어는 주간에는 제어를 하지 않고 야간시간에만 300Mbps로 제어하고 있음 (아래 도표 참조)</li>
+                    </ul>
+                </div>
                 <div class="table-responsive">
                     <table class="internet-application table table-striped table-hover table-inbox">
                         <thead>
@@ -371,29 +372,32 @@
                         </tbody>
                     </table>
                 </div>
-                <p> ■ 기숙사 네트워크 현황
-                    <br/>- 전체적으로 최근에 10G로 업그레이드를 완료.
-                    <br/>- 와이파이는 300Mbps 무선랜 장비를 설치하여 운영 중에 있으며 사용자의 환경에 따라 속도 저하 또는 지연이 발생할 수 있음
-                    <br/>- 기숙사 와이파이는 스위치 방식이 아닌 쉐어드 방식이기 때문에 어느 특정 사용자가 와이파이 점유율을 높게 잡으면 나머지 사용자는 이용에 제한을 받을 수 있음
-                    <br/>- 와이파이 제조사에서 1개의 AP당 접속인원을 대약 20명이내 정도로 권장하고 있음(사용자의 사용량에 따라 달라질 수 있음. 예를 들면, 시중 사람이 많은 커피숍에서 제공하는 무선의 신호는 양호하나 연결이 안 되는 경우임. )
-                    <br/>- 아름관은 최근에 150Mbps에서 1Gbps를 지원하는 와이파이로 교체
-                    <br/>- 각 기숙사 마다 음영지역 및 신호의 세기가 좋지 않은 호실이 있어 점진적으로 음영지역 및 와이파이 성능 개선해 나갈 계획이며. 무선AP 신호가 취약한 끝 방쪽에 호실에 대해서는 부분적으로 공유기를 설치하여 무선네트워크 사용에 불편을 해소기키고자 함
-                    <br/>- 중, 장기적으로 무선 네트워크 성능을 개선하고 사용의 불편을 해소하고자 각 호실에 채널이 중첩되지 않는 와이파이 제품으로 교체 하는 방안을 강구하겠 음
-                </p>
+                <div class="article-text">
+                    <h4>나. 기숙사 네트워크 현황</h4>
+                    <ul>
+                        <li>전체적으로 최근에 10G로 업그레이드를 완료.</li>
+                        <li>와이파이는 300Mbps 무선랜 장비를 설치하여 운영 중에 있으며 사용자의 환경에 따라 속도 저하 또는 지연이 발생할 수 있음.</li>
+                        <li>기숙사 와이파이는 스위치 방식이 아닌 쉐어드 방식이기 때문에 어느 특정 사용자가 와이파이 점유율을 높게 잡으면 나머지 사용자는 이용에 제한을 받을 수 있음.</li>
+                        <li>와이파이 제조사에서 1개의 AP당 접속인원을 대약 20명이내 정도로 권장하고 있음. (사용자의 사용량에 따라 달라질 수 있음. 예를 들면, 시중 사람이 많은 커피숍에서 제공하는 무선의 신호는 양호하나 연결이 안 되는 경우임)</li>
+                        <li>아름관은 최근에 150Mbps에서 1Gbps를 지원하는 와이파이로 교체.</li>
+                        <li>각 기숙사 마다 음영지역 및 신호의 세기가 좋지 않은 호실이 있어 점진적으로 음영지역 및 와이파이 성능 개선해 나갈 계획이며. 무선AP 신호가 취약한 끝 방쪽에 호실에 대해서는 부분적으로 공유기를 설치하여 무선네트워크 사용에 불편을 해소기키고자 함.</li>
+                        <li>중, 장기적으로 무선 네트워크 성능을 개선하고 사용의 불편을 해소하고자 각 호실에 채널이 중첩되지 않는 와이파이 제품으로 교체 하는 방안을 강구하겠음.</li>
+                    </ul>
+                    <h3>
+                        <i class="fa fa-building-o" aria-hidden="true"></i> 희망관, 다솜관
+                    </h3>
+                    <ul>
+                        <li>다솜관 네트워크(유, 무선) 장비는 장비의 노후화로 인하여 사용자에게 원활한 지원을 하지 못하고 있음.</li>
+                        <li>현재 기숙사 지역중에 제일 네트워크 환경이 열악한 지역으로 이를 개선하고자 학교측에 예산요청을 하고 있는 중이며, 특히 해당부서와 긴밀하게 협조하여 빠른시간내에 네트워크 환경을 개선하고자 하고 있음.</li>
+                    </ul>
 
-                <h3>
-                    <i class="fa fa-building-o fa-2x" aria-hidden="true"></i> 희망관, 다솜관
-                </h3>
-                <p> - 다솜관 네트워크(유, 무선) 장비는 장비의 노후화로 인하여 사용자에게 원활한 지원을 하지 못하고 있음
-                    <br/> - 현재 기숙사 지역중에 제일 네트워크 환경이 열악한 지역으로 이를 개선하고자 학교측에 예산요청을 하고 있는 중이며, 특히 해당부서와 긴밀하게 협조하여 빠른시간내에 네트워크 환경을 개선하고자 하고 있음
-                </p>
-
-                <h3>
-                    <i class="fa fa-building-o fa-2x" aria-hidden="true"></i> 세종관
-                </h3>
-                <p>일전(5/29 월요일 오후 9~10시 - 아,쫌에 연결불능 여섯 사례 제보됨)에 야간시간에 세종관 3, 5동의 통신실 전원을 제공하는 차단기가 떨어져 긴급하게 학교 전기실 및 장비점검을 통해 복구하였고, 5동의 경우는 벽전 원에서 분리하여 전기배전반에서 직접 배선을 하여 별도의 콘센트에 연결하여 전 원장애를 조치하였듯이, 이러한 물리적인 돌발 장애로 인한 네트워크 서비스의 중단이 될 수 있고, 때로는 사용자의 부주의로 해당건물 전체 네트워크에 영향을 주어 장애가 발생될 수 있으므로 이 점
-                    시용자도 네트워크를 이용에 참고가 됐으면 함. </p>
-
+                    <h3>
+                        <i class="fa fa-building-o" aria-hidden="true"></i> 세종관
+                    </h3>
+                    <ul>
+                        <li><span class="article-tooltip" data-toggle="tooltip" data-placement="top" title="[5/29 월요일 오후 9~10시] 아,쫌에 연결불능 여섯 사례 제보됨">일전</span>에 야간시간에 세종관 3, 5동의 통신실 전원을 제공하는 차단기가 떨어져 긴급하게 학교 전기실 및 장비점검을 통해 복구하였고, 5동의 경우는 벽전 원에서 분리하여 전기배전반에서 직접 배선을 하여 별도의 콘센트에 연결하여 전 원장애를 조치하였음.</li>
+                        <li>이러한 물리적인 돌발 장애로 인한 네트워크 서비스의 중단이 될 수 있고, 때로는 사용자의 부주의로 해당건물 전체 네트워크에 영향을 주어 장애가 발생될 수 있으므로 이 점을 사용자도 네트워크를 이용에 참고가 됐으면 함. </p>
+                </div>
 
                 <ul class="nav nav-pills nav-justified nav-comment">
                     <li role="presentation" class="active"><a data-toggle="pill"><i class="fa fa-comments-o fa-4x" aria-hidden="true"></i><span class="comment-nav-text">All</span></a></li>
@@ -401,7 +405,6 @@
                     <li role="presentation"><a data-toggle="pill" value="suggest"><i class="fa fa-lightbulb-o fa-4x" aria-hidden="true"></i><span class="comment-nav-text">제안</span></a></li>
                     <li role="presentation"><a data-toggle="pill" value="comment"><i class="fa fa-ellipsis-h fa-4x" aria-hidden="true"></i><span class="comment-nav-text">그 외</span></a></li>
                 </ul>
-
 
                 <div class="tab-content">
                     <div id="dislike" class="tab-pane fade">
@@ -420,10 +423,11 @@
             <!-- Statistics overview-->
             <div class="post">
                 <h2 class="page-header" id="stat">
-                    <a href="#stat" data-anchorjs-icon=""></a>학교에 전송</h2>
+                    <a href="#stat" data-anchorjs-icon=""></a>학교에 전송
+                </h2>
 
                 <div class="row">
-                    <div class="col-sm-8">
+                    <div class="col-sm-8 article-text">
                         <p>아, 쫌 런칭 후 총 308개의 제보가 접수(5/12기준)되었습니다. 안정적인 인터넷은 학생들의 학습력과 직결된 문제이지만 많은 예산과 인력이 필요하다는 이유로 아직까지 학생들은 불편함을 겪고 있습니다. 운영진은 제보를 계속 모아 학교에 지속적으로 변화를 촉구할 것입니다.</p>
                         <div class="table-responsive">
                             <table class="overall-stat detailed-data table table-striped table-hover table-inbox">
@@ -446,9 +450,10 @@
             <!-- END Statistics overview-->
 
             <!-- Statistics overview-->
-            <div class="post">
+            <div class="post article-text">
                 <h2 class="page-header" id="launch">
-                    <a href="#launch" data-anchorjs-icon=""></a>아,쫌 런칭</h2>
+                    <a href="#launch" data-anchorjs-icon=""></a>아,쫌 런칭
+                </h2>
 
                 <p>4월 4일, 총학생회와 정보통신팀과의 긴 협력끝에 드디어 아,쫌이 세상에 알려졌습니다! 학교는 중복되고 산발된 제보에 집행력을 집중하지 못합니다. 정리되지 않은 정보로 문제 원인을 정확히 찾아내지 못합니다. 아,쫌은 짧은 시간에 인터넷 문제의 불편함을 제보 할 수 있게 하고 이를 학교함으로써 학교에 인터넷 문제 해결을 지속적으로 요청할 것입니다. </p>
             </div>
