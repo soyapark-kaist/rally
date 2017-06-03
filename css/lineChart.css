@@ -32,12 +32,15 @@
   margin: 0;
   padding: 0;
   text-align: center;
+  font-size: small;
+  color: grey;
 }
 
 .nvtooltip p {
   margin: 0;
   padding: 0;
   text-align: center;
+  font-size: x-large;
 }
 
 .nvtooltip span {
