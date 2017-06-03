@@ -210,3 +210,35 @@ textarea.form-control {
     margin-left: auto;
     margin-right: auto
 }
+
+.carousel-control {
+    background-image: none!important;
+    color: orange!important;
+}
+
+.carousel-caption {
+    text-shadow: none;
+}
+
+.article-text li {
+    font-size: large!important;
+    line-height: 1.5;
+    margin-bottom: 10px;
+    color: #535353;
+}
+
+.article-text p {
+    font-size: large!important;
+    line-height: 1.5;
+    color: #535353;
+}
+
+.article-text h4 {
+    margin: 15px 0;
+    color: #535353;
+}
+
+.article-tooltip {
+    text-decoration: underline;
+    font-weight: 600;
+}
