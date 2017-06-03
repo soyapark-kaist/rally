@@ -70,7 +70,7 @@
 //     );
 // });
 
-var CACHE_VERSION = 13;
+var CACHE_VERSION = 14;
 var CURRENT_CACHES = {
     prefetch: 'prefetch-cache-v' + CACHE_VERSION
 };
