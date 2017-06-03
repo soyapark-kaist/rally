@@ -70,7 +70,7 @@
 //     );
 // });
 
-var CACHE_VERSION = 12;
+var CACHE_VERSION = 13;
 var CURRENT_CACHES = {
     prefetch: 'prefetch-cache-v' + CACHE_VERSION
 };
@@ -89,10 +89,17 @@ self.addEventListener('install', function(event) {
         'news.html',
         'js/jquery.min.js',
         'js/bootstrap.min.js',
+        'js/d3.min.js',
+        'js/nvtooltip.js',
+        'js/d3legend.js',
+        'js/d3line.js',
+        'js/d3linewithlegend.js',
         'js/rally.js',
         'js/collect.js',
         'js/barChart.js',
         'js/donutChart.js',
+        'js/lineChart.js',
+        'js/tweetParser.js',
         'js/fb-sdk.js',
         'js/login-fb.js',
         'js/login.js',
