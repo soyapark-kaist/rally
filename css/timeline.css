@@ -105,3 +105,16 @@
     stroke: #000;
     shape-rendering: crispEdges;
 }
+
+.blinker {
+    animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+    from {
+        color: orange;
+    }
+    to {
+        color: black;
+    }
+}
