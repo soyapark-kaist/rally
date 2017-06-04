@@ -9,9 +9,21 @@ var LOGIN = false,
     USERNAME = '',
     EMAIL = '';
 
-$(document).ready(function() {
+function test() {
+    toggleFixedLoading(".content-loading");
+    setTimeout(showPage, 1000);
+}
+
+function showPage() {
+    toggleFixedLoading(".content-loading");
+    $(".content").css("visibility", "visible");
+
     $(".hello-msg").show();
-});
+
+    var hash = window.location.hash;
+    window.location.hash = "";
+    window.location.hash = hash;
+}
 
 $(function() {
     // Show loading spinner
@@ -127,7 +139,6 @@ $(function() {
             setFirebaseID(user.uid)
         });
     } else setFirebaseID(user.uid);
-
     /* Flow: fb sdk install -> check login status -> fetch comments from DB then append and bind events */
 });
 
@@ -570,12 +581,12 @@ function append_comment_html(parent_id, cid, news_json, visible) {
     var $parent = $(document.getElementById(parent_id));
 
     var icon = get_comment_icon(c_news_json.type);
-    var title = c_news_json.email.indexOf("kaistusc") != -1 ? "학부총학생회" : c_news_json.email.substring(0, 3) + "****";
+    var title = (c_news_json.email.indexOf("jrburuter") != -1 || c_news_json.email.indexOf("kaistusc") != -1) ? "학부총학생회" : c_news_json.email.substring(0, 3) + "****";
     var content = c_news_json.content;
 
     /* Build comment html */
     var html =
-        '<li class="media comment-' + getClassPostfix(c_news_json.type) + (c_news_json.email.indexOf("kaistusc") != -1 ? " media-emphasized" : "") + ' ">' +
+        '<li class="media comment-' + getClassPostfix(c_news_json.type) + (c_news_json.email.indexOf("jrburuter") != -1 || c_news_json.email.indexOf("kaistusc") != -1 ? " media-emphasized" : "") + ' ">' +
         '<div class="media-left">' +
         '<i class="fa fa-2x ' + icon + '" aria-hidden="true"></i>' +
         '</div>' +

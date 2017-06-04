@@ -83,7 +83,7 @@
     </script>
 </head>
 
-<body data-spy="scroll" data-target=".timeline-progress">
+<body onload="test()" data-spy="scroll" data-target=".timeline-progress">
     <!-- nav bar -->
     <header class="navbar navbar-static-top" role="banner" style="margin-bottom: 0px;">
         <div class="navbar-header">
@@ -105,8 +105,9 @@
         </nav>
     </header>
     <!--/nav bar-->
+    <div class="content-loading" style="left: 50%; position: fixed;"></div>
     <!-- Content -->
-    <div class="content">
+    <div class="content" style="visibility: hidden;">
         <div class="container">
             <div class="timeline-progress" style="position: fixed;z-index: 99;">
                 <ul data-spy="affix" class="nav" style="background: white;padding-top: 30px;top: 0px;left: 0px;width: 100%;box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);">
@@ -116,7 +117,7 @@
                             <i class="fa fa-circle fa-stack-2x"></i>
                             <i class="fa fa-pencil-square-o fa-stack-1x fa-inverse"></i>
                         </span>
-                            <div>아,쫌 제보 수집 시작</div>
+                            <div>아,쫌 제보 수집</div>
                         </a>
                     </li>
                     <!--<li><i class="fa fa-chevron-right" aria-hidden="true"></i></li>
@@ -144,7 +145,7 @@
                             <i class="fa fa-circle fa-stack-2x"></i>
                             <i class="fa fa-quote-left fa-stack-1x fa-inverse"></i>
                         </span>
-                            <div>학교에서 답변 도착</div>
+                            <div>학교 답변 도착</div>
                         </a>
                     </li>
                 </ul>
@@ -156,7 +157,7 @@
             </div>-->
 
             <div class="post">
-                <div class="hello-msg" style="display:none; animation: smooth-entry-btn 2s">
+                <div class="hello-msg" style="display:none; animation: smooth-entry-btn 1s">
                     <h3>아,쫌!은 참여형 민원 사이트입니다. 학내 인터넷 문제에 대해 통합된 소통창구를 만들고, 구성원들이 문제의 원인을 이해하고 해결해가는 것을 목표로 하고 있습니다. </h3>
                 </div>
                 <div class="article-text">
