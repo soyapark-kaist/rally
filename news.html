@@ -408,26 +408,17 @@
                         <li>이러한 물리적인 돌발 장애로 인한 네트워크 서비스의 중단이 될 수 있고, 때로는 사용자의 부주의로 해당건물 전체 네트워크에 영향을 주어 장애가 발생될 수 있으므로 이 점을 사용자도 네트워크를 이용에 참고가 됐으면 함. </p>
                 </div>
 
+                <h3>댓글 남기기</h3>
                 <ul class="nav nav-pills nav-justified nav-comment">
                     <li role="presentation" class="active"><a data-toggle="pill"><i class="fa fa-comments-o fa-4x" aria-hidden="true"></i><span class="comment-nav-text">All</span></a></li>
                     <li role="presentation"><a data-toggle="pill" value="question"><i class="fa fa-question fa-4x" aria-hidden="true"></i><span class="comment-nav-text">질문</span></a></li>
                     <li role="presentation"><a data-toggle="pill" value="suggest"><i class="fa fa-lightbulb-o fa-4x" aria-hidden="true"></i><span class="comment-nav-text">제안</span></a></li>
                     <li role="presentation"><a data-toggle="pill" value="comment"><i class="fa fa-ellipsis-h fa-4x" aria-hidden="true"></i><span class="comment-nav-text">그 외</span></a></li>
                 </ul>
-
-                <div class="tab-content">
-                    <div id="dislike" class="tab-pane fade">
-                        <h3>이번 주 민원에 참여하기</h3>
-                        <div style="text-align:center; margin-top:20px;margin-bottom:20px;">
-                            <a href="./collect.html" onclick="trackOutboundLink('./collect.html','participate'); return false;" class="btn btn-success btn-lg">동참하기</a>
-                        </div>
-                    </div>
-                </div>
+                <div class="loading"></div>
+                <ul id="nested-comment" class="media-list"></ul>
             </div>
             <!-- END Response from school -->
-            <div class="loading"></div>
-            <ul id="nested-comment" class="media-list"></ul>
-
 
             <!-- Statistics overview-->
             <div class="post">
