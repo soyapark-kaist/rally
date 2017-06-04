@@ -6,6 +6,10 @@ ul {
     background: white;
 }
 
+.page-header {
+    padding-top: 80px;
+}
+
 .timeline-progress .active .fa-circle {
     color: orange;
 }
