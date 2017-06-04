@@ -160,7 +160,7 @@
                     <h3>아,쫌!은 참여형 민원 사이트입니다. 학내 인터넷 문제에 대해 통합된 소통창구를 만들고, 구성원들이 문제의 원인을 이해하고 해결해가는 것을 목표로 하고 있습니다. </h3>
                 </div>
                 <div class="article-text">
-                    <p>"아,쫌!"이 릴리즈 된 후, 총 308개의 제보가 도착했습니다. 정보통신팀은 4월 4일 ~ 4월 17일 기간에 접수된 인터넷 문제 제보를 검토하여, 6월 2일에 답변을 보내왔습니다.</p>
+                    <p>"아,쫌!"이 릴리즈 된 후, 총 359개의 제보가 도착했습니다. 정보통신팀은 4월 4일 ~ 4월 17일 기간에 접수된 인터넷 문제 제보를 검토하여, 6월 2일에 답변을 보내왔습니다.</p>
                     <p>답변을 보시고, 학우분들의 피드백을 댓글로 부탁드립니다.</p>
                 </div>
                 <div id="report-chart">
@@ -408,26 +408,17 @@
                         <li>이러한 물리적인 돌발 장애로 인한 네트워크 서비스의 중단이 될 수 있고, 때로는 사용자의 부주의로 해당건물 전체 네트워크에 영향을 주어 장애가 발생될 수 있으므로 이 점을 사용자도 네트워크를 이용에 참고가 됐으면 함. </p>
                 </div>
 
+                <h3>댓글 남기기</h3>
                 <ul class="nav nav-pills nav-justified nav-comment">
                     <li role="presentation" class="active"><a data-toggle="pill"><i class="fa fa-comments-o fa-4x" aria-hidden="true"></i><span class="comment-nav-text">All</span></a></li>
                     <li role="presentation"><a data-toggle="pill" value="question"><i class="fa fa-question fa-4x" aria-hidden="true"></i><span class="comment-nav-text">질문</span></a></li>
                     <li role="presentation"><a data-toggle="pill" value="suggest"><i class="fa fa-lightbulb-o fa-4x" aria-hidden="true"></i><span class="comment-nav-text">제안</span></a></li>
                     <li role="presentation"><a data-toggle="pill" value="comment"><i class="fa fa-ellipsis-h fa-4x" aria-hidden="true"></i><span class="comment-nav-text">그 외</span></a></li>
                 </ul>
-
-                <div class="tab-content">
-                    <div id="dislike" class="tab-pane fade">
-                        <h3>이번 주 민원에 참여하기</h3>
-                        <div style="text-align:center; margin-top:20px;margin-bottom:20px;">
-                            <a href="./collect.html" onclick="trackOutboundLink('./collect.html','participate'); return false;" class="btn btn-success btn-lg">동참하기</a>
-                        </div>
-                    </div>
-                </div>
+                <div class="loading"></div>
+                <ul id="nested-comment" class="media-list"></ul>
             </div>
             <!-- END Response from school -->
-            <div class="loading"></div>
-            <ul id="nested-comment" class="media-list"></ul>
-
 
             <!-- Statistics overview-->
             <div class="post">
