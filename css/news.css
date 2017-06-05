@@ -300,10 +300,10 @@ textarea.form-control {
 }
 
 .fixed-fab-child .btn {
-    display: none;
+    display: block;
 }
 
-.fixed-fab-child .btn-circle+.btn-circle {
+.fixed-fab-child .btn+.btn {
     margin-top: 10px;
 }
 
