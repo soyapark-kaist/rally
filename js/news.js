@@ -7,7 +7,8 @@ $(window).scroll(function() {
 var LOGIN = false,
     USERID = '',
     USERNAME = '',
-    EMAIL = '';
+    EMAIL = '',
+    REPORT_OBJECT;
 
 function test() {
     toggleFixedLoading(".content-loading");
@@ -156,7 +157,6 @@ $(function() {
 });
 
 function displayBldgList() {
-    toggleFixedLoading(".locaiton-loader");
     // Try HTML5 geolocation.
     if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(function(position) {
@@ -219,36 +219,30 @@ function fetchBldgList(inCenter) {
     var list = [],
         cnt = 0;
 
-    var bldgRef = firebase.database().ref("bldg/");
-    // Attach an asynchronous callback to read the data at our posts reference
-    bldgRef.once("value").then(function(snapshot) {
-        BLDG = snapshot.val();
+    $('.building-list-ul').append(
+        '<li bldg="99"><a>전체</a></li>');
 
-        $('.building-list-ul').append(
-            '<li bldg="99"><a>전체</a></li>');
-
-        for (var l in BLDG) {
-            if (center) {
-                if (Math.abs(center.lat - BLDG[l].lat) < 0.001 && Math.abs(center.lng - BLDG[l].lng) < 0.001) {
-                    $('.building-list-ul').append(
-                        '<li bldg=' + l + '><a>' + BLDG[l].name + '</a></li>');
-
-                    list.push({ "lat": BLDG[l].lat, "lng": BLDG[l].lng, name: BLDG[l].name });
-                }
-            }
-
-        }
-
-        if (list.length == 0)
-            for (var l in BLDG) {
+    for (var l in BLDG) {
+        if (center) {
+            if (Math.abs(center.lat - BLDG[l].lat) < 0.001 && Math.abs(center.lng - BLDG[l].lng) < 0.001) {
                 $('.building-list-ul').append(
                     '<li bldg=' + l + '><a>' + BLDG[l].name + '</a></li>');
 
                 list.push({ "lat": BLDG[l].lat, "lng": BLDG[l].lng, name: BLDG[l].name });
             }
+        }
 
-        toggleFixedLoading(".locaiton-loader");
-    });
+    }
+
+    if (list.length == 0)
+        for (var l in BLDG) {
+            $('.building-list-ul').append(
+                '<li bldg=' + l + '><a>' + BLDG[l].name + '</a></li>');
+
+            list.push({ "lat": BLDG[l].lat, "lng": BLDG[l].lng, name: BLDG[l].name });
+        }
+
+
 }
 
 function fetchComments() {
@@ -283,41 +277,104 @@ function fetchUserLog() {
 }
 
 function fetchReport() {
+    toggleFixedLoading(".locaiton-loader");
+
+    if (REPORT_OBJECT) { //already fetched.
+        appendReport();
+    } else {
+        var uRef = firebase.database().ref("users/");
+        uRef.once("value").then(function(snapshot) {
+            REPORT_OBJECT = snapshot.val(); // bldg/activity/OS/ping/down/up
+            appendReport();
+            // if (!report) { // no recent report
+            //     var answer = confirm("오늘 인터넷 불편 제보가 없습니다. 지금 제보(1분)하러 가시겠어요?")
+            //     if (answer)
+            //         window.location = "./collect.html";
+
+            //     else return;
+            // }
+        });
+    }
+
+}
+
+function appendReport() {
+    $('.result').remove();
     var report_display = $(".report-display");
-    var recent_report = report_display.find('.recent-report');
-    $('.recent-report .radio').remove();
+    report_display.find('.recent-report').append("<div class='result'></div>")
+    var recent_report = report_display.find('.recent-report .result');
 
-    var uRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-"));
-    uRef.once("value").then(function(snapshot) {
-        var report = snapshot.val(); // bldg/activity/OS/ping/down/up
-
-        if (!report) { // no recent report
-            var answer = confirm("오늘 인터넷 불편 제보가 없습니다. 지금 제보(1분)하러 가시겠어요?")
-            if (answer)
-                window.location = "./collect.html";
-
-            else return;
+    var selected_date_num = $('.time-list-ul li.active').attr("date"),
+        date_range = [];
+    if (selected_date_num == 0) // today
+        date_range.push([new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-"));
+    else if (selected_date_num == 1) // yesterday 
+        date_range.push([new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate() - 1].join("-"));
+    else if (selected_date_num == 2) { // this week{
+        for (var i = 0; i < 7; i++) {
+            date_range.push([new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate() - i].join("-"));
         }
+    } else {
+        for (var d = new Date(); d >= new Date("Mon Apr 04 2017 00:00:1 GMT+0900 (KST)"); d.setDate(d.getDate() - 1)) {
+            date_range.push([d.getFullYear(), d.getMonth() + 1, d.getDate()].join("-"));
+        }
+    }
+    var report_radio = "";
+    var exist_flag = false,
+        cnt = 0,
+        download = 0.0,
+        download_cnt = 0,
+        upload = 0.0,
+        upload_cnt = 0;
+    var selected_bldg_num = $('.building-list-ul li.active').attr("bldg"),
+        selected_internet_num = $('.internet-list-ul li.active').attr("internet");
 
-        var report_radio = "";
-        var bldg_num = $('.building-list-ul li.active').attr("bldg");
-        for (var r in report) {
-            if (bldg_num && (bldg_num != 99 && bldg_num != report[r].bldg)) continue;
+    for (var d in date_range) {
+        for (var r in REPORT_OBJECT[date_range[d]]) {
+            var report = REPORT_OBJECT[date_range[d]][r];
+            if (selected_bldg_num && (selected_bldg_num != 99 && selected_bldg_num != report.bldg)) continue;
+            if (selected_internet_num && (selected_internet_num != 99 && selected_internet_num != report.type)) continue;
+            exist_flag = true;
 
             var report_txt;
-            if (report[r].activity) {
-                report_txt = [BLDG[report[r].bldg].name, report[r].activity, report[r].download + "Mbps", report[r].upload + "Mbps"].join(", ");
-                report_radio += ("<div class='radio'><label><input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "</label></div>");
+            if (report.activity) {
+                report_txt = [BLDG[report.bldg].name, report.activity, report.download + "Mbps", report.upload + "Mbps", report.time.split("GMT")[0].replace("2017 ", "")].join(", ");
+
+                download += parseFloat(report.download);
+                download_cnt++;
+
+                if (report.upload != "--") {
+                    upload += parseFloat(report.upload);
+                    upload_cnt++;
+                }
+
+                if (cnt++ < 15) {
+                    report_radio += ("<div class='radio'><label><input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "</label></div>");
+                }
             } else {
-                report_txt = [BLDG[report[r].bldg].name, "연결불능", report[r].os, report[r].web].join(", ");
-                report_radio += ("<div class='radio'><label><input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "</label></div>");
+                report_txt = [BLDG[report.bldg].name, "연결불능", report.os, report.web, report.time.split("GMT")[0].replace("2017 ", "")].join(", ");
+
+                if (cnt++ < 15)
+                    report_radio += ("<div class='radio'><label><input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "</label></div>");
             }
         }
+    }
+    if (exist_flag) {
+        recent_report.append("<p>통계</p>");
+        var stat_txt = ['<i class="fa fa-building-o" aria-hidden="true"></i>',
+            (selected_bldg_num == 99 || !selected_bldg_num ? "대덕캠퍼스" : BLDG[selected_bldg_num].name),
+            ", 평균 Download/Upload 속도 : " + (download / download_cnt).toFixed(2) + "Mbps/" + (upload / upload_cnt).toFixed(2) + "Mbps"
+        ].join(" ");
+        recent_report.append("<div class='radio'><label><input type='radio' name='report-radio'" + "value='" + stat_txt + "'/> " + stat_txt + "</label></div>");
 
+        recent_report.append("<p>개별 제보 (최근 15개까지 표시)</p>");
         recent_report.append(report_radio);
 
+    } else recent_report.append("<p>조건에 해당하는 제보가 없습니다.</p>");
 
-    });
+    recent_report.append("<a onclick='if(confirm(" + '"인터넷 불편 제보하기(1분) 페이지로 이동하시겠습니까?"' + ")) window.location = " + '"./collect.html"' + "; else return;'>내 제보 추가하기</a>");
+
+    toggleFixedLoading(".locaiton-loader");
 }
 
 function handleOutboundLinkClicks(event) {
@@ -550,12 +607,25 @@ function init_comments() {
             '</ul>' +
             '</li>' +
             '<li class="dropdown">' +
-            '<a class="dropdown-toggle" data-toggle="dropdown" href="#">날짜 검색' +
+            '<a class="dropdown-toggle" data-toggle="dropdown" href="#">시간 검색' +
             '<span class="caret"></span></a>' +
-            '<ul class="dropdown-menu">' +
-            '<li><a href="#">Page 1-1</a></li>' +
-            '<li><a href="#">Page 1-2</a></li>' +
-            '<li><a href="#">Page 1-3</a></li>' +
+            '<ul class="dropdown-menu time-list-ul">' +
+            '<li date="99"><a>전체</a></li>' +
+            '<li date="0"><a>오늘</a></li>' +
+            '<li date="1"><a>어제</a></li>' +
+            '<li date="2"><a>최근 일주일</a></li>' +
+            '</ul>' +
+            '</li>' +
+            '<li class="dropdown">' +
+            '<a class="dropdown-toggle" data-toggle="dropdown" href="#">인터넷 유형' +
+            '<span class="caret"></span></a>' +
+            '<ul class="dropdown-menu internet-list-ul">' +
+            '<li internet="99"><a>전체</a></li>' +
+            '<li internet="0"><a>Welcome_kaist</a></li>' +
+            '<li internet="1"><a>랜선</a></li>' +
+            '<li internet="2"><a>그 외</a></li>' +
+            '</ul>' +
+            '</li>' +
             '</ul>' +
             '</li>' +
             '</ul>' +
@@ -574,8 +644,8 @@ function init_comments() {
 
     /* Bind report building search pick. */
     $("body").on("click", ".dropdown-menu li a", function(e) {
-        if ($(this).parent().attr('bldg')) { // if the user select a building
-            $(".dropdown-menu li").removeClass("active");
+        if ($(this).parent().attr('bldg') || $(this).parent().attr('date') || $(this).parent().attr('internet')) { // if the user select a building
+            $(this).parent().parent().find('li').removeClass("active");
             $(this).parent().addClass("active");
             $(this).parents(".dropdown").find('.dropdown-toggle')
                 .html($(this).text() + ' <span class="caret"></span>');
@@ -660,6 +730,7 @@ function postCommentCallback(inElement) {
         } else {
             // if successfully posted a new comments clear textarea and turn off loading spinner.
             new_comment_elem.getElementsByClassName("status-box")[0].value = "";
+            $('.recent-report').remove();
             toggleFixedLoading(".loading");
         }
     });
