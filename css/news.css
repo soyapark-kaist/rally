@@ -259,6 +259,10 @@ textarea.form-control {
     background: orange;
 }
 
+.btn-circle-orange a {
+    color: white;
+}
+
 .btn-circle-orange:hover {
     color: white;
     background-color: darkorange;
@@ -278,6 +282,11 @@ textarea.form-control {
     padding: 5px 0;
     font-size: 20px;
     border-radius: 20px;
+}
+
+.btn-2-word {
+    line-height: 2;
+    font-size: 15px;
 }
 
 .fixed-fab {
