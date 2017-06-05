@@ -485,7 +485,7 @@
                 <a href="#comment">댓글</a>
             </div>
             <div class="btn btn-circle btn-circle-orange btn-2-word btn-circle-sm">
-                <a href="./collect.html">제보</a>
+                <a onclick="if(confirm('인터넷 불편 제보하기(1분) 페이지로 이동하시겠습니까?')) window.location = './collect.html'; else return;">제보</a>
             </div>
         </div>
         <div class="btn btn-circle btn-circle-orange btn-circle-lg fixed-fab-master">
@@ -526,7 +526,7 @@
     </footer>
     <script type="text/javascript">
         $(function() {
-            $('[data-toggle="tooltip"]').tooltip()
+            $('[data-toggle="tooltip" ] ').tooltip()
         })
     </script>
 </body>
