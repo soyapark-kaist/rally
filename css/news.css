@@ -297,3 +297,8 @@ textarea.form-control {
 .fixed-fab-child .btn-circle+.btn-circle {
     margin-top: 10px;
 }
+
+.building-list-container {
+    overflow-y: scroll;
+    height: 250px;
+}

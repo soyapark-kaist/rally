@@ -155,6 +155,52 @@ $(function() {
     /* Flow: fb sdk install -> check login status -> fetch comments from DB then append and bind events */
 });
 
+function displayBldgList() {
+    toggleFixedLoading(".locaiton-loader");
+    // Try HTML5 geolocation.
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+                center = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+
+                // DEBUGGING purpose
+                // center = {
+                //     "lat": 36.374,
+                //     "lng": 127.3655
+                // };
+
+                // center = {
+                //     "lat": 36.374,
+                //     "lng": 127.360
+                // };
+
+                fetchBldgList(center);
+
+            },
+            function() { //error callback
+                console.log("Error geolocation");
+                // alert('브라우저의 위치정보 수집이 불가합니다. 설정에서 승인 후 다시 시도해주세요.');
+                $("#loc-msg").text("위치 검색이 불가해 자동으로 현재 건물을 찾을 수 없습니다. 현재 위치한 건물을 선택해주세요.");
+                fetchBldgList();
+                // handleLocationError(true, infoWindow, map.getCenter());
+            }, {
+                timeout: 10000
+            });
+
+
+    } else {
+        // Browser doesn't support Geolocation
+        console.log("Error geolocation; brower doesn't support");
+        // alert('브라우저의 위치정보 수집이 불가합니다. 다른 브라우저에서 다시 시도해주세요.');
+        $("#loc-msg").text("위치 검색이 불가해 자동으로 현재 건물을 찾을 수 없습니다. 현재 위치한 건물을 선택해주세요.");
+
+        fetchBldgList();
+        // handleLocationError(false, infoWindow, map.getCenter());
+    }
+}
+
 /* Should call this function every time new comments appended. */
 function prettifyTweet(inSelector) {
     tweetParser(inSelector, {
@@ -166,6 +212,49 @@ function prettifyTweet(inSelector) {
         parseUsers: true,
         parseHashtags: true,
         parseUrls: true
+    });
+}
+
+function fetchBldgList(inCenter) {
+    function nextChar(c) {
+        return String.fromCharCode(c.charCodeAt(0) + 1);
+    }
+
+    var list = [],
+        cnt = 0,
+        alphabet = 'A';
+
+    var bldgRef = firebase.database().ref("bldg/");
+    // Attach an asynchronous callback to read the data at our posts reference
+    bldgRef.once("value").then(function(snapshot) {
+        BLDG = snapshot.val();
+
+        for (var l in BLDG) {
+            if (center) {
+                if (Math.abs(center.lat - BLDG[l].lat) < 0.001 && Math.abs(center.lng - BLDG[l].lng) < 0.001) {
+                    $('.building-list-ul').append(
+                        '<li bldg=' + l + '><a>' + alphabet + '. ' + BLDG[l].name + '</a></li>');
+
+                    list.push({ "lat": BLDG[l].lat, "lng": BLDG[l].lng, label: alphabet, name: BLDG[l].name });
+
+                    alphabet = nextChar(alphabet);
+                }
+            }
+
+        }
+
+        if (list.length == 0)
+            for (var l in BLDG) {
+                $('.building-list-ul').append(
+                    '<li bldg=' + l + '><a>' + alphabet + '. ' + BLDG[l].name + '</a></li>');
+
+
+                list.push({ "lat": BLDG[l].lat, "lng": BLDG[l].lng, label: alphabet, name: BLDG[l].name });
+
+                alphabet = nextChar(alphabet);
+            }
+
+        toggleFixedLoading(".locaiton-loader");
     });
 }
 
@@ -197,6 +286,41 @@ function fetchUserLog() {
         for (var l in user_json) {
             $(".comment-" + l + " .fa-chevron-up").addClass("active");
         }
+    });
+}
+
+function fetchReport() {
+    var report_display = $(".report-display");
+    var recent_report = report_display.find('.recent-report');
+    $('.recent-report .radio').remove();
+
+    var uRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-"));
+    uRef.once("value").then(function(snapshot) {
+        var report = snapshot.val(); // bldg/activity/OS/ping/down/up
+
+        if (!report) { // no recent report
+            var answer = confirm("오늘 인터넷 불편 제보가 없습니다. 지금 제보(1분)하러 가시겠어요?")
+            if (answer)
+                window.location = "./collect.html";
+
+            else return;
+        }
+
+        var report_radio = "";
+        for (var r in report) {
+            var report_txt;
+            if (report[r].activity) {
+                report_txt = [BLDG[report[r].bldg].name, report[r].activity, report[r].download + "Mbps", report[r].upload + "Mbps"].join(", ");
+                report_radio += ("<div class='radio'><label><input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "</label></div>");
+            } else {
+                report_txt = [BLDG[report[r].bldg].name, "연결불능", report[r].os, report[r].web].join(", ");
+                report_radio += ("<div class='radio'><label><input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "</label></div>");
+            }
+        }
+
+        recent_report.append(report_radio);
+
+
     });
 }
 
@@ -403,36 +527,65 @@ function init_comments() {
     });
 
     $("body").on("click", ".comment-add-report", function() {
-        var uRef = firebase.database().ref("users/" + [new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-"));
+        // Remove other element before add new one. 
+        $('.recent-report').remove();
+
         var report_display = $(this).parent().find(".report-display");
 
         if (report_display.find("div").length) return;
 
-        uRef.once("value").then(function(snapshot) {
-            var report = snapshot.val(); // bldg/activity/OS/ping/down/up
+        // add close button
+        report_display.append('<button onclick="this.parentElement.remove()" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>');
 
-            if (!report) { // no recent report
-                var answer = confirm("오늘 인터넷 불편 제보가 없습니다. 지금 제보(1분)하러 가시겠어요?")
-                if (answer)
-                    window.location = "./collect.html";
+        report_display.append('<div class="recent-report"></div>');
+        var recent_report = report_display.find('.recent-report');
 
-                else return;
-            }
+        // add navbar for report search
+        recent_report.append('<nav class="navbar navbar-default">' +
+            '<div class="container-fluid">' +
+            '<div class="navbar-header"><a class="navbar-brand">제보 검색</a>' +
+            '</div>' +
+            '<ul class="nav navbar-nav">' +
+            '<li class="dropdown">' +
+            '<a class="dropdown-toggle" data-toggle="dropdown" href="#">건물 검색' +
+            '<span class="caret"></span></a>' +
+            '<ul class="dropdown-menu building-list-ul">' +
+            '<li><a onclick="displayBldgList()">내 건물 검색<div style="color: gray"><i class="fa fa-map-marker" aria-hidden="true"></i> 위치정보 수집</div><p id="loc-msg"></p></a></li>' +
+            '</ul>' +
+            '</li>' +
+            '<li class="dropdown">' +
+            '<a class="dropdown-toggle" data-toggle="dropdown" href="#">날짜 검색' +
+            '<span class="caret"></span></a>' +
+            '<ul class="dropdown-menu">' +
+            '<li><a href="#">Page 1-1</a></li>' +
+            '<li><a href="#">Page 1-2</a></li>' +
+            '<li><a href="#">Page 1-3</a></li>' +
+            '</ul>' +
+            '</li>' +
+            '</ul>' +
+            '<ul class="nav navbar-nav navbar-right">' +
+            '<li><a onclick="fetchReport()"><i class="fa fa-search" aria-hidden="true"></i>검색</a></li>' +
+            '</ul>' +
+            '</div>' +
+            '</nav>');
+        // add current location search button
+        recent_report.append("<div class='locaiton-loader' style='left:50%;'></div>");
 
-            var report_radio = "";
-            for (var r in report) {
-                var report_txt;
-                if (report[r].activity) {
-                    report_txt = [BLDG[report[r].bldg].name, report[r].activity, report[r].download + "Mbps", report[r].upload + "Mbps"].join(", ");
-                    report_radio += ("<div class='radio'><label><input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "</label></div>");
-                } else {
-                    report_txt = [BLDG[report[r].bldg].name, "연결불능", report[r].os, report[r].web].join(", ");
-                    report_radio += ("<div class='radio'><label><input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "</label></div>");
-                }
-            }
+        // add building list table
+        // recent_report.append('<div class="building-list-container"><table class="building-list table table-hover"><tbody></tbody></table></div>');
 
-            report_display.append('<div class="recent-report"><button onclick="this.parentElement.remove()" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + report_radio + '</div>');
-        });
+    });
+
+    /* Bind report search pick. */
+    $("body").on("click", ".dropdown-menu li a", function(e) {
+        if ($(this).parent().attr('bldg')) { // if the user select a building
+            $(this).parents(".dropdown").find('.dropdown-toggle')
+                .html($(this).text() + ' <span class="caret"></span>');
+            $(this).parents(".dropdown").find('.dropdown-toggle')
+                .val($(this).data('value'));
+        } else { // if user selects search
+            e.stopPropagation(); // prevent dropdown to be closed. 
+        }
 
     });
 }

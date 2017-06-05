@@ -117,7 +117,7 @@
                             <i class="fa fa-circle fa-stack-2x"></i>
                             <i class="fa fa-pencil-square-o fa-stack-1x fa-inverse"></i>
                         </span>
-                            <div>아,쫌 제보 수집</div>
+                            <div>아,쫌 인터넷!</div>
                         </a>
                     </li>
                     <!--<li><i class="fa fa-chevron-right" aria-hidden="true"></i></li>
@@ -155,9 +155,10 @@
             <!--<div class="alert alert-info" role="alert" id="respond">
                 <strong><i class="fa fa-check-square-o" aria-hidden="true"></i>정보통신팀 답변</strong><br><span class="respond-text">여기에 답변</span><br>
             </div>-->
-
+            <div id="launch"></div>
             <div class="post">
                 <div class="hello-msg" style="display:none; animation: smooth-entry-btn 1s">
+                    <a href="#launch" data-anchorjs-icon=""></a>
                     <h3>아,쫌!은 참여형 민원 사이트입니다. 학내 인터넷 문제에 대해 통합된 소통창구를 만들고, 구성원들이 문제의 원인을 이해하고 해결해가는 것을 목표로 하고 있습니다. </h3>
                 </div>
                 <div class="article-text">
@@ -170,11 +171,41 @@
                 </div>
             </div>
 
+            <!-- Statistics overview-->
+            <div class="post">
+                <h2 class="page-header" id="stat">
+                    <a href="#stat" data-anchorjs-icon=""></a>학교에 전송
+                    <span style="color: grey;font-size: 50%;">2017/04/18</span>
+                </h2>
+
+                <div class="row">
+                    <div class="col-sm-8 article-text">
+                        <p>아, 쫌 런칭 후 총 308개의 제보가 접수(5/12기준)되었습니다. 안정적인 인터넷은 학생들의 학습력과 직결된 문제이지만 많은 예산과 인력이 필요하다는 이유로 아직까지 학생들은 불편함을 겪고 있습니다. 운영진은 제보를 계속 모아 학교에 지속적으로 변화를 촉구할 것입니다.</p>
+                        <div class="table-responsive">
+                            <table class="overall-stat detailed-data table table-striped table-hover table-inbox">
+                                <thead>
+                                    <tr>
+                                        <th>건물명</th>
+                                        <th>제보 개수</th>
+                                        <th>Download(Mbps)</th>
+                                        <th>Upload(Mbps)</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <svg id="timeStat"></svg></div>
+                </div>
+            </div>
+            <!-- END Statistics overview-->
 
             <!-- Response from school -->
             <div>
                 <h2 class="page-header" id="response">
                     <a href="#response" data-anchorjs-icon=""></a>학교에서 답변 도착
+                    <span style="color: grey;font-size: 50%;">2017/06/02</span>
                 </h2>
                 <div class="article-text">
                     <p>정보통신팀은 4월 4일부터 4월 17일까지 수집된 인터넷 문제 제보를 검토하여, 6월 2일에 아래의 답변을 보내왔습니다. 해당 답변은 학교 네트워크 구조, 현재 현황과 정책, 앞으로의 계획, 특히 문제가 심한 기숙사에 대한 설명 순으로 구성됩니다.</p>
@@ -424,46 +455,6 @@
                 <ul id="nested-comment" class="media-list"></ul>
             </div>
             <!-- END Response from school -->
-
-            <!-- Statistics overview-->
-            <div class="post">
-                <h2 class="page-header" id="stat">
-                    <a href="#stat" data-anchorjs-icon=""></a>학교에 전송
-                </h2>
-
-                <div class="row">
-                    <div class="col-sm-8 article-text">
-                        <p>아, 쫌 런칭 후 총 308개의 제보가 접수(5/12기준)되었습니다. 안정적인 인터넷은 학생들의 학습력과 직결된 문제이지만 많은 예산과 인력이 필요하다는 이유로 아직까지 학생들은 불편함을 겪고 있습니다. 운영진은 제보를 계속 모아 학교에 지속적으로 변화를 촉구할 것입니다.</p>
-                        <div class="table-responsive">
-                            <table class="overall-stat detailed-data table table-striped table-hover table-inbox">
-                                <thead>
-                                    <tr>
-                                        <th>건물명</th>
-                                        <th>제보 개수</th>
-                                        <th>Download(Mbps)</th>
-                                        <th>Upload(Mbps)</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <svg id="timeStat"></svg></div>
-                </div>
-            </div>
-            <!-- END Statistics overview-->
-
-            <!-- Statistics overview-->
-            <div class="post article-text">
-                <h2 class="page-header" id="launch">
-                    <a href="#launch" data-anchorjs-icon=""></a>아,쫌 런칭
-                </h2>
-
-                <p>4월 4일, 총학생회와 정보통신팀과의 긴 협력끝에 드디어 아,쫌이 세상에 알려졌습니다! 학교는 중복되고 산발된 제보에 집행력을 집중하지 못합니다. 정리되지 않은 정보로 문제 원인을 정확히 찾아내지 못합니다. 아,쫌은 짧은 시간에 인터넷 문제의 불편함을 제보 할 수 있게 하고 이를 학교함으로써 학교에 인터넷 문제 해결을 지속적으로 요청할 것입니다. </p>
-            </div>
-            <!-- END Statistics overview-->
-
 
             <div class="post">
                 <div id="sharing-intro" class="row participate-row">
