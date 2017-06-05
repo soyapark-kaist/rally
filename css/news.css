@@ -311,3 +311,27 @@ textarea.form-control {
     overflow-y: scroll;
     height: 250px;
 }
+
+.bar-step {
+    position: absolute;
+    /*margin-top: -20px;*/
+    z-index: 1;
+    font-size: 12px;
+}
+
+.label-txt {
+    float: left;
+}
+
+.label-line {
+    float: right;
+    background: #000;
+    height: 50px;
+    width: 1px;
+    margin-left: 5px;
+}
+
+.label-percent {
+    float: right;
+    margin-left: 5px;
+}
