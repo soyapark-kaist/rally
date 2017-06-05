@@ -149,7 +149,7 @@ $(document).ready(function() {
             cos.push([i, 0]);
         }
 
-        sin2.push([0, 0, "아, 쫌 릴리즈"]);
+        // sin2.push([0, 0, "아, 쫌 릴리즈"]);
         sin2.push([1, 0, "총학생회 홍보"]);
         sin2.push([8, 0, "대학원학생회 홍보"]);
         sin2.push([13, 0, "중간고사"]);

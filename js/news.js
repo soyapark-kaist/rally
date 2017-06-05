@@ -521,11 +521,11 @@ function init_comments() {
 
         if (report_display.find("div").length) return;
 
+        // add close button
+        report_display.append('<button onclick="this.parentElement.remove()" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>');
+
         report_display.append('<div class="recent-report"></div>');
         var recent_report = report_display.find('.recent-report');
-
-        // add close button
-        recent_report.append('<button onclick="this.parentElement.remove()" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>');
 
         // add navbar for report search
         recent_report.append('<nav class="navbar navbar-default">' +
