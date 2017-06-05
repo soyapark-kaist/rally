@@ -225,7 +225,7 @@ function fetchBldgList(inCenter) {
         BLDG = snapshot.val();
 
         $('.building-list-ul').append(
-            '<li><a>전체</a></li>');
+            '<li bldg="99"><a>전체</a></li>');
 
         for (var l in BLDG) {
             if (center) {
@@ -300,7 +300,10 @@ function fetchReport() {
         }
 
         var report_radio = "";
+        var bldg_num = $('.building-list-ul li.active').attr("bldg");
         for (var r in report) {
+            if (bldg_num && (bldg_num != 99 && bldg_num != report[r].bldg)) continue;
+
             var report_txt;
             if (report[r].activity) {
                 report_txt = [BLDG[report[r].bldg].name, report[r].activity, report[r].download + "Mbps", report[r].upload + "Mbps"].join(", ");
@@ -569,9 +572,11 @@ function init_comments() {
 
     });
 
-    /* Bind report search pick. */
+    /* Bind report building search pick. */
     $("body").on("click", ".dropdown-menu li a", function(e) {
         if ($(this).parent().attr('bldg')) { // if the user select a building
+            $(".dropdown-menu li").removeClass("active");
+            $(this).parent().addClass("active");
             $(this).parents(".dropdown").find('.dropdown-toggle')
                 .html($(this).text() + ' <span class="caret"></span>');
             $(this).parents(".dropdown").find('.dropdown-toggle')
