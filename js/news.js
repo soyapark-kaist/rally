@@ -59,14 +59,14 @@ $(function() {
         );
     }
 
-    $(".fixed-fab").hover(function(){
+    $(".fixed-fab").hover(function() {
         var len = $(".fixed-fab-child .btn").size();
         $(this).toggleClass(".fixed-fab-active");
-        $(".fixed-fab-child .btn").map(function(i, v){
-            if($(".fixed-fab").hasClass(".fixed-fab-active")){
+        $(".fixed-fab-child .btn").map(function(i, v) {
+            if ($(".fixed-fab").hasClass(".fixed-fab-active")) {
                 var toggle_time = 200 * (len - i);
             } else {
-                var toggle_time = 300 * i;            
+                var toggle_time = 300 * i;
             }
             $(this).fadeToggle(toggle_time);
         })
@@ -216,28 +216,24 @@ function prettifyTweet(inSelector) {
 }
 
 function fetchBldgList(inCenter) {
-    function nextChar(c) {
-        return String.fromCharCode(c.charCodeAt(0) + 1);
-    }
-
     var list = [],
-        cnt = 0,
-        alphabet = 'A';
+        cnt = 0;
 
     var bldgRef = firebase.database().ref("bldg/");
     // Attach an asynchronous callback to read the data at our posts reference
     bldgRef.once("value").then(function(snapshot) {
         BLDG = snapshot.val();
 
+        $('.building-list-ul').append(
+            '<li><a>전체</a></li>');
+
         for (var l in BLDG) {
             if (center) {
                 if (Math.abs(center.lat - BLDG[l].lat) < 0.001 && Math.abs(center.lng - BLDG[l].lng) < 0.001) {
                     $('.building-list-ul').append(
-                        '<li bldg=' + l + '><a>' + alphabet + '. ' + BLDG[l].name + '</a></li>');
+                        '<li bldg=' + l + '><a>' + BLDG[l].name + '</a></li>');
 
-                    list.push({ "lat": BLDG[l].lat, "lng": BLDG[l].lng, label: alphabet, name: BLDG[l].name });
-
-                    alphabet = nextChar(alphabet);
+                    list.push({ "lat": BLDG[l].lat, "lng": BLDG[l].lng, name: BLDG[l].name });
                 }
             }
 
@@ -246,12 +242,9 @@ function fetchBldgList(inCenter) {
         if (list.length == 0)
             for (var l in BLDG) {
                 $('.building-list-ul').append(
-                    '<li bldg=' + l + '><a>' + alphabet + '. ' + BLDG[l].name + '</a></li>');
+                    '<li bldg=' + l + '><a>' + BLDG[l].name + '</a></li>');
 
-
-                list.push({ "lat": BLDG[l].lat, "lng": BLDG[l].lng, label: alphabet, name: BLDG[l].name });
-
-                alphabet = nextChar(alphabet);
+                list.push({ "lat": BLDG[l].lat, "lng": BLDG[l].lng, name: BLDG[l].name });
             }
 
         toggleFixedLoading(".locaiton-loader");
