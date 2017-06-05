@@ -248,6 +248,56 @@ textarea.form-control {
     font-weight: 600;
 }
 
+.btn-circle {
+    display: block;
+    text-align: center;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 3px 10px;
+}
+
+.btn-circle-orange {
+    color: white;
+    background: orange;
+}
+
+.btn-circle-orange:hover {
+    color: white;
+    background-color: darkorange;
+}
+
+.btn-circle-lg {
+    width: 60px;
+    height: 60px;
+    padding: 7.5px 0;
+    font-size: 30px;
+    border-radius: 30px;
+}
+
+.btn-circle-sm {
+    width: 40px;
+    height: 40px;
+    padding: 5px 0;
+    font-size: 20px;
+    border-radius: 20px;
+}
+
+.fixed-fab {
+    position: fixed;
+    right: 30px;
+    bottom: 30px;
+}
+
+.fixed-fab-child {
+    margin: 10px;
+}
+
+.fixed-fab-child .btn {
+    display: none;
+}
+
+.fixed-fab-child .btn-circle+.btn-circle {
+    margin-top: 10px;
+}
+
 .building-list-container {
     overflow-y: scroll;
     height: 250px;

@@ -59,6 +59,19 @@ $(function() {
         );
     }
 
+    $(".fixed-fab").hover(function(){
+        var len = $(".fixed-fab-child .btn").size();
+        $(this).toggleClass(".fixed-fab-active");
+        $(".fixed-fab-child .btn").map(function(i, v){
+            if($(".fixed-fab").hasClass(".fixed-fab-active")){
+                var toggle_time = 200 * (len - i);
+            } else {
+                var toggle_time = 300 * i;            
+            }
+            $(this).fadeToggle(toggle_time);
+        })
+    });
+
     $('[data-spy="scroll"]').each(function() {
         var $spy = $(this).scrollspy('refresh')
             // alert();
@@ -589,7 +602,7 @@ function postVote(inCommentID, inParentID, inLikeNum) { // inLikeNum 1 when upvo
             function(error) {
                 if (error) {
                     console.log(error);
-                } else { // if successfully posted a new comments clear textarea and turn off loading spinner. 
+                } else { // if successfully posted a new comments clear textarea and turn off loading spinner.
 
                 }
             });
@@ -605,7 +618,7 @@ function postComment(inElement) {
 }
 
 function postCommentCallback(inElement) {
-    // turn on loading spinner. 
+    // turn on loading spinner.
     toggleFixedLoading(".loading");
 
     var new_comment_elem = inElement.parentElement.parentElement,
@@ -647,7 +660,7 @@ function postCommentCallback(inElement) {
         if (error) {
             console.log(error);
         } else {
-            // if successfully posted a new comments clear textarea and turn off loading spinner. 
+            // if successfully posted a new comments clear textarea and turn off loading spinner.
             new_comment_elem.getElementsByClassName("status-box")[0].value = "";
             toggleFixedLoading(".loading");
         }
