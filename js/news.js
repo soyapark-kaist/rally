@@ -220,6 +220,8 @@ function fetchBldgList(inCenter) {
     var list = [],
         cnt = 0;
 
+    $('.building-list-ul').empty();
+
     $('.building-list-ul').append(
         '<li bldg="99"><a>전체</a></li>');
 
@@ -350,23 +352,24 @@ function appendReport() {
                 }
 
                 if (cnt++ < 15) {
-                    report_radio += ("<div class='radio'><label><input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "</label></div>");
+                    report_radio += ("<div class='radio'><label download='" + report.download + "'><input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "</label></div>");
                 }
             } else {
                 report_txt = [BLDG[report.bldg].name, "연결불능", report.os, report.web, report.time.split("GMT")[0].replace("2017 ", "")].join(", ");
-
-                if (cnt++ < 15)
-                    report_radio += ("<div class='radio'><label><input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "</label></div>");
+                continue; //todo
+                // if (cnt++ < 15)
+                //     report_radio += ("<div class='radio'><label><input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "</label></div>");
             }
         }
     }
     if (exist_flag) {
         recent_report.append("<p>통계</p>");
-        var stat_txt = ['<i class="fa fa-building-o" aria-hidden="true"></i>',
+        var stat_txt = [
+            //'<i class="fa fa-building-o" aria-hidden="true"></i>',
             (selected_bldg_num == 99 || !selected_bldg_num ? "대덕캠퍼스" : BLDG[selected_bldg_num].name),
             ", 평균 Download/Upload 속도 : " + (download / download_cnt).toFixed(2) + "Mbps/" + (upload / upload_cnt).toFixed(2) + "Mbps"
         ].join(" ");
-        recent_report.append("<div class='radio'><label><input type='radio' name='report-radio'" + "value='" + stat_txt + "'/> " + stat_txt + "</label></div>");
+        recent_report.append("<div class='radio'><label download=" + (download / download_cnt) + "><input type='radio' name='report-radio'" + "value='" + stat_txt + "'/> " + stat_txt + "</label></div>");
 
         recent_report.append("<p>개별 제보 (최근 15개까지 표시)</p>");
         recent_report.append(report_radio);
@@ -582,17 +585,26 @@ function init_comments() {
 
     $("body").on("click", ".comment-add-report", function() {
         // Remove other element before add new one.
-        $('.recent-report').remove();
 
         var report_display = $(this).parent().find(".report-display");
+        if (report_display.find("span").length) return;
 
-        if (report_display.find("div").length) return;
+        $('.recent-report').remove();
+
+        //add container
+        report_display.append("<div class='report-display-container'></div>");
+        report_display = report_display.find('.report-display-container');
 
         // add close button
         report_display.append('<button onclick="this.parentElement.remove()" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>');
 
         report_display.append('<div class="recent-report"></div>');
         var recent_report = report_display.find('.recent-report');
+        recent_report.append('<div class="row" style="margin-left:0px;margin-right:0px;"><div class="col-xs-10 progress report-progressbar" style="position: relative;padding-left: 0px;">' +
+            '<div class="progress-bar current-percentage1" style="width: 46%;">제보를 선택하세요!</div>' +
+            '<span class="current-percentage2"></span>' +
+            '</div>' +
+            '<div class="col-xs-2">한국 평균속도(144Mbps)</div></div>');
 
         // add navbar for report search
         recent_report.append('<nav class="navbar navbar-default">' +
@@ -655,6 +667,21 @@ function init_comments() {
         } else { // if user selects search
             e.stopPropagation(); // prevent dropdown to be closed.
         }
+    });
+
+    $('body').on('click', '.radio label', function() {
+        // remove previously added one.
+        $(this).parents('.recent-report').find('.report-progressbar').children('.bar-step').remove();
+
+        // $('.report-progressbar').append('<div class="bar-step">' +
+        //     '<div class="label-percent">75%</div>' +
+        //     '<div class="label-line"></div>' +
+        //     '</div>');
+        $(this).parents('.recent-report').find('.current-percentage1').text('');
+        $(this).parents('.recent-report').find('.current-percentage2').text('');
+        // $('.current-percentage2').empty();
+        $(this).parents('.recent-report').find('.current-percentage2').text($(this).find('input').attr('value').split(",")[0] + "예시) 언제언제, 무슨 인터넷 유형의 제보");
+        $(this).parents('.recent-report').find('.current-percentage1').css('width', (parseFloat($(this).attr('download')) / 144 * 100) + '%');
 
     });
 }
@@ -697,7 +724,12 @@ function postCommentCallback(inElement) {
 
     // append report if existg
     if (new_comment_elem.querySelector("input[name='report-radio']:checked"))
-        content = "<strong>" + new_comment_elem.querySelector("input[name='report-radio']:checked").value + "</strong> " + content;
+        content = '<div class="row" style="margin-left:0px;margin-right:0px;"><div class="col-xs-10 progress report-progressbar" style="position: relative;padding-left: 0px;">' +
+        '<div class="progress-bar current-percentage1" style="width: 46%;">예시 XX관</div>' +
+        '<span class="current-percentage2"></span>' +
+        '</div>' +
+        '<div class="col-xs-2">한국 평균속도(144Mbps)</div></div>' + content;
+    //content = "<strong>" + new_comment_elem.querySelector("input[name='report-radio']:checked").value + "</strong> " + content;
 
     // if a new comment is not root comment
     if (new_comment_elem.id != "root-like") {
@@ -731,7 +763,7 @@ function postCommentCallback(inElement) {
         } else {
             // if successfully posted a new comments clear textarea and turn off loading spinner.
             new_comment_elem.getElementsByClassName("status-box")[0].value = "";
-            $('.recent-report').remove();
+            $('.report-display').empty();
             toggleFixedLoading(".loading");
         }
     });
@@ -758,7 +790,7 @@ function get_reply_html(type) {
         // '<label for="comment-to"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></label>' +
         // '<input type="text" class="form-control" id="comment-to" placeholder="아무나">' +
         // '</span>' +
-        '<p class="comment-add-report">+ 최근 제보 인용하기</p>' +
+        '<p class="btn comment-add-report">+ 인터넷 제보 첨부하기</p>' +
         '<div class="report-display"></div>' +
         '<div class="form-group">' +
         '<textarea class="form-control status-box" onkeyup="countLetter(this)" rows="2"></textarea>' +
