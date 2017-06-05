@@ -190,6 +190,11 @@ function d3Line() {
                 .attr('height', function(d) { return 12; })
                 .attr('x', function(d) { return x0(d[0]) - 6 })
                 .attr('y', function(d) { return y0(d[1]) - 6 });
+            points.enter().append('text')
+                .attr('x', function(d, i) { return x0(d[0]) - 50 })
+                .attr('y', function(d, i) { debugger; if (i % 2 == 0) return y0(d[1]) - 400; return y0(d[1]) - 6 })
+                .text(function(d) { return d[2]; });
+
             points.exit().remove();
             points.attr('class', function(d, i) { return 'point point-' + i });
             d3.transition(points)

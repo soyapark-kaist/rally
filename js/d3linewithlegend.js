@@ -31,7 +31,7 @@ function d3LineWithLegend() {
 
             lines
                 .width(width - margin.left - margin.right)
-                .height(height - margin.top - margin.bottom)
+                .height(height - margin.top - margin.bottom - 50)
                 .color(data.map(function(d, i) {
                     if (i == 0) return "#ff6384";
                     else if (i == 1) return "#4bc0c0";

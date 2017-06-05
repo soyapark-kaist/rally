@@ -247,3 +247,8 @@ textarea.form-control {
     text-decoration: underline;
     font-weight: 600;
 }
+
+.building-list-container {
+    overflow-y: scroll;
+    height: 250px;
+}
