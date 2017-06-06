@@ -220,10 +220,11 @@ function fetchBldgList(inCenter) {
     var list = [],
         cnt = 0;
 
-    $('.building-list-ul').empty();
+    $('.building-list-ul li').not('li:first').remove();
+    // $('.building-list-ul').append('<li><a onclick="displayBldgList()">내 건물 검색<div style="color: gray"><i class="fa fa-map-marker" aria-hidden="true"></i> 위치정보 수집</div><p id="loc-msg"></p></a></li>');
 
-    $('.building-list-ul').append(
-        '<li bldg="99"><a>전체</a></li>');
+    // $('.building-list-ul').append(
+    //     '<li bldg="99"><a>전체</a></li>');
 
     for (var l in BLDG) {
         if (center) {
@@ -329,6 +330,11 @@ function appendReport() {
         download_cnt = 0,
         upload = 0.0,
         upload_cnt = 0;
+
+    var entire_download = 0.0,
+        entire_download_cnt = 0,
+        entire_upload = 0.0,
+        entire_upload_cnt = 0;
     var selected_bldg_num = $('.building-list-ul li.active').attr("bldg"),
         selected_internet_num = $('.internet-list-ul li.active').attr("internet");
 
@@ -343,6 +349,15 @@ function appendReport() {
             if (report.activity) {
                 report_txt = [BLDG[report.bldg].name, report.activity, report.download + "Mbps", report.upload + "Mbps", report.time.split("GMT")[0].replace("2017 ", "")].join(", ");
 
+                entire_download += parseFloat(report.download);
+                entire_download_cnt++;
+
+                if (report.upload != "--") {
+                    entire_upload += parseFloat(report.upload);
+                    entire_upload_cnt++;
+                }
+
+                if ((!selected_bldg_num != report.bldg)) continue;
                 download += parseFloat(report.download);
                 download_cnt++;
 
@@ -604,7 +619,7 @@ function init_comments() {
             '<div class="progress-bar current-percentage1" style="width: 46%;">제보를 선택하세요!</div>' +
             '<span class="current-percentage2"></span>' +
             '</div>' +
-            '<div class="col-xs-2">한국 평균속도(144Mbps)</div></div>');
+            '<div class="col-xs-2">한국 평균속도</div></div>');
 
         // add navbar for report search
         recent_report.append('<nav class="navbar navbar-default">' +
@@ -647,7 +662,10 @@ function init_comments() {
             '</ul>' +
             '</div>' +
             '</nav>');
-        // add current location search button
+
+        fetchBldgList();
+
+        // add current loader container
         recent_report.append("<div class='locaiton-loader' style='left:50%;'></div>");
 
         // add building list table
