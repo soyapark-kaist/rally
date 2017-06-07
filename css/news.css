@@ -335,3 +335,8 @@ textarea.form-control {
     float: right;
     margin-left: 5px;
 }
+
+.dropdown-menu.building-list-ul {
+    overflow: scroll;
+    height: 250px;
+}

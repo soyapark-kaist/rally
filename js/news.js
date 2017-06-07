@@ -8,7 +8,13 @@ var LOGIN = false,
     USERID = '',
     USERNAME = '',
     EMAIL = '',
-    REPORT_OBJECT;
+    REPORT_OBJECT,
+    GAUGE;
+
+var entire_download = 0.0,
+    entire_download_cnt = 0,
+    entire_upload = 0.0,
+    entire_upload_cnt = 0;
 
 function test() {
     toggleFixedLoading(".content-loading");
@@ -331,19 +337,24 @@ function appendReport() {
         upload = 0.0,
         upload_cnt = 0;
 
-    var entire_download = 0.0,
+    entire_download = 0.0,
         entire_download_cnt = 0,
         entire_upload = 0.0,
         entire_upload_cnt = 0;
     var selected_bldg_num = $('.building-list-ul li.active').attr("bldg"),
         selected_internet_num = $('.internet-list-ul li.active').attr("internet");
 
+    if (!selected_bldg_num) {
+        alert('건물은 필수선택사항 입니다');
+        toggleFixedLoading(".locaiton-loader");
+        return;
+    }
+
     for (var d in date_range) {
         for (var r in REPORT_OBJECT[date_range[d]]) {
             var report = REPORT_OBJECT[date_range[d]][r];
-            if (selected_bldg_num && (selected_bldg_num != 99 && selected_bldg_num != report.bldg)) continue;
+            // if (selected_bldg_num && (selected_bldg_num != 99 && selected_bldg_num != report.bldg)) continue;
             if (selected_internet_num && (selected_internet_num != 99 && selected_internet_num != report.type)) continue;
-            exist_flag = true;
 
             var report_txt;
             if (report.activity) {
@@ -357,7 +368,10 @@ function appendReport() {
                     entire_upload_cnt++;
                 }
 
-                if ((!selected_bldg_num != report.bldg)) continue;
+                if (selected_bldg_num != report.bldg) continue;
+
+                exist_flag = true;
+
                 download += parseFloat(report.download);
                 download_cnt++;
 
@@ -520,6 +534,64 @@ function init_popover($x) {
     });
 }
 
+function drawProgressBar(inSelector) {
+    $(inSelector).css("width", "100%");
+    $(inSelector).css("height", "140px");
+
+    var title = (inSelector.jquery) ? $(inSelector).attr('title') : inSelector.getAttribute('title'),
+        value = (inSelector.jquery) ? $(inSelector).attr('value') : inSelector.getAttribute('value'),
+        subvalue = (inSelector.jquery) ? $(inSelector).attr('subvalue') : inSelector.getAttribute('subvalue');
+
+    var bldg = "교내 평균 속도";
+    return gauge = $(inSelector).dxLinearGauge({
+        scale: {
+            startValue: 0,
+            endValue: 100,
+            tickInterval: 100,
+            label: {
+                customizeText: function(arg) {
+                    if (arg.valueText == "100")
+                        return "한국 평균 인터넷";
+                    return "0%"
+                }
+            }
+        },
+        title: {
+            text: title,
+            font: { size: 20 }
+        },
+        value: [value],
+        subvalues: subvalue ? subvalie.split(",") : null,
+        subvalueIndicator: {
+            type: 'textCloud',
+            color: '#734F96',
+            text: {
+                customizeText: function(arg) {
+                    return bldg;
+                },
+                font: {
+                    size: 10
+                }
+            }
+        }
+    }).dxLinearGauge("instance");
+}
+
+function setProgressbarValue(inObj, inData) {
+    inObj.value(inData);
+}
+
+function setProgressbarSubValue(inObj, inData) {
+    inObj.subvalues(inData);
+}
+
+function setProgressbarTitle(inObj, inText) {
+    inObj.title({
+        text: inText,
+        font: { size: 28 }
+    });
+}
+
 function init_comments() {
     fetchComments();
 
@@ -604,7 +676,7 @@ function init_comments() {
         var report_display = $(this).parent().find(".report-display");
         if (report_display.find("span").length) return;
 
-        $('.recent-report').remove();
+        $('.report-display-container').remove();
 
         //add container
         report_display.append("<div class='report-display-container'></div>");
@@ -615,11 +687,13 @@ function init_comments() {
 
         report_display.append('<div class="recent-report"></div>');
         var recent_report = report_display.find('.recent-report');
-        recent_report.append('<div class="row" style="margin-left:0px;margin-right:0px;"><div class="col-xs-10 progress report-progressbar" style="position: relative;padding-left: 0px;">' +
-            '<div class="progress-bar current-percentage1" style="width: 46%;">제보를 선택하세요!</div>' +
-            '<span class="current-percentage2"></span>' +
-            '</div>' +
-            '<div class="col-xs-2">한국 평균속도</div></div>');
+
+        // add progress bar
+        recent_report.append('<div class="report-progressbar"></div>');
+        recent_report.find(".report-progressbar").attr("title", "제보를 선택해주세요");
+        recent_report.find(".report-progressbar").attr("value", 0);
+
+        GAUGE = drawProgressBar(recent_report.find(".report-progressbar"));
 
         // add navbar for report search
         recent_report.append('<nav class="navbar navbar-default">' +
@@ -688,19 +762,15 @@ function init_comments() {
     });
 
     $('body').on('click', '.radio label', function() {
-        // remove previously added one.
-        $(this).parents('.recent-report').find('.report-progressbar').children('.bar-step').remove();
+        $(".recent-report .dxg-title text").text(BLDG[$('.building-list-ul li.active').attr("bldg")].name + " " + $('.internet-list-ul li.active a').text());
+        setProgressbarValue(GAUGE, (parseFloat($(this).attr('download')) / 144 * 100));
 
-        // $('.report-progressbar').append('<div class="bar-step">' +
-        //     '<div class="label-percent">75%</div>' +
-        //     '<div class="label-line"></div>' +
-        //     '</div>');
-        $(this).parents('.recent-report').find('.current-percentage1').text('');
-        $(this).parents('.recent-report').find('.current-percentage2').text('');
-        // $('.current-percentage2').empty();
-        $(this).parents('.recent-report').find('.current-percentage2').text($(this).find('input').attr('value').split(",")[0] + "예시) 언제언제, 무슨 인터넷 유형의 제보");
-        $(this).parents('.recent-report').find('.current-percentage1').css('width', (parseFloat($(this).attr('download')) / 144 * 100) + '%');
+        if (entire_download) setProgressbarSubValue(GAUGE, [entire_download / entire_download_cnt]);
+    });
 
+    $("body").on("appended", ".comment-progressbar", function(event) {
+        //event after append the element into DOM, do anything
+        drawProgressBar($(this));
     });
 }
 
@@ -742,11 +812,7 @@ function postCommentCallback(inElement) {
 
     // append report if existg
     if (new_comment_elem.querySelector("input[name='report-radio']:checked"))
-        content = '<div class="row" style="margin-left:0px;margin-right:0px;"><div class="col-xs-10 progress report-progressbar" style="position: relative;padding-left: 0px;">' +
-        '<div class="progress-bar current-percentage1" style="width: 46%;">예시 XX관</div>' +
-        '<span class="current-percentage2"></span>' +
-        '</div>' +
-        '<div class="col-xs-2">한국 평균속도(144Mbps)</div></div>' + content;
+        content = '<div class="comment-progressbar" title="' + $(".recent-report .dxg-title text").text() + '" value="' + 30 + '"></div>' + content;
     //content = "<strong>" + new_comment_elem.querySelector("input[name='report-radio']:checked").value + "</strong> " + content;
 
     // if a new comment is not root comment
@@ -770,7 +836,7 @@ function postCommentCallback(inElement) {
     /* Append at front */
     var root_id = "nested-comment"
     var parent_id = (parent_id == '') ? root_id : root_id + "_" + parent_id;
-    append_comment_html(parent_id, comment_key, news_json, true);
+    append_comment_html(parent_id, comment_key, news_json, true, true);
 
     prettifyTweet(".comment-" + comment_key + " p");
 
@@ -808,7 +874,7 @@ function get_reply_html(type) {
         // '<label for="comment-to"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></label>' +
         // '<input type="text" class="form-control" id="comment-to" placeholder="아무나">' +
         // '</span>' +
-        '<p class="btn comment-add-report">+ 인터넷 제보 첨부하기</p>' +
+        '<p class="btn btn-default comment-add-report">+ 인터넷 제보 첨부하기</p>' +
         '<div class="report-display"></div>' +
         '<div class="form-group">' +
         '<textarea class="form-control status-box" onkeyup="countLetter(this)" rows="2"></textarea>' +
@@ -861,7 +927,7 @@ function append_nested_comment(nc_id, news_json) {
     }
 }
 
-function append_comment_html(parent_id, cid, news_json, visible) {
+function append_comment_html(parent_id, cid, news_json, visible, trigger) {
     var c_news_json = $.extend(true, {}, news_json);
     var new_id = parent_id + "_" + cid;
     var $parent = $(document.getElementById(parent_id));
@@ -911,7 +977,10 @@ function append_comment_html(parent_id, cid, news_json, visible) {
             $html.hide();
         }
     }
-    $parent.append($html);
+
+
+    $parent.append($html)
+    $parent.find('.comment-progressbar').trigger('appended');
 
 }
 
