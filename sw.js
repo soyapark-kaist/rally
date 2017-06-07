@@ -70,7 +70,7 @@
 //     );
 // });
 
-var CACHE_VERSION = 17;
+var CACHE_VERSION = 18;
 var CURRENT_CACHES = {
     prefetch: 'prefetch-cache-v' + CACHE_VERSION
 };
@@ -94,6 +94,7 @@ self.addEventListener('install', function(event) {
         'js/d3legend.js',
         'js/d3line.js',
         'js/d3linewithlegend.js',
+        'js/dx.all.js',
         'js/rally.js',
         'js/collect.js',
         'js/barChart.js',
