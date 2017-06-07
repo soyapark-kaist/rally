@@ -626,6 +626,7 @@ function updateProgressbar($inElem) {
     // setProgressbarSubTitle();getSearchDate
     if ($inElem) {
         setProgressbarTitle([BLDG[$('.building-list-ul li.active').attr("bldg")].name, $('.internet-list-ul li.active a').text(), getSearchDate()].join(" "));
+        setProgressbarSubTitle();
         setProgressbarValue(GAUGE, (parseFloat($inElem.attr('download')) / 144 * 100));
 
         if (entire_download) setProgressbarSubValue(GAUGE, [entire_download / entire_download_cnt / 144 * 100]);
@@ -857,8 +858,16 @@ function postCommentCallback(inElement) {
         comment_type;
 
     // append report if existg
-    if (new_comment_elem.querySelector("input[name='report-radio']:checked"))
-        content = '<div class="comment-progressbar" title="' + $(".recent-report .dxg-title text:nth-child(1)").text() + '" value="' + GAUGE.value() + '" subvalue="' + GAUGE.subvalues()[0] + '"></div>' + content;
+    if (new_comment_elem.querySelector("input[name='report-radio']:checked")) {
+
+        if ($(":radio[name='report-radio']:checked").index(":radio[name='report-radio']") == 0)
+            content = '<div class="comment-progressbar" title="' + $(".recent-report .dxg-title text:nth-child(1)").text() + '" subtitle="건물 평균: ' + $(":radio[name='report-radio']:checked").val().split(":")[1] + '" value="' + GAUGE.value() + '" subvalue="' + GAUGE.subvalues()[0] + '"></div>' + content;
+        else {
+            var s = $(":radio[name='report-radio']:checked").val().split(", ");
+            s.shift();
+            content = '<div class="comment-progressbar" title="' + $(".recent-report .dxg-title text:nth-child(1)").text() + '" subtitle="' + s.join(", ") + '" value="' + GAUGE.value() + '" subvalue="' + GAUGE.subvalues()[0] + '"></div>' + content;
+        }
+    }
     //content = "<strong>" + new_comment_elem.querySelector("input[name='report-radio']:checked").value + "</strong> " + content;
 
     // if a new comment is not root comment
