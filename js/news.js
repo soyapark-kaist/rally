@@ -392,10 +392,10 @@ function appendReport() {
         }
     }
     if (exist_flag) {
-        recent_report.append("<p>통계</p>");
+        recent_report.append("<p>건물</p>");
         var stat_txt = [
             //'<i class="fa fa-building-o" aria-hidden="true"></i>',
-            (selected_bldg_num == 99 || !selected_bldg_num ? "대덕캠퍼스" : BLDG[selected_bldg_num].name),
+            BLDG[selected_bldg_num].name,
             ", 평균 Download/Upload 속도 : " + (download / download_cnt).toFixed(2) + "Mbps/" + (upload / upload_cnt).toFixed(2) + "Mbps"
         ].join(" ");
         recent_report.append("<div class='radio'><label download=" + (download / download_cnt) + "><input type='radio' name='report-radio'" + "value='" + stat_txt + "'/> " + stat_txt + "</label></div>");
@@ -536,9 +536,10 @@ function init_popover($x) {
 
 function drawProgressBar(inSelector) {
     $(inSelector).css("width", "100%");
-    $(inSelector).css("height", "140px");
+    $(inSelector).css("height", "120px");
 
     var title = (inSelector.jquery) ? $(inSelector).attr('title') : inSelector.getAttribute('title'),
+        subtitle = (inSelector.jquery) ? $(inSelector).attr('subtitle') : inSelector.getAttribute('subtitle'),
         value = (inSelector.jquery) ? $(inSelector).attr('value') : inSelector.getAttribute('value'),
         subvalue = (inSelector.jquery) ? $(inSelector).attr('subvalue') : inSelector.getAttribute('subvalue');
 
@@ -547,12 +548,12 @@ function drawProgressBar(inSelector) {
         scale: {
             startValue: 0,
             endValue: 100,
-            tickInterval: 100,
+            tickInterval: 20,
             label: {
                 customizeText: function(arg) {
                     if (arg.valueText == "100")
-                        return "한국 평균 인터넷";
-                    return "0%"
+                        return "국내 평균 인터넷";
+                    return arg.valueText + "%"
                 }
             }
         },
@@ -560,7 +561,23 @@ function drawProgressBar(inSelector) {
             text: title,
             font: { size: 20 }
         },
+        subtitle: {
+            text: subtitle,
+            font: { size: 12 }
+        },
         value: [value],
+        // valueIndicator: {
+        //     type: 'textCloud',
+        //     color: '#734F96',
+        //     text: {
+        //         customizeText: function(arg) {
+        //             return "세종관";
+        //         },
+        //         font: {
+        //             size: 10
+        //         }
+        //     }
+        // },
         subvalues: subvalue ? subvalie.split(",") : null,
         subvalueIndicator: {
             type: 'textCloud',
@@ -577,6 +594,10 @@ function drawProgressBar(inSelector) {
     }).dxLinearGauge("instance");
 }
 
+function setSelectedBuilding() {
+
+}
+
 function setProgressbarValue(inObj, inData) {
     inObj.value(inData);
 }
@@ -585,11 +606,12 @@ function setProgressbarSubValue(inObj, inData) {
     inObj.subvalues(inData);
 }
 
-function setProgressbarTitle(inObj, inText) {
-    inObj.title({
-        text: inText,
-        font: { size: 28 }
-    });
+function setProgressbarTitle(inText) {
+    $(".recent-report .dxg-title text:nth-child(1)").text(inText);
+}
+
+function setProgressbarSubTitle(inText) {
+    $(".recent-report .dxg-title text:nth-child(2)").text(inText);
 }
 
 function init_comments() {
@@ -690,7 +712,8 @@ function init_comments() {
 
         // add progress bar
         recent_report.append('<div class="report-progressbar"></div>');
-        recent_report.find(".report-progressbar").attr("title", "제보를 선택해주세요");
+        recent_report.find(".report-progressbar").attr("title", "아래에서 제보를 선택해주세요");
+        recent_report.find(".report-progressbar").attr("subtitle", "국내 평균 Wi-Fi 속도와 비교 (출처: 2016년도 통신서비스 품질평가 결과)");
         recent_report.find(".report-progressbar").attr("value", 0);
 
         GAUGE = drawProgressBar(recent_report.find(".report-progressbar"));
@@ -731,9 +754,6 @@ function init_comments() {
             '</ul>' +
             '</li>' +
             '</ul>' +
-            '<ul class="nav navbar-nav navbar-right">' +
-            '<li><a onclick="fetchReport()"><i class="fa fa-search" aria-hidden="true"></i>검색</a></li>' +
-            '</ul>' +
             '</div>' +
             '</nav>');
 
@@ -750,19 +770,25 @@ function init_comments() {
     /* Bind report building search pick. */
     $("body").on("click", ".dropdown-menu li a", function(e) {
         if ($(this).parent().attr('bldg') || $(this).parent().attr('date') || $(this).parent().attr('internet')) { // if the user select a building
+            //change displayed value at dropdown. 
             $(this).parent().parent().find('li').removeClass("active");
             $(this).parent().addClass("active");
             $(this).parents(".dropdown").find('.dropdown-toggle')
                 .html($(this).text() + ' <span class="caret"></span>');
             $(this).parents(".dropdown").find('.dropdown-toggle')
                 .val($(this).data('value'));
-        } else { // if user selects search
+
+            // show corresponding reports.
+            fetchReport();
+        } else { // if user selects location search
             e.stopPropagation(); // prevent dropdown to be closed.
         }
     });
 
     $('body').on('click', '.radio label', function() {
-        $(".recent-report .dxg-title text").text(BLDG[$('.building-list-ul li.active').attr("bldg")].name + " " + $('.internet-list-ul li.active a').text());
+        setProgressbarTitle(BLDG[$('.building-list-ul li.active').attr("bldg")].name + " " + $('.internet-list-ul li.active a').text())
+            // setProgressbarSubTitle();
+
         setProgressbarValue(GAUGE, (parseFloat($(this).attr('download')) / 144 * 100));
 
         if (entire_download) setProgressbarSubValue(GAUGE, [entire_download / entire_download_cnt]);
