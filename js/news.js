@@ -380,7 +380,7 @@ function appendReport() {
                     upload_cnt++;
                 }
 
-                if (cnt++ < 15) {
+                if (cnt++ < 5) {
                     report_radio += ("<div class='radio'><label download='" + report.download + "'><input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "</label></div>");
                 }
             } else {
@@ -400,10 +400,13 @@ function appendReport() {
         ].join(" ");
         recent_report.append("<div class='radio'><label download=" + (download / download_cnt) + "><input type='radio' name='report-radio'" + "value='" + stat_txt + "'/> " + stat_txt + "</label></div>");
 
-        recent_report.append("<p>개별 제보 (최근 15개까지 표시)</p>");
+        recent_report.append("<p>개별 제보 (최근 5개까지 표시)</p>");
         recent_report.append(report_radio);
 
-    } else recent_report.append("<p>조건에 해당하는 제보가 없습니다.</p>");
+    } else {
+        updateProgressbar(); // empty the progress bar
+        recent_report.append("<p>조건에 해당하는 제보가 없습니다.</p>");
+    }
 
     recent_report.append("<a onclick='if(confirm(" + '"인터넷 불편 제보하기(1분) 페이지로 이동하시겠습니까?"' + ")) window.location = " + '"./collect.html"' + "; else return;'>내 제보 추가하기</a>");
 
@@ -543,7 +546,6 @@ function drawProgressBar(inSelector) {
         value = (inSelector.jquery) ? $(inSelector).attr('value') : inSelector.getAttribute('value'),
         subvalue = (inSelector.jquery) ? $(inSelector).attr('subvalue') : inSelector.getAttribute('subvalue');
 
-    var bldg = "교내 평균 속도";
     return gauge = $(inSelector).dxLinearGauge({
         scale: {
             startValue: 0,
@@ -559,11 +561,11 @@ function drawProgressBar(inSelector) {
         },
         title: {
             text: title,
-            font: { size: 20 }
-        },
-        subtitle: {
-            text: subtitle,
-            font: { size: 12 }
+            font: { size: 20 },
+            subtitle: {
+                text: subtitle,
+                font: { size: 12 }
+            }
         },
         value: [value],
         // valueIndicator: {
@@ -578,13 +580,13 @@ function drawProgressBar(inSelector) {
         //         }
         //     }
         // },
-        subvalues: subvalue ? subvalie.split(",") : null,
+        subvalues: subvalue ? subvalue.split(",") : null,
         subvalueIndicator: {
             type: 'textCloud',
             color: '#734F96',
             text: {
                 customizeText: function(arg) {
-                    return bldg;
+                    return "교내 평균 속도";
                 },
                 font: {
                     size: 10
@@ -594,8 +596,14 @@ function drawProgressBar(inSelector) {
     }).dxLinearGauge("instance");
 }
 
-function setSelectedBuilding() {
+function getSearchDate() {
+    var today = [new Date().getMonth() + 1, new Date().getDate()].join("/");
+    if ($('.time-list-ul li.active').attr("date") == "99") return "4/4 ~ " + today; // whole
+    else if ($('.time-list-ul li.active').attr("date") == "0") return today;
+    else if ($('.time-list-ul li.active').attr("date") == "1") return [new Date().getMonth() + 1, new Date().getDate() - 1].join("/");
+    else if ($('.time-list-ul li.active').attr("date") == "2") return [new Date().getMonth() + 1, new Date().getDate() - 6].join("/") + "~ " + today;
 
+    return "4/4 ~ " + today; // whole
 }
 
 function setProgressbarValue(inObj, inData) {
@@ -612,6 +620,21 @@ function setProgressbarTitle(inText) {
 
 function setProgressbarSubTitle(inText) {
     $(".recent-report .dxg-title text:nth-child(2)").text(inText);
+}
+
+function updateProgressbar($inElem) {
+    // setProgressbarSubTitle();getSearchDate
+    if ($inElem) {
+        setProgressbarTitle([BLDG[$('.building-list-ul li.active').attr("bldg")].name, $('.internet-list-ul li.active a').text(), getSearchDate()].join(" "));
+        setProgressbarValue(GAUGE, (parseFloat($inElem.attr('download')) / 144 * 100));
+
+        if (entire_download) setProgressbarSubValue(GAUGE, [entire_download / entire_download_cnt / 144 * 100]);
+    } else {
+        setProgressbarTitle("-");
+        setProgressbarValue(GAUGE, 0);
+        setProgressbarSubValue(GAUGE, []);
+    }
+
 }
 
 function init_comments() {
@@ -712,7 +735,7 @@ function init_comments() {
 
         // add progress bar
         recent_report.append('<div class="report-progressbar"></div>');
-        recent_report.find(".report-progressbar").attr("title", "아래에서 제보를 선택해주세요");
+        recent_report.find(".report-progressbar").attr("title", "첨부할 제보를 선택해보세요");
         recent_report.find(".report-progressbar").attr("subtitle", "국내 평균 Wi-Fi 속도와 비교 (출처: 2016년도 통신서비스 품질평가 결과)");
         recent_report.find(".report-progressbar").attr("value", 0);
 
@@ -778,6 +801,8 @@ function init_comments() {
             $(this).parents(".dropdown").find('.dropdown-toggle')
                 .val($(this).data('value'));
 
+            updateProgressbar();
+
             // show corresponding reports.
             fetchReport();
         } else { // if user selects location search
@@ -786,12 +811,7 @@ function init_comments() {
     });
 
     $('body').on('click', '.radio label', function() {
-        setProgressbarTitle(BLDG[$('.building-list-ul li.active').attr("bldg")].name + " " + $('.internet-list-ul li.active a').text())
-            // setProgressbarSubTitle();
-
-        setProgressbarValue(GAUGE, (parseFloat($(this).attr('download')) / 144 * 100));
-
-        if (entire_download) setProgressbarSubValue(GAUGE, [entire_download / entire_download_cnt]);
+        updateProgressbar($(this));
     });
 
     $("body").on("appended", ".comment-progressbar", function(event) {
@@ -838,7 +858,7 @@ function postCommentCallback(inElement) {
 
     // append report if existg
     if (new_comment_elem.querySelector("input[name='report-radio']:checked"))
-        content = '<div class="comment-progressbar" title="' + $(".recent-report .dxg-title text").text() + '" value="' + 30 + '"></div>' + content;
+        content = '<div class="comment-progressbar" title="' + $(".recent-report .dxg-title text:nth-child(1)").text() + '" value="' + GAUGE.value() + '" subvalue="' + GAUGE.subvalues()[0] + '"></div>' + content;
     //content = "<strong>" + new_comment_elem.querySelector("input[name='report-radio']:checked").value + "</strong> " + content;
 
     // if a new comment is not root comment
