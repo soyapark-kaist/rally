@@ -9,7 +9,8 @@ var LOGIN = false,
     USERNAME = '',
     EMAIL = '',
     REPORT_OBJECT,
-    GAUGE;
+    GAUGE,
+    ADDITIONAL_REPORT = [];
 
 var entire_download = 0.0,
     entire_download_cnt = 0,
@@ -308,6 +309,22 @@ function fetchReport() {
 
 }
 
+function addMoreReport() {
+    var recent_report = $('.recent-report .result');
+    $(".add-more").remove();
+
+    for (var i = 0; i < 5; i++) {
+        if (ADDITIONAL_REPORT.length)
+            recent_report.append(ADDITIONAL_REPORT.shift());
+        else {
+            $(".add-more").remove();
+            return;
+        }
+    }
+
+    recent_report.append("<a class='add-more' onclick='addMoreReport()'>+ 제보 더 불러오기</a>");
+}
+
 function appendReport() {
     $('.result').remove();
     var report_display = $(".report-display");
@@ -340,7 +357,8 @@ function appendReport() {
     entire_download = 0.0,
         entire_download_cnt = 0,
         entire_upload = 0.0,
-        entire_upload_cnt = 0;
+        entire_upload_cnt = 0,
+        ADDITIONAL_REPORT = [];
     var selected_bldg_num = $('.building-list-ul li.active').attr("bldg"),
         selected_internet_num = $('.internet-list-ul li.active').attr("internet");
 
@@ -382,6 +400,8 @@ function appendReport() {
 
                 if (cnt++ < 5) {
                     report_radio += ("<div class='radio'><label download='" + report.download + "'><input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "</label></div>");
+                } else {
+                    ADDITIONAL_REPORT.push("<div class='radio'><label download='" + report.download + "'><input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "</label></div>");
                 }
             } else {
                 report_txt = [BLDG[report.bldg].name, "연결불능", report.os, report.web, report.time.split("GMT")[0].replace("2017 ", "")].join(", ");
@@ -402,13 +422,15 @@ function appendReport() {
 
         recent_report.append("<p>개별 제보 (최근 5개까지 표시)</p>");
         recent_report.append(report_radio);
+        if (ADDITIONAL_REPORT.length)
+            recent_report.append("<a class='add-more' onclick='addMoreReport()'>+ 제보 더 불러오기</a>");
 
     } else {
         updateProgressbar(); // empty the progress bar
         recent_report.append("<p>조건에 해당하는 제보가 없습니다.</p>");
     }
 
-    recent_report.append("<a onclick='if(confirm(" + '"인터넷 불편 제보하기(1분) 페이지로 이동하시겠습니까?"' + ")) window.location = " + '"./collect.html"' + "; else return;'>내 제보 추가하기</a>");
+    // recent_report.append("<a onclick='if(confirm(" + '"인터넷 불편 제보하기(1분) 페이지로 이동하시겠습니까?"' + ")) window.location = " + '"./collect.html"' + "; else return;'>내 제보 추가하기</a>");
 
     toggleFixedLoading(".locaiton-loader");
 }
