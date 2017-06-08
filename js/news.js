@@ -453,14 +453,17 @@ function countLetter(inElement) {
     var charactersLeft = 140 - postLength;
     inElement.getElementsByClassName("status-box");
 
-    inElement.parentElement.parentElement.parentElement.getElementsByClassName("counter")[0].innerHTML = charactersLeft;
+    var counter = inElement.parentElement.parentElement.parentElement.getElementsByClassName("counter")[0];
+    counter.innerHTML = charactersLeft;
 
     if (charactersLeft < 0) {
         inElement.parentElement.parentElement.parentElement.getElementsByClassName("comments-post")[0].classList += " disabled";
+        counter.classList += " minus-counter";
     } else if (charactersLeft == 140) {
         inElement.parentElement.parentElement.parentElement.getElementsByClassName("comments-post")[0].classList += " disabled";
     } else {
         inElement.parentElement.parentElement.parentElement.getElementsByClassName("comments-post")[0].classList.remove("disabled");
+        counter.classList.remove("minus-counter");
     }
 }
 
