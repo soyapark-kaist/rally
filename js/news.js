@@ -938,7 +938,7 @@ function postCommentCallback(inElement) {
 }
 
 function get_reply_html(type) {
-    var tracker = 'handleClickEvents("start","")';
+    var tracker = "handleClickEvents(\"start\",\"\")";
     var reply_html =
         '<div id="like">' +
         (type == 1 ? // add comment radio only for root comment
@@ -958,7 +958,7 @@ function get_reply_html(type) {
         // '<label for="comment-to"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></label>' +
         // '<input type="text" class="form-control" id="comment-to" placeholder="아무나">' +
         // '</span>' +
-        '<p class="btn btn-default comment-add-report" onclick="' + tracker + '">+ 인터넷 제보 첨부하기</p>' +
+        '<p class="btn btn-default comment-add-report" onclick=' + tracker + '>+ 인터넷 제보 첨부하기</p>' +
         '<div class="report-display"></div>' +
         '<div class="form-group">' +
         '<textarea class="form-control status-box" onkeyup="countLetter(this)" rows="2"></textarea>' +
