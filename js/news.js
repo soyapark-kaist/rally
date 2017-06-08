@@ -736,7 +736,7 @@ function init_comments() {
 
         // add progress bar
         recent_report.append('<div class="report-progressbar"></div>');
-        recent_report.find(".report-progressbar").attr("title", "첨부할 제보를 선택해보세요");
+        recent_report.find(".report-progressbar").attr("title", "이야기할 인터넷 경험에 해당하는 제보를 선택해주세요");
         recent_report.find(".report-progressbar").attr("subtitle", "국내 평균 Wi-Fi 속도와 비교 (출처: 2016년도 통신서비스 품질평가 결과)");
         recent_report.find(".report-progressbar").attr("value", 0);
 
