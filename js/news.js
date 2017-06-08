@@ -444,6 +444,10 @@ function handleOutboundLinkClicks(event) {
     });
 }
 
+function handleClickEvents(type, value) {
+    ga('send', 'event', 'data_communication', type, value);
+}
+
 function countLetter(inElement) {
     var postLength = detectBrowser() == 'ie' ? inElement.textContent.length : inElement.textLength;
     var charactersLeft = 140 - postLength;
@@ -815,6 +819,8 @@ function init_comments() {
 
     /* Bind report building search pick. */
     $("body").on("click", ".dropdown-menu li a", function(e) {
+        handleClickEvents("dropdown", $(this).text());
+
         if ($(this).parent().attr('bldg') || $(this).parent().attr('date') || $(this).parent().attr('internet')) { // if the user select a building
             //change displayed value at dropdown. 
             $(this).parent().parent().find('li').removeClass("active");
@@ -834,6 +840,7 @@ function init_comments() {
     });
 
     $('body').on('click', '.radio label', function() {
+        handleClickEvents("radio", $(this).find("input").attr("value"));
         updateProgressbar($(this));
     });
 
@@ -931,7 +938,7 @@ function postCommentCallback(inElement) {
 }
 
 function get_reply_html(type) {
-
+    var tracker = 'handleClickEvents("start","")';
     var reply_html =
         '<div id="like">' +
         (type == 1 ? // add comment radio only for root comment
@@ -951,7 +958,7 @@ function get_reply_html(type) {
         // '<label for="comment-to"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></label>' +
         // '<input type="text" class="form-control" id="comment-to" placeholder="아무나">' +
         // '</span>' +
-        '<p class="btn btn-default comment-add-report">+ 인터넷 제보 첨부하기</p>' +
+        '<p class="btn btn-default comment-add-report" onclick="' + tracker + '">+ 인터넷 제보 첨부하기</p>' +
         '<div class="report-display"></div>' +
         '<div class="form-group">' +
         '<textarea class="form-control status-box" onkeyup="countLetter(this)" rows="2"></textarea>' +
