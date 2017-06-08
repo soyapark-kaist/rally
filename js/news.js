@@ -755,7 +755,7 @@ function init_comments() {
         report_display = report_display.find('.report-display-container');
 
         // add close button
-        report_display.append('<button onclick="this.parentElement.remove()" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>');
+        report_display.append('<button onclick="this.parentElement.remove()" type="button" class="close" aria-label="Close" style="padding-right: 5px;"><span aria-hidden="true">&times;</span></button>');
 
         report_display.append('<div class="recent-report"></div>');
         var recent_report = report_display.find('.recent-report');
@@ -773,7 +773,7 @@ function init_comments() {
             '<div class="container-fluid">' +
             '<div class="navbar-header"><a class="navbar-brand">제보 검색</a>' +
             '</div>' +
-            '<ul class="nav navbar-nav">' +
+            '<ul class="nav navbar-nav search-nav">' +
             '<li class="dropdown">' +
             '<a class="dropdown-toggle" data-toggle="dropdown" href="#">건물 검색' +
             '<span class="caret"></span></a>' +
