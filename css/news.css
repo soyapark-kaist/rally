@@ -340,3 +340,15 @@ textarea.form-control {
     overflow: scroll;
     height: 235px;
 }
+
+.search-nav {
+    background-color: transparent;
+}
+
+.search-nav .dropdown {
+    margin: 5px 10px;
+}
+
+.search-nav a {
+    cursor: pointer;
+}
