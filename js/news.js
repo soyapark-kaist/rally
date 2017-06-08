@@ -944,10 +944,10 @@ function get_reply_html(type) {
         (type == 1 ? // add comment radio only for root comment
             ('<form class="form-inline"><div class="form-group">' +
                 '<label class="radio-inline">' +
-                '<input type="radio" value="0" name="comment-type" id="comment-question" value="comment-question" checked> 질문' +
+                '<input type="radio" value="0" name="comment-type" id="comment-question" value="comment-question" checked> 제안' +
                 '</label>' +
                 '<label class="radio-inline">' +
-                '<input type="radio" value="1" name="comment-type" id="comment-suggestion" value="comment-suggestion"> 제안' +
+                '<input type="radio" value="1" name="comment-type" id="comment-suggestion" value="comment-suggestion"> 질문' +
                 '</label>' +
                 '<label class="radio-inline">' +
                 '<input type="radio" value="2" name="comment-type" id="comment-else" value="comment-else"> 그 외' +
