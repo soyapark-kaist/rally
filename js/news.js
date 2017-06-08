@@ -892,12 +892,12 @@ function postCommentCallback(inElement) {
     // append report if existg
     if (new_comment_elem.querySelector("input[name='report-radio']:checked")) {
 
-        if ($(":radio[name='report-radio']:checked").index(":radio[name='report-radio']") == 0)
+        if ($(":radio[name='report-radio']:checked").index(":radio[name='report-radio']") == 0) // building average
             content = '<div class="comment-progressbar" title="' + $(".recent-report .dxg-title text:nth-child(1)").text() + '" subtitle="건물 평균: ' + $(":radio[name='report-radio']:checked").val().split(":")[1] + '" value="' + GAUGE.value() + '" subvalue="' + GAUGE.subvalues()[0] + '"></div>' + content;
-        else {
+        else { // individual report
             var s = $(":radio[name='report-radio']:checked").val().split(", ");
             s.shift();
-            content = '<div class="comment-progressbar" title="' + $(".recent-report .dxg-title text:nth-child(1)").text() + '" subtitle="' + s.join(", ") + '" value="' + GAUGE.value() + '" subvalue="' + GAUGE.subvalues()[0] + '"></div>' + content;
+            content = '<div class="comment-progressbar" title="' + $(".recent-report .dxg-title text:nth-child(1)").text().split(" ")[0] + '" subtitle="' + s.join(", ") + '" value="' + GAUGE.value() + '" subvalue="' + GAUGE.subvalues()[0] + '"></div>' + content;
         }
     }
     //content = "<strong>" + new_comment_elem.querySelector("input[name='report-radio']:checked").value + "</strong> " + content;
