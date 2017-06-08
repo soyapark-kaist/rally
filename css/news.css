@@ -352,3 +352,7 @@ textarea.form-control {
 .search-nav a {
     cursor: pointer;
 }
+
+.minus-counter {
+    color: red;
+}
