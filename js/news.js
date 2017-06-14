@@ -893,11 +893,11 @@ function postCommentCallback(inElement) {
     if (new_comment_elem.querySelector("input[name='report-radio']:checked")) {
 
         if ($(":radio[name='report-radio']:checked").index(":radio[name='report-radio']") == 0) // building average
-            content = '<div class="comment-progressbar" title="' + $(".recent-report .dxg-title text:nth-child(1)").text() + '" subtitle="건물 평균: ' + $(":radio[name='report-radio']:checked").val().split(":")[1] + '" value="' + GAUGE.value() + '" subvalue="' + GAUGE.subvalues()[0] + '"></div>' + content;
+            content = '<div class="comment-progressbar" title="' + $(".recent-report .dxg-title text:nth-child(1)").text() + '" subtitle="건물 평균: ' + $(":radio[name='report-radio']:checked").val().split(":")[1] + '" value="' + GAUGE.value() + '" subvalue="' + GAUGE.subvalues()[0] + '"></div>' + '<p>' + content + '</p>';
         else { // individual report
             var s = $(":radio[name='report-radio']:checked").val().split(", ");
             s.shift();
-            content = '<div class="comment-progressbar" title="' + $(".recent-report .dxg-title text:nth-child(1)").text().split(" ")[0] + '" subtitle="' + s.join(", ") + '" value="' + GAUGE.value() + '" subvalue="' + GAUGE.subvalues()[0] + '"></div>' + content;
+            content = '<div class="comment-progressbar" title="' + $(".recent-report .dxg-title text:nth-child(1)").text().split(" ")[0] + '" subtitle="' + s.join(", ") + '" value="' + GAUGE.value() + '" subvalue="' + GAUGE.subvalues()[0] + '"></div>' + '<p>' + content + '</p>';
         }
     }
     //content = "<strong>" + new_comment_elem.querySelector("input[name='report-radio']:checked").value + "</strong> " + content;
@@ -1021,12 +1021,12 @@ function append_comment_html(parent_id, cid, news_json, visible, trigger) {
     var $parent = $(document.getElementById(parent_id));
 
     var icon = get_comment_icon(c_news_json.type);
-    var title = (c_news_json.email.indexOf("jrburuter") != -1 || c_news_json.email.indexOf("kaistusc") != -1) ? "학부총학생회" : c_news_json.email.substring(0, 3) + "****";
+    var title = getDisplayNickname(c_news_json.email);
     var content = c_news_json.content;
 
     /* Build comment html */
     var html =
-        '<li class="media comment-' + getClassPostfix(c_news_json.type) + (c_news_json.email.indexOf("jrburuter") != -1 || c_news_json.email.indexOf("kaistusc") != -1 ? " media-emphasized" : "") + ' ">' +
+        '<li class="media comment-' + getClassPostfix(c_news_json.type) + (getDisplayNickname(c_news_json.email).indexOf("*") == -1 ? " media-emphasized" : "") + ' ">' +
         '<div class="media-left">' +
         '<i class="fa fa-2x ' + icon + '" aria-hidden="true"></i>' +
         '</div>' +
@@ -1070,6 +1070,16 @@ function append_comment_html(parent_id, cid, news_json, visible, trigger) {
     $parent.append($html)
     $parent.find('.comment-progressbar').trigger('appended');
 
+}
+
+function getDisplayNickname(email) {
+    if (email.indexOf("jrburuter") != -1 || email.indexOf("kaistusc") != -1)
+        return "학부총학생회";
+
+    else if (email.indexOf("hhj29") != -1)
+        return "대학원총학생회";
+
+    return email.substring(0, 3) + "****";
 }
 
 function get_comment_icon(type) {
