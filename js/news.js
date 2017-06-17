@@ -5,6 +5,7 @@ $(window).scroll(function() {
 })
 
 var LOGIN = false,
+    CHECK_LOGIN = false,
     USERID = '',
     USERNAME = '',
     EMAIL = '',
@@ -161,7 +162,9 @@ $(function() {
             setFirebaseID(user.uid)
         });
     } else setFirebaseID(user.uid);
-    /* Flow: fb sdk install -> check login status -> fetch comments from DB then append and bind events */
+
+    /* Flow: fb sdk install / fetch comments from DB then append and bind events -> check login status. */
+    init_comments();
 });
 
 function displayBldgList() {
@@ -262,15 +265,11 @@ function fetchComments() {
         var news_json = snapshot.val(); // data is here
         append_nested_comment("nested-comment", news_json);
 
-        if (getLogin())
-            fetchUserLog();
-
         /* Styling for hash,@,url */
         prettifyTweet('.tweet p');
 
-        /* Suggest login when the user attempts to vote before */
-        if (!getLogin())
-            init_popover($(".tweet .fa-chevron-up"));
+        /* Check login state and show popover when the user is not signed in. */
+        checkLoginState();
 
         toggleFixedLoading(".loading");
     });
@@ -467,7 +466,10 @@ function countLetter(inElement) {
     }
 }
 
-function getLogin() { return LOGIN; }
+function getLogin() {
+    if (!CHECK_LOGIN) checkLoginState(); // check login status for the first time. 
+    return LOGIN;
+}
 
 function setLogin(inVal) { LOGIN = inVal; }
 
@@ -484,6 +486,8 @@ function setFirebaseID(inID) {
 // Button.  See the onlogin handler attached to it in the sample
 // code below.
 function checkLoginState() {
+    if (CHECK_LOGIN) return true;
+
     if (detectBrowser() == 'firefox') {
         var request = indexedDB.open("MyTestDatabase");
         request.onerror = function(event) {
@@ -504,6 +508,8 @@ function checkLoginState() {
 
 // This is called to get fb Login Status.
 function checkLoginStateCallback(response) {
+    CHECK_LOGIN = true;
+
     console.log('statusChangeCallback');
     // The response object is returned with a status field that lets the
     // app know the current login status of the person.
@@ -521,11 +527,13 @@ function checkLoginStateCallback(response) {
             USERNAME = response.name;
             EMAIL = response.email;
 
-            init_comments();
+            fetchUserLog();
         });
     } else {
         setLogin(false);
-        init_comments();
+
+        /* Suggest login when the user attempts to vote before */
+        init_popover($(".tweet .fa-chevron-up"));
     }
 }
 
@@ -875,6 +883,7 @@ function postVote(inCommentID, inParentID, inLikeNum) { // inLikeNum 1 when upvo
 
 /* post a new comment to DB. */
 function postComment(inElement) {
+    if (!CHECK_LOGIN) checkLoginState(); // check login status for the first time. 
     if (!getLogin()) return; // check fb authentication
 
     postCommentCallback(inElement);
