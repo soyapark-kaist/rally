@@ -193,6 +193,7 @@ textarea.form-control {
 .comment-add-report {
     cursor: pointer;
     color: #337ab7;
+    font-size: 14px;
 }
 
 .hello-msg {
@@ -355,4 +356,9 @@ textarea.form-control {
 
 .minus-counter {
     color: red;
+}
+
+.post-button-group {
+    display: inline-block;
+    float: right;
 }

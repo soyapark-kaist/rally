@@ -477,7 +477,7 @@ function countLetter(inElement) {
 }
 
 function getLogin() {
-    if (!CHECK_LOGIN) checkLoginState(); // check login status for the first time. 
+    if (!CHECK_LOGIN) checkLoginState(); // check login status for the first time.
     return LOGIN;
 }
 
@@ -852,8 +852,9 @@ function init_comments() {
     $("body").on("click", ".dropdown-menu li a", function(e) {
         handleClickEvents("dropdown", $(this).text());
 
-        if ($(this).parent().attr('bldg') || $(this).parent().attr('date') || $(this).parent().attr('internet') || $(this).parent().attr('satisfaction')) { // if the user select a building
-            //change displayed value at dropdown. 
+        if ($(this).parent().attr('bldg') || $(this).parent().attr('date') || $(this).parent().attr('internet')) { // if the user select a building
+            //change displayed value at dropdown.
+
             $(this).parent().parent().find('li').removeClass("active");
             $(this).parent().addClass("active");
             $(this).parents(".dropdown").find('.dropdown-toggle')
@@ -903,7 +904,7 @@ function postVote(inCommentID, inParentID, inLikeNum) { // inLikeNum 1 when upvo
 
 /* post a new comment to DB. */
 function postComment(inElement) {
-    if (!CHECK_LOGIN) checkLoginState(); // check login status for the first time. 
+    if (!CHECK_LOGIN) checkLoginState(); // check login status for the first time.
     if (!getLogin()) return; // check fb authentication
 
     postCommentCallback(inElement);
@@ -991,17 +992,17 @@ function get_reply_html(type) {
         // '<input type="text" class="form-control" id="comment-to" placeholder="아무나">' +
         // '</span>' +
         (type == 1 ? // add quoting only for root comment
-            '<p class="btn btn-default comment-add-report" onclick=' + tracker + '>+ 인터넷 제보 첨부하기</p>' : "") +
-        '<div class="report-display"></div>' +
         '<div class="form-group">' +
         '<textarea class="form-control status-box" onkeyup="countLetter(this)" rows="2"></textarea>' +
         '</div>' +
         '</form>' +
-        '<div class="button-group" style="text-align:right">' +
+        '<div class="button-group post-button-group">' +
         '<p class="counter">140</p>' +
         '<a class="btn btn-primary comments-post like-comment disabled" onclick="postComment(this)" tabindex="0" data-container="body" ' +
         'data-toggle="popover" data-trigger="focus" data-placement="top">Post</a>' +
         '</div>' +
+        '<p class="btn btn-default comment-add-report" onclick=' + tracker + '>+ 인터넷 제보 첨부하기</p>' : "") +
+        '<div class="report-display"></div>'+
         '</div>';
 
     return reply_html;
