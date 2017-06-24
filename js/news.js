@@ -324,6 +324,14 @@ function addMoreReport() {
     recent_report.append("<a class='add-more' onclick='addMoreReport()'>+ 제보 더 불러오기</a>");
 }
 
+function formatDate(inDate) {
+    var days = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일", ];
+    var t = inDate.toTimeString().split(' ')[0];
+    t = t.substring(0, t.length - 3);
+
+    return [inDate.getMonth() + 1 + "/" + inDate.getDate(), days[inDate.getDay()], t].join(" ");
+}
+
 function appendReport() {
     $('.result').remove();
     var report_display = $(".report-display");
@@ -375,7 +383,9 @@ function appendReport() {
 
             var report_txt;
             if (report.activity) {
-                report_txt = [BLDG[report.bldg].name, report.activity, report.download + "Mbps", report.upload + "Mbps", report.time.split("GMT")[0].replace("2017 ", "")].join(", ");
+                report_txt = [report.activity, SPEED_MSG[parseInt(report.speed) - 1]].join(", ");
+                report_txt_sub = [report.download + "Mbps / " + report.upload + "Mbps", '<i class="fa fa-clock-o" aria-hidden="true"></i> ' + formatDate(new Date(report.time))].join(", ");
+                report_txt_sub = "<p style='color: gray'>" + report_txt_sub + "</p>";
 
                 entire_download += parseFloat(report.download);
                 entire_download_cnt++;
@@ -398,9 +408,9 @@ function appendReport() {
                 }
 
                 if (cnt++ < 5) {
-                    report_radio += ("<div class='radio'><label download='" + report.download + "'><input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "</label></div>");
+                    report_radio += ("<div class='radio'><label download='" + report.download + "'><input type='radio' name='report-radio' " + "value='" + BLDG[report.bldg].name + " " + WIFI_TYPE_MSG[report.type] + " " + formatDate(new Date(report.time)) + "'/> " + report_txt + report_txt_sub + "</label></div>");
                 } else {
-                    ADDITIONAL_REPORT.push("<div class='radio'><label download='" + report.download + "'><input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "</label></div>");
+                    ADDITIONAL_REPORT.push("<div class='radio'><label download='" + report.download + "'><input type='radio' name='report-radio' " + "value='" + BLDG[report.bldg].name + " " + WIFI_TYPE_MSG[report.type] + " " + formatDate(new Date(report.time)) + "'/> " + report_txt + report_txt_sub + "</label></div>");
                 }
             } else {
                 report_txt = [BLDG[report.bldg].name, "연결불능", report.os, report.web, report.time.split("GMT")[0].replace("2017 ", "")].join(", ");
@@ -527,6 +537,11 @@ function checkLoginStateCallback(response) {
             USERNAME = response.name;
             EMAIL = response.email;
 
+            // hide popover
+            $(document).on('focus', ':not(.popover)', function() {
+                $('.popover').popover('hide');
+            });
+
             fetchUserLog();
         });
     } else {
@@ -605,18 +620,9 @@ function drawProgressBar(inSelector) {
             }
         },
         value: [value],
-        // valueIndicator: {
-        //     type: 'textCloud',
-        //     color: '#734F96',
-        //     text: {
-        //         customizeText: function(arg) {
-        //             return "세종관";
-        //         },
-        //         font: {
-        //             size: 10
-        //         }
-        //     }
-        // },
+        valueIndicator: {
+            color: '#ff6c40'
+        },
         subvalues: subvalue ? subvalue.split(",") : null,
         subvalueIndicator: {
             type: 'textCloud',
@@ -660,15 +666,19 @@ function setProgressbarSubTitle(inText) {
 }
 
 function updateProgressbar($inElem) {
-    // setProgressbarSubTitle();getSearchDate
-    if ($inElem) {
-        setProgressbarTitle([BLDG[$('.building-list-ul li.active').attr("bldg")].name, $('.internet-list-ul li.active a').text(), getSearchDate()].join(" "));
-        setProgressbarSubTitle();
+    // setProgressbarSubTitle();getSearchDate.toFixed(2)
+    if ($inElem) { //when a radio is selected. 
+        if ($(".radio label").index($inElem) == 0)
+            setProgressbarTitle([BLDG[$('.building-list-ul li.active').attr("bldg")].name, $('.internet-list-ul li.active a').text(), getSearchDate()].join(" "));
+        else
+            setProgressbarTitle($inElem.children("input").val());
+        setProgressbarSubTitle("국내 평균 인터넷 기준 하위 " + (parseFloat($inElem.attr('download')) / 144 * 100).toFixed(1) + "%");
         setProgressbarValue(GAUGE, (parseFloat($inElem.attr('download')) / 144 * 100));
 
         if (entire_download) setProgressbarSubValue(GAUGE, [entire_download / entire_download_cnt / 144 * 100]);
-    } else {
-        setProgressbarTitle("-");
+    } else { //when new search is selected.
+        setProgressbarTitle("아래에서 인터넷 제보를 선택해주세요");
+        setProgressbarSubTitle("-");
         setProgressbarValue(GAUGE, 0);
         setProgressbarSubValue(GAUGE, []);
     }
@@ -812,6 +822,16 @@ function init_comments() {
             '<li internet="2"><a>그 외</a></li>' +
             '</ul>' +
             '</li>' +
+            // '<li class="dropdown">' +
+            // '<a class="dropdown-toggle" data-toggle="dropdown" href="#">인터넷 체감' +
+            // '<span class="caret"></span></a>' +
+            // '<ul class="dropdown-menu satisfaction-list-ul">' +
+            // '<li satisfaction="99"><a>전체 (응답없음 ~ 즉각적)</a></li>' +
+            // '<li satisfaction="0"><a>응답없음 ~ 지연 있음</a></li>' +
+            // '<li satisfaction="1"><a>응답없음 ~ 지연 심함</a></li>' +
+            // '<li satisfaction="2"><a>응답없음</a></li>' +
+            // '</ul>' +
+            // '</li>' +
             '</ul>' +
             '</li>' +
             '</ul>' +
@@ -832,7 +852,7 @@ function init_comments() {
     $("body").on("click", ".dropdown-menu li a", function(e) {
         handleClickEvents("dropdown", $(this).text());
 
-        if ($(this).parent().attr('bldg') || $(this).parent().attr('date') || $(this).parent().attr('internet')) { // if the user select a building
+        if ($(this).parent().attr('bldg') || $(this).parent().attr('date') || $(this).parent().attr('internet') || $(this).parent().attr('satisfaction')) { // if the user select a building
             //change displayed value at dropdown. 
             $(this).parent().parent().find('li').removeClass("active");
             $(this).parent().addClass("active");
@@ -902,11 +922,11 @@ function postCommentCallback(inElement) {
     if (new_comment_elem.querySelector("input[name='report-radio']:checked")) {
 
         if ($(":radio[name='report-radio']:checked").index(":radio[name='report-radio']") == 0) // building average
-            content = '<div class="comment-progressbar" title="' + $(".recent-report .dxg-title text:nth-child(1)").text() + '" subtitle="건물 평균: ' + $(":radio[name='report-radio']:checked").val().split(":")[1] + '" value="' + GAUGE.value() + '" subvalue="' + GAUGE.subvalues()[0] + '"></div>' + '<p>' + content + '</p>';
+            content = '<div class="comment-progressbar" title="' + $(".recent-report .dxg-title text:nth-child(1)").text() + '" subtitle="' + $(".recent-report .dxg-title text:nth-child(2)").text() + '" value="' + GAUGE.value() + '" subvalue="' + GAUGE.subvalues()[0] + '"></div>' + '<p>' + content + '</p>';
         else { // individual report
             var s = $(":radio[name='report-radio']:checked").val().split(", ");
             s.shift();
-            content = '<div class="comment-progressbar" title="' + $(".recent-report .dxg-title text:nth-child(1)").text().split(" ")[0] + '" subtitle="' + s.join(", ") + '" value="' + GAUGE.value() + '" subvalue="' + GAUGE.subvalues()[0] + '"></div>' + '<p>' + content + '</p>';
+            content = '<div class="comment-progressbar" title="' + $(".recent-report .dxg-title text:nth-child(1)").text() + '" subtitle="' + $(".recent-report .dxg-title text:nth-child(2)").text() + '" value="' + GAUGE.value() + '" subvalue="' + GAUGE.subvalues()[0] + '"></div>' + '<p>' + content + '</p>';
         }
     }
     //content = "<strong>" + new_comment_elem.querySelector("input[name='report-radio']:checked").value + "</strong> " + content;

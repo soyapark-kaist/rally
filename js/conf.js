@@ -8,6 +8,8 @@ var TIME_RANGE = [
 
 var TIME_RANGE_MSG = ["새벽", "아침", "점심", "오후", "저녁"];
 
+var SPEED_MSG = ["즉각적이다", "지연을 느끼지만, 사용에 지장은 없다", "지연으로 인해 원하는 만큼 사용하지 못한다", "응답하지 않는다"];
+
 var WIFI_STRENGTH_MSG = ["전혀 차 있지않다", "거의 채워져 있지 않다", "절반", "대부분 차 있다", "모두 차 있다"];
 var WIFI_TYPE_MSG = ["Welcome_KAIST", "그외 와이파이", "랜선"];
 

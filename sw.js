@@ -95,6 +95,7 @@ self.addEventListener('install', function(event) {
         'js/d3line.js',
         'js/d3linewithlegend.js',
         'js/dx.all.js',
+        'js/conf.js',
         'js/rally.js',
         'js/collect.js',
         'js/barChart.js',
