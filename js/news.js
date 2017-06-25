@@ -763,20 +763,28 @@ function init_comments() {
 
     });
 
+    $("body").on("click", ".close-report-display", function() {
+        $(".comment-add-report").removeClass("active");
+        $(".report-display-container").remove();
+    });
+
     $("body").on("click", ".comment-add-report", function() {
         // Remove other element before add new one.
 
         var report_display = $(this).parent().find(".report-display");
-        if (report_display.find("span").length) return;
 
-        $('.report-display-container').remove();
+        $(this).toggleClass("active");
+        if(!$(this).hasClass("active")) {
+            $(".report-display-container").remove();
+            return;
+        }
 
         //add container
         report_display.append("<div class='report-display-container'></div>");
         report_display = report_display.find('.report-display-container');
 
         // add close button
-        report_display.append('<button onclick="this.parentElement.remove()" type="button" class="close" aria-label="Close" style="padding-right: 5px;"><span aria-hidden="true">&times;</span></button>');
+        report_display.append('<button type="button" class="close close-report-display" aria-label="Close"><span aria-hidden="true">&times;</span></button>');
 
         report_display.append('<div class="recent-report"></div>');
         var recent_report = report_display.find('.recent-report');

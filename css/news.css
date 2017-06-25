@@ -362,3 +362,8 @@ textarea.form-control {
     display: inline-block;
     float: right;
 }
+
+.close-report-display {
+    padding-right: 5px!important;
+}
+
