@@ -321,12 +321,20 @@ function fetchComments() {
         $(".loading").hide();
     });
 
-    commentsRef.on("child_changed", function(snapshot) {     // like, dislike event
+    commentsRef.on("child_changed", function(snapshot) {     // like, dislike event, nested comment 
         var news_json = snapshot.val(); // data is here
 
         var $current_commment = $(".comment-" + snapshot.key + " .fa-chevron-up");
         
         $current_commment.text(news_json["like"])
+
+        var parent_id = "nested-comment_" + snapshot.key;
+        
+        for (var c_key in news_json["comments"]) {
+            append_comment_html(parent_id, c_key, news_json["comments"][c_key], true, true);
+        }
+        
+
     });
 }
 
@@ -1079,14 +1087,14 @@ function append_nested_comment(nc_id, news_json, key) {
         return;
     }
     /* Recursive call to child json */
-    var parent_id = (key != "comments") ? nc_id + "_" + key : nc_id;
+    var parent_id = nc_id + "_" + key;
     
     if(!is_key(c_news_json, "comments"))
         return;
 
     /* sort by time.  */
     var keysSorted = Object.keys(c_news_json.comments).sort(function(a, b) {
-        return new Date(c_news_json[a].time) - new Date(c_news_json[b].time);
+        return new Date(c_news_json.comments[a].time) - new Date(c_news_json.comments[b].time);
     })
 
     /* traversal */
@@ -1094,8 +1102,7 @@ function append_nested_comment(nc_id, news_json, key) {
         var key = keysSorted[i];
 
         /* Recursive call to child json */
-        var parent_id = (key != "comments") ? nc_id + "_" + key : nc_id;
-        append_nested_comment(parent_id, c_news_json[key])
+        append_nested_comment(parent_id, c_news_json.comments[key], key)
     }
     
 }
@@ -1103,6 +1110,9 @@ function append_nested_comment(nc_id, news_json, key) {
 function append_comment_html(parent_id, cid, news_json, visible, trigger) {
     var c_news_json = $.extend(true, {}, news_json);
     var new_id = parent_id + "_" + cid;
+
+    if($("#" + new_id).length) return;
+
     var $parent = $(document.getElementById(parent_id));
 
     var icon = get_comment_icon(c_news_json.type);
@@ -1144,8 +1154,9 @@ function append_comment_html(parent_id, cid, news_json, visible, trigger) {
             '</p>';
         $html.find(".media-body").append($(see_more_html));
     } else if (!$parent.is("ul")) {
-        /* Del reply btn at nested comment */
+        /* Del reply btn and like btn at nested comment */
         $html.find(".fa-reply").remove();
+        $html.find(".fa-chevron-up").remove();
         if (!visible) {
             $html.hide();
         }
