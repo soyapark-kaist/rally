@@ -11,12 +11,48 @@ var LOGIN = false,
     EMAIL = '',
     REPORT_OBJECT,
     GAUGE,
-    ADDITIONAL_REPORT = [];
+    ADDITIONAL_REPORT = [],
+    DB_URL = "news/comments/",
+    ENABLE_DATA_ATTACHMENT = true;
 
 var entire_download = 0.0,
     entire_download_cnt = 0,
     entire_upload = 0.0,
     entire_upload_cnt = 0;
+
+    
+function initParams() {
+    var params = window.location.search.substring(1).split("&");
+    for (var p in params) {
+        if (params[p].split("=")[0] == "experiment") {// experiment mode
+            var mode = params[p].split("=")[1];
+
+            if(mode == "A") {
+                DB_URL = "internet_base/comments/";
+                $(".comment-add-report").hide();
+                ENABLE_DATA_ATTACHMENT = false;
+            }
+            else if(mode == "B") DB_URL = "internet_data/comments/";
+            else if(mode == "C") {
+                DB_URL = "lecture_base/comments/";
+                $(".comment-add-report").hide();
+                ENABLE_DATA_ATTACHMENT = false;
+            }
+            else if(mode == "D") DB_URL = "lecture_data/comments/";
+
+            CHECK_LOGIN = true;
+            LOGIN = true;
+
+            /* For experiment purpose */
+            USERID = generateID(8);
+            USERNAME = generateID(8);
+            EMAIL = generateID(8)+"@qwe.edu";
+
+            // Prevent participants from escaping
+            $("header").hide(); 
+        }
+    }
+}
 
 function test() {
     toggleFixedLoading(".content-loading");
@@ -38,8 +74,9 @@ $(function() {
     // Show loading spinner
     toggleFixedLoading(".loading");
 
+    initParams();
     initDB();
-
+    
     $('body').scrollspy({ target: ".timeline-progress", offset: 200 });
 
     // $('.timeline-progress').scrollspy({
@@ -260,10 +297,13 @@ function fetchBldgList(inCenter) {
 }
 
 function fetchComments() {
-    var commentsRef = firebase.database().ref('news/comments');
-    commentsRef.once("value").then(function(snapshot) {
+    var commentsRef = firebase.database().ref(DB_URL);
+    commentsRef.on("child_added", function(snapshot) {
         var news_json = snapshot.val(); // data is here
-        append_nested_comment("nested-comment", news_json);
+        // debugger;
+        console.log(news_json);
+        
+        append_nested_comment("nested-comment", news_json, snapshot.key);
 
         /* Styling for hash,@,url */
         prettifyTweet('.tweet p');
@@ -891,7 +931,7 @@ function init_comments() {
 }
 
 function postVote(inCommentID, inParentID, inLikeNum) { // inLikeNum 1 when upvote, -1 when down vote
-    var pRef = firebase.database().ref("news/comments/" + (inParentID ? inParentID + "/comments/" + inCommentID : inCommentID) + "/like");
+    var pRef = firebase.database().ref(DB_URL + (inParentID ? inParentID + "/comments/" + inCommentID : inCommentID) + "/like");
     pRef.transaction(function(searches) {
         return (searches || 0) + inLikeNum;
     });
@@ -948,7 +988,8 @@ function postCommentCallback(inElement) {
 
     var comment_key = generateID(8);
     /* UID for a new comments. */
-    var playersRef = firebase.database().ref("news/comments/" + (parent_id ? parent_id + "/comments/" : "") + comment_key);
+    var playersRef = firebase.database().ref(DB_URL + (parent_id ? parent_id + "/comments/" : ""));
+    
     var news_json = {
         "type": comment_type,
         "content": content,
@@ -958,24 +999,29 @@ function postCommentCallback(inElement) {
         "dislike": 0
     };
 
+    playersRef.push(news_json);
+
+    // clean textbox
+    $(".status-box").val("")
+
     /* Append at front */
-    var root_id = "nested-comment"
-    var parent_id = (parent_id == '') ? root_id : root_id + "_" + parent_id;
-    append_comment_html(parent_id, comment_key, news_json, true, true);
+    // var root_id = "nested-comment"
+    // var parent_id = (parent_id == '') ? root_id : root_id + "_" + parent_id;
+    // append_comment_html(parent_id, comment_key, news_json, true, true);
 
-    prettifyTweet(".comment-" + comment_key + " p");
+    // prettifyTweet(".comment-" + comment_key + " p");
 
-    console.log(USERNAME, EMAIL, content);
-    playersRef.set(news_json, function(error) {
-        if (error) {
-            console.log(error);
-        } else {
-            // if successfully posted a new comments clear textarea and turn off loading spinner.
-            new_comment_elem.getElementsByClassName("status-box")[0].value = "";
-            $('.report-display').empty();
-            toggleFixedLoading(".loading");
-        }
-    });
+    // console.log(USERNAME, EMAIL, content);
+    // playersRef.set(news_json, function(error) {
+    //     if (error) {
+    //         console.log(error);
+    //     } else {
+    //         // if successfully posted a new comments clear textarea and turn off loading spinner.
+    //         new_comment_elem.getElementsByClassName("status-box")[0].value = "";
+    //         $('.report-display').empty();
+    //         toggleFixedLoading(".loading");
+    //     }
+    // });
 }
 
 function get_reply_html(type) {
@@ -999,7 +1045,7 @@ function get_reply_html(type) {
         // '<label for="comment-to"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></label>' +
         // '<input type="text" class="form-control" id="comment-to" placeholder="아무나">' +
         // '</span>' +
-        (type == 1 ? // add quoting only for root comment
+        
         '<div class="form-group">' +
         '<textarea class="form-control status-box" onkeyup="countLetter(this)" rows="2"></textarea>' +
         '</div>' +
@@ -1009,7 +1055,9 @@ function get_reply_html(type) {
         '<a class="btn btn-primary comments-post like-comment disabled" onclick="postComment(this)" tabindex="0" data-container="body" ' +
         'data-toggle="popover" data-trigger="focus" data-placement="top">Post</a>' +
         '</div>' +
-        '<p class="btn btn-default comment-add-report" onclick=' + tracker + '>+ 인터넷 제보 첨부하기</p>' : "") +
+        (type && ENABLE_DATA_ATTACHMENT == 1 ? // add quoting only for root comment
+        '<p class="btn btn-default comment-add-report" onclick=' + tracker + '>+ 인터넷 제보 첨부하기</p>'
+         : "") +
         '<div class="report-display"></div>'+
         '</div>';
 
@@ -1020,7 +1068,7 @@ function get_reply_html(type) {
 @param {object} news_json - object from database
 Traverse news_json and append recursively comments
 which has "content" key */
-function append_nested_comment(nc_id, news_json) {
+function append_nested_comment(nc_id, news_json, key) {
 
     /* Allow only one nested comment */
     var depth = nc_id.split("_").length - 1;
@@ -1031,26 +1079,36 @@ function append_nested_comment(nc_id, news_json) {
     /* deep copy */
     var c_news_json = $.extend(true, {}, news_json);
 
+    
+
+    /* if is_comment: append comment */
+    if (is_key(c_news_json, "content")) {
+        append_comment_html(nc_id, key, c_news_json, false);
+    }
+    /* if is_leaf: break; */
+    if (typeof(c_news_json) != "object") {
+        return;
+    }
+    /* Recursive call to child json */
+    var parent_id = (key != "comments") ? nc_id + "_" + key : nc_id;
+    
+    if(!is_key(c_news_json, "comments"))
+        return;
+
     /* sort by time.  */
-    var keysSorted = Object.keys(c_news_json).sort(function(a, b) {
+    var keysSorted = Object.keys(c_news_json.comments).sort(function(a, b) {
         return new Date(c_news_json[a].time) - new Date(c_news_json[b].time);
     })
 
     /* traversal */
     for (var i in keysSorted) {
         var key = keysSorted[i];
-        /* if is_comment: append comment */
-        if (is_key(c_news_json[key], "content")) {
-            append_comment_html(nc_id, key, c_news_json[key], false);
-        }
-        /* if is_leaf: break; */
-        if (typeof(c_news_json[key]) != "object") {
-            break;
-        }
+
         /* Recursive call to child json */
         var parent_id = (key != "comments") ? nc_id + "_" + key : nc_id;
         append_nested_comment(parent_id, c_news_json[key])
     }
+    
 }
 
 function append_comment_html(parent_id, cid, news_json, visible, trigger) {
