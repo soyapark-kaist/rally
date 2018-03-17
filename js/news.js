@@ -1166,6 +1166,8 @@ function append_comment_html(parent_id, cid, news_json, visible, trigger) {
     $parent.append($html)
     $parent.find('.comment-progressbar').trigger('appended');
 
+    $("#" + new_id).addClass("new-comment-highlight");
+
 }
 
 function getDisplayNickname(email) {
