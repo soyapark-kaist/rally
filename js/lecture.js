@@ -1,40 +1,11 @@
-var entire_download = 0.0,
-    entire_download_cnt = 0,
-    entire_upload = 0.0,
-    entire_upload_cnt = 0;
-
 $(function() {
     // Show loading spinner
     toggleFixedLoading(".loading");
     
-    var aver_bandwidth = [
-        ["세종관", 61, 15.9, 13.6, "wGcNI2L"],
-        ["희망관", 41, 34.3, 50.9, "9BaU2z5"],
-        ["아름관", 26, 39.0, 45.8, "Q0b0V2W"],
-        ["갈릴레이관", 14, 12.4, 15.7, "imZl4og"],
-        ["미르관", 13, 12.8, 6.2, "LLJqfXf"]
-    ];
-
-    /* Overall stat */
-    for (var b in aver_bandwidth) {
-        var item = aver_bandwidth[b];
-
-        $(".overall-stat tbody").append(
-            '<tr onclick="handleOutboundLinkClicks(this)" href="./timeline.html?id=' + item[4] + '"' + '>\
-            <td>' + item[0] + '</td>\
-            <td>' + item[1] + '</td>\
-            <td>' + item[2] + '</td>\
-            <td>' + item[3] + '</td>\
-          </tr>'
-        );
-    }
-
-    drawBarChart();
-
     /* Flow: fb sdk install / fetch comments from DB then append and bind events -> check login status. */
     fetchComments();
     init_comments();
-    init_internet_comments();
+    init_lecture_comments();
 });
 
 function displayBldgList() {
@@ -273,56 +244,6 @@ function appendReport() {
     toggleFixedLoading(".locaiton-loader");
 }
 
-function drawProgressBar(inSelector) {
-    $(inSelector).css("width", "100%");
-    $(inSelector).css("height", "120px");
-
-    var title = (inSelector.jquery) ? $(inSelector).attr('title') : inSelector.getAttribute('title'),
-        subtitle = (inSelector.jquery) ? $(inSelector).attr('subtitle') : inSelector.getAttribute('subtitle'),
-        value = (inSelector.jquery) ? $(inSelector).attr('value') : inSelector.getAttribute('value'),
-        subvalue = (inSelector.jquery) ? $(inSelector).attr('subvalue') : inSelector.getAttribute('subvalue');
-
-    return gauge = $(inSelector).dxLinearGauge({
-        scale: {
-            startValue: 0,
-            endValue: 100,
-            tickInterval: 20,
-            label: {
-                customizeText: function(arg) {
-                    if (arg.valueText == "100")
-                        return "국내 평균 인터넷";
-                    return arg.valueText + "%"
-                }
-            }
-        },
-        title: {
-            text: title,
-            font: { size: 20 },
-            subtitle: {
-                text: subtitle,
-                font: { size: 12 }
-            }
-        },
-        value: [value],
-        valueIndicator: {
-            color: '#ff6c40'
-        },
-        subvalues: subvalue ? subvalue.split(",") : null,
-        subvalueIndicator: {
-            type: 'textCloud',
-            color: '#734F96',
-            text: {
-                customizeText: function(arg) {
-                    return "교내 평균 속도";
-                },
-                font: {
-                    size: 10
-                }
-            }
-        }
-    }).dxLinearGauge("instance");
-}
-
 function getSearchDate() {
     var today = [new Date().getMonth() + 1, new Date().getDate()].join("/");
     if ($('.time-list-ul li.active').attr("date") == "99") return "4/4 ~ " + today; // whole
@@ -333,43 +254,7 @@ function getSearchDate() {
     return "4/4 ~ " + today; // whole
 }
 
-function setProgressbarValue(inObj, inData) {
-    inObj.value(inData);
-}
-
-function setProgressbarSubValue(inObj, inData) {
-    inObj.subvalues(inData);
-}
-
-function setProgressbarTitle(inText) {
-    $(".recent-report .dxg-title text:nth-child(1)").text(inText);
-}
-
-function setProgressbarSubTitle(inText) {
-    $(".recent-report .dxg-title text:nth-child(2)").text(inText);
-}
-
-function updateProgressbar($inElem) {
-    // setProgressbarSubTitle();getSearchDate.toFixed(2)
-    if ($inElem) { //when a radio is selected. 
-        if ($(".radio label").index($inElem) == 0)
-            setProgressbarTitle([BLDG[$('.building-list-ul li.active').attr("bldg")].name, $('.internet-list-ul li.active a').text(), getSearchDate()].join(" "));
-        else
-            setProgressbarTitle($inElem.children("input").val());
-        setProgressbarSubTitle("국내 평균 인터넷 기준 하위 " + (parseFloat($inElem.attr('download')) / 144 * 100).toFixed(1) + "%");
-        setProgressbarValue(GAUGE, (parseFloat($inElem.attr('download')) / 144 * 100));
-
-        if (entire_download) setProgressbarSubValue(GAUGE, [entire_download / entire_download_cnt / 144 * 100]);
-    } else { //when new search is selected.
-        setProgressbarTitle("아래에서 인터넷 제보를 선택해주세요");
-        setProgressbarSubTitle("-");
-        setProgressbarValue(GAUGE, 0);
-        setProgressbarSubValue(GAUGE, []);
-    }
-
-}
-
-function init_internet_comments() {
+function init_lecture_comments() {
     $("body").on("click", ".comment-add-report", function() {
         // Remove other element before add new one.
 
