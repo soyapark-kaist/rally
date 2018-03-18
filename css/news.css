@@ -64,6 +64,23 @@ ul {
     color: #ef5350;
 }
 
+@-o-keyframes fadeIt {
+    0%   { background-color: #FFFFFF; }
+    50%  { background-color: rgb(199, 234, 240); }
+    100% { background-color: aliceblue; }
+  }
+  @keyframes fadeIt {
+    0%   { background-color: #FFFFFF; }
+    50%  { background-color: rgb(199, 234, 240); }
+    100% { background-color: aliceblue; }
+  }
+  
+  .new-comment-highlight{    
+      background-image:none !important; 
+           -o-animation: fadeIt 4s ease-in-out; 
+              animation: fadeIt 4s ease-in-out; 
+  }
+
 .comment-date {
     font-weight: 200;
     color: #BDBDBD;

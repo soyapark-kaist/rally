@@ -12,7 +12,8 @@ var LOGIN = false,
     REPORT_OBJECT,
     GAUGE,
     ADDITIONAL_REPORT = [],
-    DB_URL = "news/comments/",
+    DB_COMMENT_URL = "news/comments/",
+    DB_VOTE_URL = "news/like/",
     ENABLE_DATA_ATTACHMENT = true;
 
 var entire_download = 0.0,
@@ -28,17 +29,19 @@ function initParams() {
             var mode = params[p].split("=")[1];
 
             if(mode == "A") {
-                DB_URL = "internet_base/comments/";
+                DB_COMMENT_URL = "internet_base/comments/";
+                DB_VOTE_URL = "internet_base/like/";
                 $(".comment-add-report").hide();
                 ENABLE_DATA_ATTACHMENT = false;
             }
-            else if(mode == "B") DB_URL = "internet_data/comments/";
+            else if(mode == "B") DB_COMMENT_URL = "internet_data/comments/";
             else if(mode == "C") {
-                DB_URL = "lecture_base/comments/";
+                DB_COMMENT_URL = "lecture_base/comments/";
+                DB_VOTE_URL = "lecture_base/like/";
                 $(".comment-add-report").hide();
                 ENABLE_DATA_ATTACHMENT = false;
             }
-            else if(mode == "D") DB_URL = "lecture_data/comments/";
+            else if(mode == "D") DB_COMMENT_URL = "lecture_data/comments/";
 
             CHECK_LOGIN = true;
             LOGIN = true;
@@ -297,7 +300,7 @@ function fetchBldgList(inCenter) {
 }
 
 function fetchComments() {
-    var commentsRef = firebase.database().ref(DB_URL);
+    var commentsRef = firebase.database().ref(DB_COMMENT_URL);
     commentsRef.on("child_added", function(snapshot) {
         var news_json = snapshot.val(); // data is here
         // debugger;
@@ -311,18 +314,27 @@ function fetchComments() {
         /* Check login state and show popover when the user is not signed in. */
         checkLoginState();
 
-        toggleFixedLoading(".loading");
+        var $current_commment = $(".comment-" + snapshot.key + " .fa-chevron-up");
+        
+        $current_commment.text(news_json["like"])
+
+        $(".loading").hide();
     });
-}
 
-function fetchUserLog() {
-    var userRef = firebase.database().ref('news/like/' + USERID);
-    userRef.once("value").then(function(snapshot) {
-        var user_json = snapshot.val(); // data is here
+    commentsRef.on("child_changed", function(snapshot) {     // like, dislike event, nested comment 
+        var news_json = snapshot.val(); // data is here
 
-        for (var l in user_json) {
-            $(".comment-" + l + " .fa-chevron-up").addClass("active");
+        var $current_commment = $(".comment-" + snapshot.key + " .fa-chevron-up");
+        
+        $current_commment.text(news_json["like"])
+
+        var parent_id = "nested-comment_" + snapshot.key;
+        
+        for (var c_key in news_json["comments"]) {
+            append_comment_html(parent_id, c_key, news_json["comments"][c_key], true, true);
         }
+        
+
     });
 }
 
@@ -581,8 +593,6 @@ function checkLoginStateCallback(response) {
             $(document).on('focus', ':not(.popover)', function() {
                 $('.popover').popover('hide');
             });
-
-            fetchUserLog();
         });
     } else {
         setLogin(false);
@@ -747,21 +757,11 @@ function init_comments() {
         var like_num = 0;
         /* If it's alreay up voted, cancel and decrement the vote. */
         if ($(this).hasClass("active")) { // cancel vote
-            /* dehighlight color */
-            $(this).removeClass("active");
-
-            /* decrement */
-            $(this).text(parseInt($(this).text().replace(" ", "")) - 1);
-
             like_num = -1;
+            $(this).removeClass("active");
         } else { // up vote
-            /* highlight color */
-            $(this).addClass("active");
-
-            /* increment */
-            $(this).text(parseInt($(this).text().replace(" ", "")) + 1);
-
             like_num = 1;
+            $(this).addClass("active");
         }
 
         var parent_id,
@@ -931,23 +931,20 @@ function init_comments() {
 }
 
 function postVote(inCommentID, inParentID, inLikeNum) { // inLikeNum 1 when upvote, -1 when down vote
-    var pRef = firebase.database().ref(DB_URL + (inParentID ? inParentID + "/comments/" + inCommentID : inCommentID) + "/like");
+    var pRef = firebase.database().ref(DB_COMMENT_URL + (inParentID ? inParentID + "/comments/" + inCommentID : inCommentID) + "/like");
     pRef.transaction(function(searches) {
         return (searches || 0) + inLikeNum;
     });
 
-    var uRef = firebase.database().ref("news/like/" + (USERID ? USERID : firebase.auth().currentUser.uid) + "/" + inCommentID);
-    if (inLikeNum == 1)
-        uRef.set(true,
-            function(error) {
-                if (error) {
-                    console.log(error);
-                } else { // if successfully posted a new comments clear textarea and turn off loading spinner.
+    var uRef = firebase.database().ref(DB_VOTE_URL + (USERID ? USERID : firebase.auth().currentUser.uid) + "/" + inCommentID);
+    uRef.set((inLikeNum==1? true: false),
+        function(error) {
+            if (error) {
+                console.log(error);
+            } else { // if successfully posted a new comments clear textarea and turn off loading spinner.
 
-                }
-            });
-
-    else uRef.remove();
+            }
+        });
 }
 
 /* post a new comment to DB. */
@@ -988,7 +985,7 @@ function postCommentCallback(inElement) {
 
     var comment_key = generateID(8);
     /* UID for a new comments. */
-    var playersRef = firebase.database().ref(DB_URL + (parent_id ? parent_id + "/comments/" : ""));
+    var playersRef = firebase.database().ref(DB_COMMENT_URL + (parent_id ? parent_id + "/comments/" : ""));
     
     var news_json = {
         "type": comment_type,
@@ -1090,14 +1087,14 @@ function append_nested_comment(nc_id, news_json, key) {
         return;
     }
     /* Recursive call to child json */
-    var parent_id = (key != "comments") ? nc_id + "_" + key : nc_id;
+    var parent_id = nc_id + "_" + key;
     
     if(!is_key(c_news_json, "comments"))
         return;
 
     /* sort by time.  */
     var keysSorted = Object.keys(c_news_json.comments).sort(function(a, b) {
-        return new Date(c_news_json[a].time) - new Date(c_news_json[b].time);
+        return new Date(c_news_json.comments[a].time) - new Date(c_news_json.comments[b].time);
     })
 
     /* traversal */
@@ -1105,8 +1102,7 @@ function append_nested_comment(nc_id, news_json, key) {
         var key = keysSorted[i];
 
         /* Recursive call to child json */
-        var parent_id = (key != "comments") ? nc_id + "_" + key : nc_id;
-        append_nested_comment(parent_id, c_news_json[key])
+        append_nested_comment(parent_id, c_news_json.comments[key], key)
     }
     
 }
@@ -1114,6 +1110,9 @@ function append_nested_comment(nc_id, news_json, key) {
 function append_comment_html(parent_id, cid, news_json, visible, trigger) {
     var c_news_json = $.extend(true, {}, news_json);
     var new_id = parent_id + "_" + cid;
+
+    if($("#" + new_id).length) return;
+
     var $parent = $(document.getElementById(parent_id));
 
     var icon = get_comment_icon(c_news_json.type);
@@ -1155,8 +1154,9 @@ function append_comment_html(parent_id, cid, news_json, visible, trigger) {
             '</p>';
         $html.find(".media-body").append($(see_more_html));
     } else if (!$parent.is("ul")) {
-        /* Del reply btn at nested comment */
+        /* Del reply btn and like btn at nested comment */
         $html.find(".fa-reply").remove();
+        $html.find(".fa-chevron-up").remove();
         if (!visible) {
             $html.hide();
         }
@@ -1165,6 +1165,8 @@ function append_comment_html(parent_id, cid, news_json, visible, trigger) {
 
     $parent.append($html)
     $parent.find('.comment-progressbar').trigger('appended');
+
+    $("#" + new_id).addClass("new-comment-highlight");
 
 }
 
