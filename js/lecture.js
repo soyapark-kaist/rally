@@ -1,7 +1,36 @@
+var entire_download = 0.0,
+    entire_download_cnt = 0,
+    entire_upload = 0.0,
+    entire_upload_cnt = 0;
+
 $(function() {
     // Show loading spinner
     toggleFixedLoading(".loading");
     
+    var aver_bandwidth = [
+        ["세종관", 61, 15.9, 13.6, "wGcNI2L"],
+        ["희망관", 41, 34.3, 50.9, "9BaU2z5"],
+        ["아름관", 26, 39.0, 45.8, "Q0b0V2W"],
+        ["갈릴레이관", 14, 12.4, 15.7, "imZl4og"],
+        ["미르관", 13, 12.8, 6.2, "LLJqfXf"]
+    ];
+
+    /* Overall stat */
+    for (var b in aver_bandwidth) {
+        var item = aver_bandwidth[b];
+
+        $(".overall-stat tbody").append(
+            '<tr onclick="handleOutboundLinkClicks(this)" href="./timeline.html?id=' + item[4] + '"' + '>\
+            <td>' + item[0] + '</td>\
+            <td>' + item[1] + '</td>\
+            <td>' + item[2] + '</td>\
+            <td>' + item[3] + '</td>\
+          </tr>'
+        );
+    }
+
+    drawBarChart();
+
     /* Flow: fb sdk install / fetch comments from DB then append and bind events -> check login status. */
     fetchComments();
     init_comments();
@@ -153,7 +182,6 @@ function appendReport() {
             date_range.push([d.getFullYear(), d.getMonth() + 1, d.getDate()].join("-"));
         }
     }
-    var report_radio = "";
     var exist_flag = false,
         cnt = 0,
         download = 0.0,
@@ -175,7 +203,11 @@ function appendReport() {
         return;
     }
 
+    var report_radio = "";
+    console.log(REPORT_OBJECT)
     for (var d in date_range) {
+        var one_post_exist = false;
+        var one_post = "<div class='one-post-radio'>";
         for (var r in REPORT_OBJECT[date_range[d]]) {
             var report = REPORT_OBJECT[date_range[d]][r];
             // if (selected_bldg_num && (selected_bldg_num != 99 && selected_bldg_num != report.bldg)) continue;
@@ -206,18 +238,21 @@ function appendReport() {
                     upload += parseFloat(report.upload);
                     upload_cnt++;
                 }
-
-                if (cnt++ < 5) {
-                    report_radio += ("<div class='radio'><label download='" + report.download + "'><input type='radio' name='report-radio' " + "value='" + BLDG[report.bldg].name + " " + WIFI_TYPE_MSG[report.type] + " " + formatDate(new Date(report.time)) + "'/> " + report_txt + report_txt_sub + "</label></div>");
-                } else {
-                    ADDITIONAL_REPORT.push("<div class='radio'><label download='" + report.download + "'><input type='radio' name='report-radio' " + "value='" + BLDG[report.bldg].name + " " + WIFI_TYPE_MSG[report.type] + " " + formatDate(new Date(report.time)) + "'/> " + report_txt + report_txt_sub + "</label></div>");
-                }
+            
+                one_post += ("<div class='radio'><label download='" + report.download + "'><input type='radio' name='report-radio' " + "value='" + BLDG[report.bldg].name + " " + WIFI_TYPE_MSG[report.type] + " " + formatDate(new Date(report.time)) + "'/> " + report_txt + report_txt_sub + "</label></div>");
+                one_post_exist = true;
             } else {
-                report_txt = [BLDG[report.bldg].name, "연결불능", report.os, report.web, report.time.split("GMT")[0].replace("2017 ", "")].join(", ");
-                continue; //todo
-                // if (cnt++ < 15)
-                //     report_radio += ("<div class='radio'><label><input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "</label></div>");
+                /* For now, do nothing */
             }
+        }
+        one_post += "</div>";
+        if (one_post_exist) {
+            if (cnt == 0) {
+                report_radio = one_post;
+            } else {
+                ADDITIONAL_REPORT.push(one_post);
+            }
+            cnt++;
         }
     }
     if (exist_flag) {
@@ -244,6 +279,56 @@ function appendReport() {
     toggleFixedLoading(".locaiton-loader");
 }
 
+function drawProgressBar(inSelector) {
+    $(inSelector).css("width", "100%");
+    $(inSelector).css("height", "120px");
+
+    var title = (inSelector.jquery) ? $(inSelector).attr('title') : inSelector.getAttribute('title'),
+        subtitle = (inSelector.jquery) ? $(inSelector).attr('subtitle') : inSelector.getAttribute('subtitle'),
+        value = (inSelector.jquery) ? $(inSelector).attr('value') : inSelector.getAttribute('value'),
+        subvalue = (inSelector.jquery) ? $(inSelector).attr('subvalue') : inSelector.getAttribute('subvalue');
+
+    return gauge = $(inSelector).dxLinearGauge({
+        scale: {
+            startValue: 0,
+            endValue: 100,
+            tickInterval: 20,
+            label: {
+                customizeText: function(arg) {
+                    if (arg.valueText == "100")
+                        return "국내 평균 인터넷";
+                    return arg.valueText + "%"
+                }
+            }
+        },
+        title: {
+            text: title,
+            font: { size: 20 },
+            subtitle: {
+                text: subtitle,
+                font: { size: 12 }
+            }
+        },
+        value: [value],
+        valueIndicator: {
+            color: '#ff6c40'
+        },
+        subvalues: subvalue ? subvalue.split(",") : null,
+        subvalueIndicator: {
+            type: 'textCloud',
+            color: '#734F96',
+            text: {
+                customizeText: function(arg) {
+                    return "교내 평균 속도";
+                },
+                font: {
+                    size: 10
+                }
+            }
+        }
+    }).dxLinearGauge("instance");
+}
+
 function getSearchDate() {
     var today = [new Date().getMonth() + 1, new Date().getDate()].join("/");
     if ($('.time-list-ul li.active').attr("date") == "99") return "4/4 ~ " + today; // whole
@@ -252,6 +337,42 @@ function getSearchDate() {
     else if ($('.time-list-ul li.active').attr("date") == "2") return [new Date().getMonth() + 1, new Date().getDate() - 6].join("/") + "~ " + today;
 
     return "4/4 ~ " + today; // whole
+}
+
+function setProgressbarValue(inObj, inData) {
+    inObj.value(inData);
+}
+
+function setProgressbarSubValue(inObj, inData) {
+    inObj.subvalues(inData);
+}
+
+function setProgressbarTitle(inText) {
+    $(".recent-report .dxg-title text:nth-child(1)").text(inText);
+}
+
+function setProgressbarSubTitle(inText) {
+    $(".recent-report .dxg-title text:nth-child(2)").text(inText);
+}
+
+function updateProgressbar($inElem) {
+    // setProgressbarSubTitle();getSearchDate.toFixed(2)
+    if ($inElem) { //when a radio is selected. 
+        if ($(".radio label").index($inElem) == 0)
+            setProgressbarTitle([BLDG[$('.building-list-ul li.active').attr("bldg")].name, $('.internet-list-ul li.active a').text(), getSearchDate()].join(" "));
+        else
+            setProgressbarTitle($inElem.children("input").val());
+        setProgressbarSubTitle("국내 평균 인터넷 기준 하위 " + (parseFloat($inElem.attr('download')) / 144 * 100).toFixed(1) + "%");
+        setProgressbarValue(GAUGE, (parseFloat($inElem.attr('download')) / 144 * 100));
+
+        if (entire_download) setProgressbarSubValue(GAUGE, [entire_download / entire_download_cnt / 144 * 100]);
+    } else { //when new search is selected.
+        setProgressbarTitle("아래에서 인터넷 제보를 선택해주세요");
+        setProgressbarSubTitle("-");
+        setProgressbarValue(GAUGE, 0);
+        setProgressbarSubValue(GAUGE, []);
+    }
+
 }
 
 function init_lecture_comments() {
