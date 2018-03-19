@@ -15,12 +15,6 @@ var LOGIN = false,
     DB_COMMENT_URL = "news/comments/",
     DB_VOTE_URL = "news/like/",
     ENABLE_DATA_ATTACHMENT = true;
-
-var entire_download = 0.0,
-    entire_download_cnt = 0,
-    entire_upload = 0.0,
-    entire_upload_cnt = 0;
-
     
 function initParams() {
     var params = window.location.search.substring(1).split("&");
@@ -322,28 +316,6 @@ function fetchComments() {
         
 
     });
-}
-
-function fetchReport() {
-    toggleFixedLoading(".locaiton-loader");
-
-    if (REPORT_OBJECT) { //already fetched.
-        appendReport();
-    } else {
-        var uRef = firebase.database().ref("users/");
-        uRef.once("value").then(function(snapshot) {
-            REPORT_OBJECT = snapshot.val(); // bldg/activity/OS/ping/down/up
-            appendReport();
-            // if (!report) { // no recent report
-            //     var answer = confirm("오늘 인터넷 불편 제보가 없습니다. 지금 제보(1분)하러 가시겠어요?")
-            //     if (answer)
-            //         window.location = "./collect.html";
-
-            //     else return;
-            // }
-        });
-    }
-
 }
 
 function addMoreReport() {

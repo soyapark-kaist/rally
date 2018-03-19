@@ -1,36 +1,9 @@
-var entire_download = 0.0,
-    entire_download_cnt = 0,
-    entire_upload = 0.0,
-    entire_upload_cnt = 0;
+var DB_REPORT_URL = "cs408/";
 
 $(function() {
     // Show loading spinner
     toggleFixedLoading(".loading");
     
-    var aver_bandwidth = [
-        ["세종관", 61, 15.9, 13.6, "wGcNI2L"],
-        ["희망관", 41, 34.3, 50.9, "9BaU2z5"],
-        ["아름관", 26, 39.0, 45.8, "Q0b0V2W"],
-        ["갈릴레이관", 14, 12.4, 15.7, "imZl4og"],
-        ["미르관", 13, 12.8, 6.2, "LLJqfXf"]
-    ];
-
-    /* Overall stat */
-    for (var b in aver_bandwidth) {
-        var item = aver_bandwidth[b];
-
-        $(".overall-stat tbody").append(
-            '<tr onclick="handleOutboundLinkClicks(this)" href="./timeline.html?id=' + item[4] + '"' + '>\
-            <td>' + item[0] + '</td>\
-            <td>' + item[1] + '</td>\
-            <td>' + item[2] + '</td>\
-            <td>' + item[3] + '</td>\
-          </tr>'
-        );
-    }
-
-    drawBarChart();
-
     /* Flow: fb sdk install / fetch comments from DB then append and bind events -> check login status. */
     fetchComments();
     init_comments();
@@ -121,17 +94,12 @@ function fetchReport() {
     if (REPORT_OBJECT) { //already fetched.
         appendReport();
     } else {
-        var uRef = firebase.database().ref("users/");
+        var uRef = firebase.database().ref(DB_REPORT_URL);
         uRef.once("value").then(function(snapshot) {
             REPORT_OBJECT = snapshot.val(); // bldg/activity/OS/ping/down/up
             appendReport();
-            // if (!report) { // no recent report
-            //     var answer = confirm("오늘 인터넷 불편 제보가 없습니다. 지금 제보(1분)하러 가시겠어요?")
-            //     if (answer)
-            //         window.location = "./collect.html";
+            
 
-            //     else return;
-            // }
         });
     }
 
@@ -167,94 +135,73 @@ function appendReport() {
     report_display.find('.recent-report').append("<div class='result'></div>")
     var recent_report = report_display.find('.recent-report .result');
 
-    var selected_date_num = $('.time-list-ul li.active').attr("date"),
-        date_range = [];
-    if (selected_date_num == 0) // today
-        date_range.push([new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-"));
-    else if (selected_date_num == 1) // yesterday
-        date_range.push([new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate() - 1].join("-"));
-    else if (selected_date_num == 2) { // this week{
-        for (var i = 0; i < 7; i++) {
-            date_range.push([new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate() - i].join("-"));
-        }
-    } else {
-        for (var d = new Date(); d >= new Date("Mon Apr 04 2017 00:00:1 GMT+0900 (KST)"); d.setDate(d.getDate() - 1)) {
-            date_range.push([d.getFullYear(), d.getMonth() + 1, d.getDate()].join("-"));
-        }
-    }
     var exist_flag = false,
-        cnt = 0,
-        download = 0.0,
-        download_cnt = 0,
-        upload = 0.0,
-        upload_cnt = 0;
-
-    entire_download = 0.0,
-        entire_download_cnt = 0,
-        entire_upload = 0.0,
-        entire_upload_cnt = 0,
         ADDITIONAL_REPORT = [];
     var selected_bldg_num = $('.building-list-ul li.active').attr("bldg"),
         selected_internet_num = $('.internet-list-ul li.active').attr("internet");
 
-    if (!selected_bldg_num) {
-        alert('건물은 필수선택사항 입니다');
-        toggleFixedLoading(".locaiton-loader");
-        return;
-    }
-
     var report_radio = "";
     console.log(REPORT_OBJECT)
-    for (var d in date_range) {
-        var one_post_exist = false;
+    var one_post_exist = false;
+    
+    for(var post in REPORT_OBJECT) {
         var one_post = "<div class='one-post-radio'>";
-        for (var r in REPORT_OBJECT[date_range[d]]) {
-            var report = REPORT_OBJECT[date_range[d]][r];
-            // if (selected_bldg_num && (selected_bldg_num != 99 && selected_bldg_num != report.bldg)) continue;
-            if (selected_internet_num && (selected_internet_num != 99 && selected_internet_num != report.type)) continue;
+        
+        for(var r in REPORT_OBJECT[post]) {
+            var paragraph = REPORT_OBJECT[post][r];
+            one_post += ("<div class='radio'><label download='" + report.grade + "'><input type='radio' name='report-radio' " + "value='" + BLDG[report.bldg].name + " " + WIFI_TYPE_MSG[report.type] + " " + formatDate(new Date(report.time)) + "'/> " + report_txt + report_txt_sub + "</label></div>");
 
-            var report_txt;
-            if (report.activity) {
-                report_txt = [report.activity, SPEED_MSG[parseInt(report.speed) - 1]].join(", ");
-                report_txt_sub = [report.download + "Mbps / " + report.upload + "Mbps", '<i class="fa fa-clock-o" aria-hidden="true"></i> ' + formatDate(new Date(report.time))].join(", ");
-                report_txt_sub = "<p style='color: gray'>" + report_txt_sub + "</p>";
-
-                entire_download += parseFloat(report.download);
-                entire_download_cnt++;
-
-                if (report.upload != "--") {
-                    entire_upload += parseFloat(report.upload);
-                    entire_upload_cnt++;
-                }
-
-                if (selected_bldg_num != report.bldg) continue;
-
-                exist_flag = true;
-
-                download += parseFloat(report.download);
-                download_cnt++;
-
-                if (report.upload != "--") {
-                    upload += parseFloat(report.upload);
-                    upload_cnt++;
-                }
-            
-                one_post += ("<div class='radio'><label download='" + report.download + "'><input type='radio' name='report-radio' " + "value='" + BLDG[report.bldg].name + " " + WIFI_TYPE_MSG[report.type] + " " + formatDate(new Date(report.time)) + "'/> " + report_txt + report_txt_sub + "</label></div>");
-                one_post_exist = true;
-            } else {
-                /* For now, do nothing */
-            }
         }
+
         one_post += "</div>";
-        if (one_post_exist) {
-            if (cnt == 0) {
-                report_radio = one_post;
-            } else {
-                ADDITIONAL_REPORT.push(one_post);
-            }
-            cnt++;
-        }
     }
+        // for (var r in REPORT_OBJECT[date_range[d]]) {
+        //     var report = REPORT_OBJECT[date_range[d]][r];
+        //     // if (selected_bldg_num && (selected_bldg_num != 99 && selected_bldg_num != report.bldg)) continue;
+        //     if (selected_internet_num && (selected_internet_num != 99 && selected_internet_num != report.type)) continue;
+
+        //     var report_txt;
+        //     if (report.activity) {
+        //         report_txt = [report.activity, SPEED_MSG[parseInt(report.speed) - 1]].join(", ");
+        //         report_txt_sub = [report.download + "Mbps / " + report.upload + "Mbps", '<i class="fa fa-clock-o" aria-hidden="true"></i> ' + formatDate(new Date(report.time))].join(", ");
+        //         report_txt_sub = "<p style='color: gray'>" + report_txt_sub + "</p>";
+
+        //         entire_download += parseFloat(report.download);
+        //         entire_download_cnt++;
+
+        //         if (report.upload != "--") {
+        //             entire_upload += parseFloat(report.upload);
+        //             entire_upload_cnt++;
+        //         }
+
+        //         if (selected_bldg_num != report.bldg) continue;
+
+        //         exist_flag = true;
+
+        //         download += parseFloat(report.download);
+        //         download_cnt++;
+
+        //         if (report.upload != "--") {
+        //             upload += parseFloat(report.upload);
+        //             upload_cnt++;
+        //         }
+            
+        //         one_post += ("<div class='radio'><label download='" + report.download + "'><input type='radio' name='report-radio' " + "value='" + BLDG[report.bldg].name + " " + WIFI_TYPE_MSG[report.type] + " " + formatDate(new Date(report.time)) + "'/> " + report_txt + report_txt_sub + "</label></div>");
+        //         one_post_exist = true;
+        //     } else {
+        //         /* For now, do nothing */
+        //     }
+        // }
+        // one_post += "</div>";
+        // if (one_post_exist) {
+        //     if (cnt == 0) {
+        //         report_radio = one_post;
+        //     } else {
+        //         ADDITIONAL_REPORT.push(one_post);
+        //     }
+        //     cnt++;
+        // }
+    
     if (exist_flag) {
         recent_report.append("<p>건물</p>");
         var stat_txt = [
@@ -270,63 +217,13 @@ function appendReport() {
             recent_report.append("<a class='add-more' onclick='addMoreReport()'>+ 제보 더 불러오기</a>");
 
     } else {
-        updateProgressbar(); // empty the progress bar
+        
         recent_report.append("<p>조건에 해당하는 제보가 없습니다.</p>");
     }
 
     // recent_report.append("<a onclick='if(confirm(" + '"인터넷 불편 제보하기(1분) 페이지로 이동하시겠습니까?"' + ")) window.location = " + '"./collect.html"' + "; else return;'>내 제보 추가하기</a>");
 
     toggleFixedLoading(".locaiton-loader");
-}
-
-function drawProgressBar(inSelector) {
-    $(inSelector).css("width", "100%");
-    $(inSelector).css("height", "120px");
-
-    var title = (inSelector.jquery) ? $(inSelector).attr('title') : inSelector.getAttribute('title'),
-        subtitle = (inSelector.jquery) ? $(inSelector).attr('subtitle') : inSelector.getAttribute('subtitle'),
-        value = (inSelector.jquery) ? $(inSelector).attr('value') : inSelector.getAttribute('value'),
-        subvalue = (inSelector.jquery) ? $(inSelector).attr('subvalue') : inSelector.getAttribute('subvalue');
-
-    return gauge = $(inSelector).dxLinearGauge({
-        scale: {
-            startValue: 0,
-            endValue: 100,
-            tickInterval: 20,
-            label: {
-                customizeText: function(arg) {
-                    if (arg.valueText == "100")
-                        return "국내 평균 인터넷";
-                    return arg.valueText + "%"
-                }
-            }
-        },
-        title: {
-            text: title,
-            font: { size: 20 },
-            subtitle: {
-                text: subtitle,
-                font: { size: 12 }
-            }
-        },
-        value: [value],
-        valueIndicator: {
-            color: '#ff6c40'
-        },
-        subvalues: subvalue ? subvalue.split(",") : null,
-        subvalueIndicator: {
-            type: 'textCloud',
-            color: '#734F96',
-            text: {
-                customizeText: function(arg) {
-                    return "교내 평균 속도";
-                },
-                font: {
-                    size: 10
-                }
-            }
-        }
-    }).dxLinearGauge("instance");
 }
 
 function getSearchDate() {
@@ -337,42 +234,6 @@ function getSearchDate() {
     else if ($('.time-list-ul li.active').attr("date") == "2") return [new Date().getMonth() + 1, new Date().getDate() - 6].join("/") + "~ " + today;
 
     return "4/4 ~ " + today; // whole
-}
-
-function setProgressbarValue(inObj, inData) {
-    inObj.value(inData);
-}
-
-function setProgressbarSubValue(inObj, inData) {
-    inObj.subvalues(inData);
-}
-
-function setProgressbarTitle(inText) {
-    $(".recent-report .dxg-title text:nth-child(1)").text(inText);
-}
-
-function setProgressbarSubTitle(inText) {
-    $(".recent-report .dxg-title text:nth-child(2)").text(inText);
-}
-
-function updateProgressbar($inElem) {
-    // setProgressbarSubTitle();getSearchDate.toFixed(2)
-    if ($inElem) { //when a radio is selected. 
-        if ($(".radio label").index($inElem) == 0)
-            setProgressbarTitle([BLDG[$('.building-list-ul li.active').attr("bldg")].name, $('.internet-list-ul li.active a').text(), getSearchDate()].join(" "));
-        else
-            setProgressbarTitle($inElem.children("input").val());
-        setProgressbarSubTitle("국내 평균 인터넷 기준 하위 " + (parseFloat($inElem.attr('download')) / 144 * 100).toFixed(1) + "%");
-        setProgressbarValue(GAUGE, (parseFloat($inElem.attr('download')) / 144 * 100));
-
-        if (entire_download) setProgressbarSubValue(GAUGE, [entire_download / entire_download_cnt / 144 * 100]);
-    } else { //when new search is selected.
-        setProgressbarTitle("아래에서 인터넷 제보를 선택해주세요");
-        setProgressbarSubTitle("-");
-        setProgressbarValue(GAUGE, 0);
-        setProgressbarSubValue(GAUGE, []);
-    }
-
 }
 
 function init_lecture_comments() {
