@@ -182,7 +182,6 @@ function appendReport() {
             date_range.push([d.getFullYear(), d.getMonth() + 1, d.getDate()].join("-"));
         }
     }
-    var report_radio = "";
     var exist_flag = false,
         cnt = 0,
         download = 0.0,
@@ -204,7 +203,11 @@ function appendReport() {
         return;
     }
 
+    var report_radio = "";
+    console.log(REPORT_OBJECT)
     for (var d in date_range) {
+        var one_post_exist = false;
+        var one_post = "<div class='one-post-radio'>";
         for (var r in REPORT_OBJECT[date_range[d]]) {
             var report = REPORT_OBJECT[date_range[d]][r];
             // if (selected_bldg_num && (selected_bldg_num != 99 && selected_bldg_num != report.bldg)) continue;
@@ -235,18 +238,21 @@ function appendReport() {
                     upload += parseFloat(report.upload);
                     upload_cnt++;
                 }
-
-                if (cnt++ < 5) {
-                    report_radio += ("<div class='radio'><label download='" + report.download + "'><input type='radio' name='report-radio' " + "value='" + BLDG[report.bldg].name + " " + WIFI_TYPE_MSG[report.type] + " " + formatDate(new Date(report.time)) + "'/> " + report_txt + report_txt_sub + "</label></div>");
-                } else {
-                    ADDITIONAL_REPORT.push("<div class='radio'><label download='" + report.download + "'><input type='radio' name='report-radio' " + "value='" + BLDG[report.bldg].name + " " + WIFI_TYPE_MSG[report.type] + " " + formatDate(new Date(report.time)) + "'/> " + report_txt + report_txt_sub + "</label></div>");
-                }
+            
+                one_post += ("<div class='radio'><label download='" + report.download + "'><input type='radio' name='report-radio' " + "value='" + BLDG[report.bldg].name + " " + WIFI_TYPE_MSG[report.type] + " " + formatDate(new Date(report.time)) + "'/> " + report_txt + report_txt_sub + "</label></div>");
+                one_post_exist = true;
             } else {
-                report_txt = [BLDG[report.bldg].name, "연결불능", report.os, report.web, report.time.split("GMT")[0].replace("2017 ", "")].join(", ");
-                continue; //todo
-                // if (cnt++ < 15)
-                //     report_radio += ("<div class='radio'><label><input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "</label></div>");
+                /* For now, do nothing */
             }
+        }
+        one_post += "</div>";
+        if (one_post_exist) {
+            if (cnt == 0) {
+                report_radio = one_post;
+            } else {
+                ADDITIONAL_REPORT.push(one_post);
+            }
+            cnt++;
         }
     }
     if (exist_flag) {
