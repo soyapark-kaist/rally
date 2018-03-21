@@ -8,6 +8,31 @@ $(function() {
     fetchComments();
     init_comments();
     init_lecture_comments();
+
+    /* Bind report building search pick. */
+    $("body").on("click", ".dropdown-menu li a", function(e) {
+        handleClickEvents("dropdown", $(this).text());
+
+        if ($(this).parent().attr('bldg') || $(this).parent().attr('date') || $(this).parent().attr('internet')) { // if the user select a building
+            //change displayed value at dropdown.
+
+            $(this).parent().parent().find('li').removeClass("active");
+            $(this).parent().addClass("active");
+            $(this).parents(".dropdown").find('.dropdown-toggle')
+                .html($(this).text() + ' <span class="caret"></span>');
+            $(this).parents(".dropdown").find('.dropdown-toggle')
+                .val($(this).data('value'));
+
+            // show corresponding reports.
+            fetchReport();
+        } else { // if user selects location search
+            e.stopPropagation(); // prevent dropdown to be closed.
+        }
+    });
+
+    $('body').on('click', '.radio label', function() {
+        handleClickEvents("radio", $(this).find("input").attr("value"));
+    });
 });
 
 function displayBldgList() {
@@ -133,7 +158,7 @@ function appendReport() {
     $('.result').remove();
     var report_display = $(".report-display");
     report_display.find('.recent-report').append("<div class='result'></div>")
-    var recent_report = report_display.find('.recent-report .result');
+    var $recent_report = report_display.find('.recent-report .result');
 
     var exist_flag = false,
         ADDITIONAL_REPORT = [];
@@ -144,16 +169,21 @@ function appendReport() {
     console.log(REPORT_OBJECT)
     var one_post_exist = false;
     
+    var report_text = ["F", "D", "C", "B", "A"];
+
     for(var post in REPORT_OBJECT) {
         var one_post = "<div class='one-post-radio'>";
-        
-        for(var r in REPORT_OBJECT[post]) {
-            var paragraph = REPORT_OBJECT[post][r];
-            one_post += ("<div class='radio'><label download='" + report.grade + "'><input type='radio' name='report-radio' " + "value='" + BLDG[report.bldg].name + " " + WIFI_TYPE_MSG[report.type] + " " + formatDate(new Date(report.time)) + "'/> " + report_txt + report_txt_sub + "</label></div>");
+        one_post += "<label>교수: "+ REPORT_OBJECT[post]["professor"] + ", 성적: " + report_text[REPORT_OBJECT[post]["grade"]]+ ", 강의: " + report_text[REPORT_OBJECT[post]["lecture"]]+ ", 로드: " + report_text[REPORT_OBJECT[post]["load"]] +"</label>"
+
+        for(var r in REPORT_OBJECT[post]["paragraph"]) {
+            var paragraph = REPORT_OBJECT[post]["paragraph"][r];
+            console.log(paragraph)
+            one_post += ("<div class='radio'><label download='" + 0 + "'><input type='radio' name='report-radio' " + "value='" + paragraph + "'/> " + paragraph + "</label></div>");
 
         }
 
         one_post += "</div>";
+        $recent_report.append(one_post);
     }
         // for (var r in REPORT_OBJECT[date_range[d]]) {
         //     var report = REPORT_OBJECT[date_range[d]][r];
@@ -202,24 +232,24 @@ function appendReport() {
         //     cnt++;
         // }
     
-    if (exist_flag) {
-        recent_report.append("<p>건물</p>");
-        var stat_txt = [
-            //'<i class="fa fa-building-o" aria-hidden="true"></i>',
-            BLDG[selected_bldg_num].name,
-            ", 평균 Download/Upload 속도 : " + (download / download_cnt).toFixed(2) + "Mbps/" + (upload / upload_cnt).toFixed(2) + "Mbps"
-        ].join(" ");
-        recent_report.append("<div class='radio'><label download=" + (download / download_cnt) + "><input type='radio' name='report-radio'" + "value='" + stat_txt + "'/> " + stat_txt + "</label></div>");
+    // if (exist_flag) {
+    //     recent_report.append("<p>건물</p>");
+    //     var stat_txt = [
+    //         //'<i class="fa fa-building-o" aria-hidden="true"></i>',
+    //         BLDG[selected_bldg_num].name,
+    //         ", 평균 Download/Upload 속도 : " + (download / download_cnt).toFixed(2) + "Mbps/" + (upload / upload_cnt).toFixed(2) + "Mbps"
+    //     ].join(" ");
+    //     recent_report.append("<div class='radio'><label download=" + (download / download_cnt) + "><input type='radio' name='report-radio'" + "value='" + stat_txt + "'/> " + stat_txt + "</label></div>");
 
-        recent_report.append("<p>개별 제보 (최근 5개까지 표시)</p>");
-        recent_report.append(report_radio);
-        if (ADDITIONAL_REPORT.length)
-            recent_report.append("<a class='add-more' onclick='addMoreReport()'>+ 제보 더 불러오기</a>");
+    //     recent_report.append("<p>개별 제보 (최근 5개까지 표시)</p>");
+    //     recent_report.append(report_radio);
+    //     if (ADDITIONAL_REPORT.length)
+    //         recent_report.append("<a class='add-more' onclick='addMoreReport()'>+ 제보 더 불러오기</a>");
 
-    } else {
+    // } else {
         
-        recent_report.append("<p>조건에 해당하는 제보가 없습니다.</p>");
-    }
+    //     recent_report.append("<p>조건에 해당하는 제보가 없습니다.</p>");
+    // }
 
     // recent_report.append("<a onclick='if(confirm(" + '"인터넷 불편 제보하기(1분) 페이지로 이동하시겠습니까?"' + ")) window.location = " + '"./collect.html"' + "; else return;'>내 제보 추가하기</a>");
 
@@ -258,14 +288,6 @@ function init_lecture_comments() {
         report_display.append('<div class="recent-report"></div>');
         var recent_report = report_display.find('.recent-report');
 
-        // add progress bar
-        recent_report.append('<div class="report-progressbar"></div>');
-        recent_report.find(".report-progressbar").attr("title", "이야기할 인터넷 경험에 해당하는 제보를 선택해주세요");
-        recent_report.find(".report-progressbar").attr("subtitle", "국내 평균 Wi-Fi 속도와 비교 (출처: 2016년도 통신서비스 품질평가 결과)");
-        recent_report.find(".report-progressbar").attr("value", 0);
-
-        GAUGE = drawProgressBar(recent_report.find(".report-progressbar"));
-
         // add navbar for report search
         recent_report.append('<nav class="navbar navbar-default">' +
             '<div class="container-fluid">' +
@@ -273,30 +295,39 @@ function init_lecture_comments() {
             '</div>' +
             '<ul class="nav navbar-nav search-nav">' +
             '<li class="dropdown">' +
-            '<a class="dropdown-toggle" data-toggle="dropdown" href="#">건물 검색' +
+            '<a class="dropdown-toggle" data-toggle="dropdown" href="#">성적별 검색' +
             '<span class="caret"></span></a>' +
-            '<ul class="dropdown-menu building-list-ul">' +
-            '<li><a onclick="displayBldgList()">내 건물 검색<div style="color: gray"><i class="fa fa-map-marker" aria-hidden="true"></i> 위치정보 수집</div><p id="loc-msg"></p></a></li>' +
+            '<ul class="dropdown-menu time-list-ul">' +
+            '<li grade="99"><a>전체</a></li>' +
+            '<li grade="4"><a>A</a></li>' +
+            '<li grade="3"><a>B</a></li>' +
+            '<li grade="2"><a>C</a></li>' +
+            '<li grade="1"><a>D</a></li>' +
+            '<li grade="0"><a>F</a></li>' +
             '</ul>' +
             '</li>' +
             '<li class="dropdown">' +
-            '<a class="dropdown-toggle" data-toggle="dropdown" href="#">시간 검색' +
+            '<a class="dropdown-toggle" data-toggle="dropdown" href="#">로드별 검색' +
             '<span class="caret"></span></a>' +
             '<ul class="dropdown-menu time-list-ul">' +
             '<li date="99"><a>전체</a></li>' +
-            '<li date="0"><a>오늘</a></li>' +
-            '<li date="1"><a>어제</a></li>' +
-            '<li date="2"><a>최근 일주일</a></li>' +
+            '<li date="0"><a>A</a></li>' +
+            '<li date="1"><a>B</a></li>' +
+            '<li date="2"><a>C</a></li>' +
+            '<li date="3"><a>D</a></li>' +
+            '<li date="4"><a>F</a></li>' +
             '</ul>' +
             '</li>' +
             '<li class="dropdown">' +
-            '<a class="dropdown-toggle" data-toggle="dropdown" href="#">인터넷 유형' +
+            '<a class="dropdown-toggle" data-toggle="dropdown" href="#">강의별 검색' +
             '<span class="caret"></span></a>' +
             '<ul class="dropdown-menu internet-list-ul">' +
             '<li internet="99"><a>전체</a></li>' +
-            '<li internet="0"><a>Welcome_kaist</a></li>' +
-            '<li internet="1"><a>랜선</a></li>' +
-            '<li internet="2"><a>그 외</a></li>' +
+            '<li internet="0"><a>A</a></li>' +
+            '<li internet="1"><a>B</a></li>' +
+            '<li internet="2"><a>C</a></li>' +
+            '<li internet="3"><a>D</a></li>' +
+            '<li internet="4"><a>F</a></li>' +
             '</ul>' +
             '</li>' +
             // '<li class="dropdown">' +
@@ -320,13 +351,70 @@ function init_lecture_comments() {
         // add current loader container
         recent_report.append("<div class='locaiton-loader' style='left:50%;'></div>");
 
+        fetchReport();
+
         // add building list table
         // recent_report.append('<div class="building-list-container"><table class="building-list table table-hover"><tbody></tbody></table></div>');
 
     });
+}
 
-    $("body").on("appended", ".comment-progressbar", function(event) {
-        //event after append the element into DOM, do anything
-        drawProgressBar($(this));
-    });
+function postCommentCallback(inElement) {
+    // turn on loading spinner.
+    toggleFixedLoading(".loading");
+
+    var new_comment_elem = inElement.parentElement.parentElement,
+        content = "",
+        parent_id = '',
+        comment_type;
+
+    // append report if existg
+    if (new_comment_elem.querySelector("input[name='report-radio']:checked")) {
+
+        content = "<blockquote>" + $(":radio[name='report-radio']:checked").val() + "</blockquote>";
+        content += ("<p>" + new_comment_elem.getElementsByClassName("status-box")[0].value+ "</p>");
+    }
+    //content = "<strong>" + new_comment_elem.querySelector("input[name='report-radio']:checked").value + "</strong> " + content;
+
+    // if a new comment is not root comment
+    if (new_comment_elem.id != "root-like") {
+        parent_id = new_comment_elem.parentElement.id.split("comment_")[1];
+        comment_type = 2;
+    } else comment_type = new_comment_elem.querySelector("input[name='comment-type']:checked").value;
+
+    /* UID for a new comments. */
+    var playersRef = firebase.database().ref(DB_COMMENT_URL + (parent_id ? parent_id + "/comments/" : ""));
+    
+    var news_json = {
+        "type": comment_type,
+        "content": content,
+        "time": new Date().toString(),
+        "email": EMAIL + "/rally/" + USERNAME,
+        "like": 0,
+        "dislike": 0
+    };
+
+    playersRef.push(news_json);
+
+    // clean textbox
+    $(".status-box").val("")
+
+    /* Append at front */
+    // var root_id = "nested-comment"
+    // var parent_id = (parent_id == '') ? root_id : root_id + "_" + parent_id;
+    // append_comment_html(parent_id, comment_key, news_json, true, true);
+
+    // prettifyTweet(".comment-" + comment_key + " p");
+
+    // console.log(USERNAME, EMAIL, content);
+    // playersRef.set(news_json, function(error) {
+    //     if (error) {
+    //         console.log(error);
+    //     } else {
+    //         // if successfully posted a new comments clear textarea and turn off loading spinner.
+    //         new_comment_elem.getElementsByClassName("status-box")[0].value = "";
+    //         $('.report-display').empty();
+    //         toggleFixedLoading(".loading");
+    //     }
+    // });
 }

@@ -342,117 +342,6 @@ function formatDate(inDate) {
     return [inDate.getMonth() + 1 + "/" + inDate.getDate(), days[inDate.getDay()], t].join(" ");
 }
 
-function appendReport() {
-    $('.result').remove();
-    var report_display = $(".report-display");
-    report_display.find('.recent-report').append("<div class='result'></div>")
-    var recent_report = report_display.find('.recent-report .result');
-
-    var selected_date_num = $('.time-list-ul li.active').attr("date"),
-        date_range = [];
-    if (selected_date_num == 0) // today
-        date_range.push([new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-"));
-    else if (selected_date_num == 1) // yesterday
-        date_range.push([new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate() - 1].join("-"));
-    else if (selected_date_num == 2) { // this week{
-        for (var i = 0; i < 7; i++) {
-            date_range.push([new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate() - i].join("-"));
-        }
-    } else {
-        for (var d = new Date(); d >= new Date("Mon Apr 04 2017 00:00:1 GMT+0900 (KST)"); d.setDate(d.getDate() - 1)) {
-            date_range.push([d.getFullYear(), d.getMonth() + 1, d.getDate()].join("-"));
-        }
-    }
-    var report_radio = "";
-    var exist_flag = false,
-        cnt = 0,
-        download = 0.0,
-        download_cnt = 0,
-        upload = 0.0,
-        upload_cnt = 0;
-
-    entire_download = 0.0,
-        entire_download_cnt = 0,
-        entire_upload = 0.0,
-        entire_upload_cnt = 0,
-        ADDITIONAL_REPORT = [];
-    var selected_bldg_num = $('.building-list-ul li.active').attr("bldg"),
-        selected_internet_num = $('.internet-list-ul li.active').attr("internet");
-
-    if (!selected_bldg_num) {
-        alert('건물은 필수선택사항 입니다');
-        toggleFixedLoading(".locaiton-loader");
-        return;
-    }
-
-    for (var d in date_range) {
-        for (var r in REPORT_OBJECT[date_range[d]]) {
-            var report = REPORT_OBJECT[date_range[d]][r];
-            // if (selected_bldg_num && (selected_bldg_num != 99 && selected_bldg_num != report.bldg)) continue;
-            if (selected_internet_num && (selected_internet_num != 99 && selected_internet_num != report.type)) continue;
-
-            var report_txt;
-            if (report.activity) {
-                report_txt = [report.activity, SPEED_MSG[parseInt(report.speed) - 1]].join(", ");
-                report_txt_sub = [report.download + "Mbps / " + report.upload + "Mbps", '<i class="fa fa-clock-o" aria-hidden="true"></i> ' + formatDate(new Date(report.time))].join(", ");
-                report_txt_sub = "<p style='color: gray'>" + report_txt_sub + "</p>";
-
-                entire_download += parseFloat(report.download);
-                entire_download_cnt++;
-
-                if (report.upload != "--") {
-                    entire_upload += parseFloat(report.upload);
-                    entire_upload_cnt++;
-                }
-
-                if (selected_bldg_num != report.bldg) continue;
-
-                exist_flag = true;
-
-                download += parseFloat(report.download);
-                download_cnt++;
-
-                if (report.upload != "--") {
-                    upload += parseFloat(report.upload);
-                    upload_cnt++;
-                }
-
-                if (cnt++ < 5) {
-                    report_radio += ("<div class='radio'><label download='" + report.download + "'><input type='radio' name='report-radio' " + "value='" + BLDG[report.bldg].name + " " + WIFI_TYPE_MSG[report.type] + " " + formatDate(new Date(report.time)) + "'/> " + report_txt + report_txt_sub + "</label></div>");
-                } else {
-                    ADDITIONAL_REPORT.push("<div class='radio'><label download='" + report.download + "'><input type='radio' name='report-radio' " + "value='" + BLDG[report.bldg].name + " " + WIFI_TYPE_MSG[report.type] + " " + formatDate(new Date(report.time)) + "'/> " + report_txt + report_txt_sub + "</label></div>");
-                }
-            } else {
-                report_txt = [BLDG[report.bldg].name, "연결불능", report.os, report.web, report.time.split("GMT")[0].replace("2017 ", "")].join(", ");
-                continue; //todo
-                // if (cnt++ < 15)
-                //     report_radio += ("<div class='radio'><label><input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "</label></div>");
-            }
-        }
-    }
-    if (exist_flag) {
-        recent_report.append("<p>건물</p>");
-        var stat_txt = [
-            //'<i class="fa fa-building-o" aria-hidden="true"></i>',
-            BLDG[selected_bldg_num].name,
-            ", 평균 Download/Upload 속도 : " + (download / download_cnt).toFixed(2) + "Mbps/" + (upload / upload_cnt).toFixed(2) + "Mbps"
-        ].join(" ");
-        recent_report.append("<div class='radio'><label download=" + (download / download_cnt) + "><input type='radio' name='report-radio'" + "value='" + stat_txt + "'/> " + stat_txt + "</label></div>");
-
-        recent_report.append("<p>개별 제보 (최근 5개까지 표시)</p>");
-        recent_report.append(report_radio);
-        if (ADDITIONAL_REPORT.length)
-            recent_report.append("<a class='add-more' onclick='addMoreReport()'>+ 제보 더 불러오기</a>");
-
-    } else {
-        updateProgressbar(); // empty the progress bar
-        recent_report.append("<p>조건에 해당하는 제보가 없습니다.</p>");
-    }
-
-    // recent_report.append("<a onclick='if(confirm(" + '"인터넷 불편 제보하기(1분) 페이지로 이동하시겠습니까?"' + ")) window.location = " + '"./collect.html"' + "; else return;'>내 제보 추가하기</a>");
-
-    toggleFixedLoading(".locaiton-loader");
-}
 
 function handleOutboundLinkClicks(event) {
     ga('send', 'event', 'news', 'click', event.getAttribute("href"), {
@@ -680,33 +569,6 @@ function init_comments() {
         $(".report-display-container").remove();
     });
 
-    /* Bind report building search pick. */
-    $("body").on("click", ".dropdown-menu li a", function(e) {
-        handleClickEvents("dropdown", $(this).text());
-
-        if ($(this).parent().attr('bldg') || $(this).parent().attr('date') || $(this).parent().attr('internet')) { // if the user select a building
-            //change displayed value at dropdown.
-
-            $(this).parent().parent().find('li').removeClass("active");
-            $(this).parent().addClass("active");
-            $(this).parents(".dropdown").find('.dropdown-toggle')
-                .html($(this).text() + ' <span class="caret"></span>');
-            $(this).parents(".dropdown").find('.dropdown-toggle')
-                .val($(this).data('value'));
-
-            updateProgressbar();
-
-            // show corresponding reports.
-            fetchReport();
-        } else { // if user selects location search
-            e.stopPropagation(); // prevent dropdown to be closed.
-        }
-    });
-
-    $('body').on('click', '.radio label', function() {
-        handleClickEvents("radio", $(this).find("input").attr("value"));
-        updateProgressbar($(this));
-    });
 }
 
 function postVote(inCommentID, inParentID, inLikeNum) { // inLikeNum 1 when upvote, -1 when down vote
@@ -734,71 +596,7 @@ function postComment(inElement) {
     postCommentCallback(inElement);
 }
 
-function postCommentCallback(inElement) {
-    // turn on loading spinner.
-    toggleFixedLoading(".loading");
 
-    var new_comment_elem = inElement.parentElement.parentElement,
-        content = new_comment_elem.getElementsByClassName("status-box")[0].value,
-        parent_id = '',
-        comment_type;
-
-    // append report if existg
-    if (new_comment_elem.querySelector("input[name='report-radio']:checked")) {
-
-        if ($(":radio[name='report-radio']:checked").index(":radio[name='report-radio']") == 0) // building average
-            content = '<div class="comment-progressbar" title="' + $(".recent-report .dxg-title text:nth-child(1)").text() + '" subtitle="' + $(".recent-report .dxg-title text:nth-child(2)").text() + '" value="' + GAUGE.value() + '" subvalue="' + GAUGE.subvalues()[0] + '"></div>' + '<p>' + content + '</p>';
-        else { // individual report
-            var s = $(":radio[name='report-radio']:checked").val().split(", ");
-            s.shift();
-            content = '<div class="comment-progressbar" title="' + $(".recent-report .dxg-title text:nth-child(1)").text() + '" subtitle="' + $(".recent-report .dxg-title text:nth-child(2)").text() + '" value="' + GAUGE.value() + '" subvalue="' + GAUGE.subvalues()[0] + '"></div>' + '<p>' + content + '</p>';
-        }
-    }
-    //content = "<strong>" + new_comment_elem.querySelector("input[name='report-radio']:checked").value + "</strong> " + content;
-
-    // if a new comment is not root comment
-    if (new_comment_elem.id != "root-like") {
-        parent_id = new_comment_elem.parentElement.id.split("comment_")[1];
-        comment_type = 2;
-    } else comment_type = new_comment_elem.querySelector("input[name='comment-type']:checked").value;
-
-    var comment_key = generateID(8);
-    /* UID for a new comments. */
-    var playersRef = firebase.database().ref(DB_COMMENT_URL + (parent_id ? parent_id + "/comments/" : ""));
-    
-    var news_json = {
-        "type": comment_type,
-        "content": content,
-        "time": new Date().toString(),
-        "email": EMAIL + "/rally/" + USERNAME,
-        "like": 0,
-        "dislike": 0
-    };
-
-    playersRef.push(news_json);
-
-    // clean textbox
-    $(".status-box").val("")
-
-    /* Append at front */
-    // var root_id = "nested-comment"
-    // var parent_id = (parent_id == '') ? root_id : root_id + "_" + parent_id;
-    // append_comment_html(parent_id, comment_key, news_json, true, true);
-
-    // prettifyTweet(".comment-" + comment_key + " p");
-
-    // console.log(USERNAME, EMAIL, content);
-    // playersRef.set(news_json, function(error) {
-    //     if (error) {
-    //         console.log(error);
-    //     } else {
-    //         // if successfully posted a new comments clear textarea and turn off loading spinner.
-    //         new_comment_elem.getElementsByClassName("status-box")[0].value = "";
-    //         $('.report-display').empty();
-    //         toggleFixedLoading(".loading");
-    //     }
-    // });
-}
 
 function get_reply_html(type) {
     var tracker = "handleClickEvents(\"start\",\"\")";
@@ -832,7 +630,7 @@ function get_reply_html(type) {
         'data-toggle="popover" data-trigger="focus" data-placement="top">Post</a>' +
         '</div>' +
         (type && ENABLE_DATA_ATTACHMENT == 1 ? // add quoting only for root comment
-        '<p class="btn btn-default comment-add-report" onclick=' + tracker + '>+ 인터넷 제보 첨부하기</p>'
+        '<p class="btn btn-default comment-add-report" onclick=' + tracker + '>+ 제보 첨부하기</p>'
          : "") +
         '<div class="report-display"></div>'+
         '</div>';
