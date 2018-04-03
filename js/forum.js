@@ -281,7 +281,7 @@ function fetchComments() {
         /* Check login state and show popover when the user is not signed in. */
         checkLoginState();
 
-        var $current_commment = $(".comment-" + snapshot.key + " .fa-chevron-up");
+        var $current_commment = $(".comment-" + snapshot.key + " .fa-heart");
         
         if("comments" in news_json) 
             for (var c_key in news_json["comments"]) {
@@ -298,7 +298,7 @@ function fetchComments() {
     commentsRef.on("child_changed", function(snapshot) {     // like, dislike event, nested comment 
         var news_json = snapshot.val(); // data is here
 
-        var $current_commment = $(".comment-" + snapshot.key + " .fa-chevron-up");
+        var $current_commment = $(".comment-" + snapshot.key + " .fa-heart");
 
         var parent_id = "nested-comment_" + snapshot.key;
         
@@ -445,7 +445,7 @@ function checkLoginStateCallback(response) {
         setLogin(false);
 
         /* Suggest login when the user attempts to vote before */
-        init_popover($(".tweet .fa-chevron-up"));
+        init_popover($(".tweet .fa-heart"));
     }
 }
 
@@ -512,7 +512,7 @@ function init_comments() {
     });
 
     /* Bind like(vote) event */
-    $("body").on("click", ".fa.fa-chevron-up", function() {
+    $("body").on("click", ".fa.fa-heart", function() {
         if (!getLogin()) return;
 
         var like_num = 0;
@@ -712,7 +712,7 @@ function append_comment_html(parent_id, cid, news_json, visible, trigger) {
         '<div id=' + 'comment-' + new_id + ' class=' + '"tweet comment-' + cid + '">' +
         '<p>' + content + '</p>' +
         '<i class="fa fa-reply" aria-hidden="true"></i>' +
-        '<i class="fa fa-chevron-up" aria-hidden="true" tabindex="0" ' +
+        '<i class="fa fa-heart" aria-hidden="true" tabindex="0" ' +
         'data-container="body" data-toggle="popover" data-trigger="focus" data-placement="top">' +
         c_news_json.like +
         '</i>' +
@@ -733,7 +733,7 @@ function append_comment_html(parent_id, cid, news_json, visible, trigger) {
     } else if (!$parent.is("ul")) {
         /* Del reply btn and like btn at nested comment */
         $html.find(".fa-reply").remove();
-        $html.find(".fa-chevron-up").remove();
+        $html.find(".").remove();
         if (!visible) {
             $html.hide();
         }

@@ -43,7 +43,8 @@ ul {
 
 .media-body .fa-reply,
 .fa-chevron-up,
-.fa-chevron-down {
+.fa-chevron-down,
+.fa-heart {
     cursor: pointer;
     color: #BDBDBD;
 }
@@ -52,11 +53,11 @@ ul {
     color: #4caf50;
 }
 
-.media-body .fa-chevron-up:hover {
+.media-body .fa-heart:hover {
     color: #29b6f6;
 }
 
-.media-body .fa-chevron-up.active {
+.media-body .fa-heart.active {
     color: #29b6f6;
 }
 
