@@ -634,7 +634,7 @@ function get_reply_html(type) {
         'data-toggle="popover" data-trigger="focus" data-placement="top">Post</a>' +
         '</div>' +
         (type && ENABLE_DATA_ATTACHMENT == 1 ? // add quoting only for root comment
-        '<p class="btn btn-default comment-add-report" onclick=' + tracker + '>+ 제보 첨부하기</p>'
+        '<p class="btn btn-default comment-add-report" onclick=' + tracker + '>+ 교내 인터넷 데이터 첨부하기</p>'
          : "") +
         '<div class="report-display"></div>'+
         '</div>';
