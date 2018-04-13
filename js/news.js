@@ -59,6 +59,7 @@ $(function() {
         }
     });
 
+
     $('body').on('click', '.radio label', function() {
         handleClickEvents("radio", $(this).find("input").attr("value"));
         updateProgressbar($(this));
@@ -143,119 +144,6 @@ function fetchBldgList(inCenter) {
 
 }
 
-function appendReport() {
-    $('.result').remove();
-    var report_display = $(".report-display");
-    report_display.find('.recent-report').append("<div class='result'></div>")
-    var recent_report = report_display.find('.recent-report .result');
-
-    var selected_date_num = $('.time-list-ul li.active').attr("date"),
-        date_range = [];
-    if (selected_date_num == 0) // today
-        date_range.push([new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-"));
-    else if (selected_date_num == 1) // yesterday
-        date_range.push([new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate() - 1].join("-"));
-    else if (selected_date_num == 2) { // this week{
-        for (var i = 0; i < 7; i++) {
-            date_range.push([new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate() - i].join("-"));
-        }
-    } else {
-        for (var d = new Date(); d >= new Date("Mon Apr 04 2017 00:00:1 GMT+0900 (KST)"); d.setDate(d.getDate() - 1)) {
-            date_range.push([d.getFullYear(), d.getMonth() + 1, d.getDate()].join("-"));
-        }
-    }
-    var report_radio = "";
-    var exist_flag = false,
-        cnt = 0,
-        download = 0.0,
-        download_cnt = 0,
-        upload = 0.0,
-        upload_cnt = 0;
-
-    entire_download = 0.0,
-        entire_download_cnt = 0,
-        entire_upload = 0.0,
-        entire_upload_cnt = 0,
-        ADDITIONAL_REPORT = [];
-    var selected_bldg_num = $('.building-list-ul li.active').attr("bldg"),
-        selected_internet_num = $('.internet-list-ul li.active').attr("internet");
-
-    if (!selected_bldg_num) {
-        alert('건물은 필수선택사항 입니다');
-        toggleFixedLoading(".locaiton-loader");
-        return;
-    }
-
-    for (var d in date_range) {
-        for (var r in REPORT_OBJECT[date_range[d]]) {
-            var report = REPORT_OBJECT[date_range[d]][r];
-            // if (selected_bldg_num && (selected_bldg_num != 99 && selected_bldg_num != report.bldg)) continue;
-            if (selected_internet_num && (selected_internet_num != 99 && selected_internet_num != report.type)) continue;
-
-            var report_txt;
-            if (report.activity) {
-                report_txt = [report.activity, SPEED_MSG[parseInt(report.speed) - 1]].join(", ");
-                report_txt_sub = [report.download + "Mbps / " + report.upload + "Mbps", '<i class="fa fa-clock-o" aria-hidden="true"></i> ' + formatDate(new Date(report.time))].join(", ");
-                report_txt_sub = "<p style='color: gray'>" + report_txt_sub + "</p>";
-
-                entire_download += parseFloat(report.download);
-                entire_download_cnt++;
-
-                if (report.upload != "--") {
-                    entire_upload += parseFloat(report.upload);
-                    entire_upload_cnt++;
-                }
-
-                if (selected_bldg_num != report.bldg) continue;
-
-                exist_flag = true;
-
-                download += parseFloat(report.download);
-                download_cnt++;
-
-                if (report.upload != "--") {
-                    upload += parseFloat(report.upload);
-                    upload_cnt++;
-                }
-
-                if (cnt++ < 5) {
-                    report_radio += ("<div class='radio'><label download='" + report.download + "'><input type='radio' name='report-radio' " + "value='" + BLDG[report.bldg].name + " " + WIFI_TYPE_MSG[report.type] + " " + formatDate(new Date(report.time)) + "'/> " + report_txt + report_txt_sub + "</label></div>");
-                } else {
-                    ADDITIONAL_REPORT.push("<div class='radio'><label download='" + report.download + "'><input type='radio' name='report-radio' " + "value='" + BLDG[report.bldg].name + " " + WIFI_TYPE_MSG[report.type] + " " + formatDate(new Date(report.time)) + "'/> " + report_txt + report_txt_sub + "</label></div>");
-                }
-            } else {
-                report_txt = [BLDG[report.bldg].name, "연결불능", report.os, report.web, report.time.split("GMT")[0].replace("2017 ", "")].join(", ");
-                continue; //todo
-                // if (cnt++ < 15)
-                //     report_radio += ("<div class='radio'><label><input type='radio' name='report-radio' " + "value='" + report_txt + "'/> " + '<i class="fa fa-building-o" aria-hidden="true"></i> ' + report_txt + "</label></div>");
-            }
-        }
-    }
-    if (exist_flag) {
-        recent_report.append("<p>건물</p>");
-        var stat_txt = [
-            //'<i class="fa fa-building-o" aria-hidden="true"></i>',
-            BLDG[selected_bldg_num].name,
-            ", 평균 Download/Upload 속도 : " + (download / download_cnt).toFixed(2) + "Mbps/" + (upload / upload_cnt).toFixed(2) + "Mbps"
-        ].join(" ");
-        recent_report.append("<div class='radio'><label download=" + (download / download_cnt) + "><input type='radio' name='report-radio'" + "value='" + stat_txt + "'/> " + stat_txt + "</label></div>");
-
-        recent_report.append("<p>개별 제보 (최근 5개까지 표시)</p>");
-        recent_report.append(report_radio);
-        if (ADDITIONAL_REPORT.length)
-            recent_report.append("<a class='add-more' onclick='addMoreReport()'>+ 제보 더 불러오기</a>");
-
-    } else {
-        updateProgressbar(); // empty the progress bar
-        recent_report.append("<p>조건에 해당하는 제보가 없습니다.</p>");
-    }
-
-    // recent_report.append("<a onclick='if(confirm(" + '"인터넷 불편 제보하기(1분) 페이지로 이동하시겠습니까?"' + ")) window.location = " + '"./collect.html"' + "; else return;'>내 제보 추가하기</a>");
-
-    toggleFixedLoading(".locaiton-loader");
-}
-
-
 function fetchReport() {
     toggleFixedLoading(".locaiton-loader");
 
@@ -310,19 +198,26 @@ function appendReport() {
 
     var selected_date_num = $('.time-list-ul li.active').attr("date"),
         date_range = [];
-    if (selected_date_num == 0) // today
-        date_range.push([new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-"));
-    else if (selected_date_num == 1) // yesterday
-        date_range.push([new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate() - 1].join("-"));
-    else if (selected_date_num == 2) { // this week{
-        for (var i = 0; i < 7; i++) {
-            date_range.push([new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate() - i].join("-"));
-        }
-    } else {
-        for (var d = new Date(); d >= new Date("Mon Apr 04 2017 00:00:1 GMT+0900 (KST)"); d.setDate(d.getDate() - 1)) {
-            date_range.push([d.getFullYear(), d.getMonth() + 1, d.getDate()].join("-"));
-        }
+    // if (selected_date_num == 0) // today
+    //     date_range.push([new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()].join("-"));
+    // else if (selected_date_num == 1) // yesterday
+    //     date_range.push([new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate() - 1].join("-"));
+    // else if (selected_date_num == 2) { // this week{
+    //     for (var i = 0; i < 7; i++) {
+    //         date_range.push([new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate() - i].join("-"));
+    //     }
+    // } else {
+    //     for (var d = new Date(); d >= new Date("Mon Apr 04 2017 00:00:1 GMT+0900 (KST)"); d.setDate(d.getDate() - 1)) {
+    //         date_range.push([d.getFullYear(), d.getMonth() + 1, d.getDate()].join("-"));
+    //     }
+    // }
+
+    for (var d = new Date(); d >= new Date("Mon Apr 04 2017 00:00:1 GMT+0900 (KST)"); d.setDate(d.getDate() - 1)) {
+        date_range.push([d.getFullYear(), d.getMonth() + 1, d.getDate()].join("-"));
     }
+
+
+
     var report_radio = "";
     var exist_flag = false,
         cnt = 0,
@@ -351,6 +246,10 @@ function appendReport() {
             // if (selected_bldg_num && (selected_bldg_num != 99 && selected_bldg_num != report.bldg)) continue;
             if (selected_internet_num && (selected_internet_num != 99 && selected_internet_num != report.type)) continue;
 
+            console.log(new Date(report.time).getHours() + " " + $( "#slider-range" ).slider( "values", 0 )/60)
+            if(new Date(report.time).getHours() < $( "#slider-range" ).slider( "values", 0 ) /60) continue;
+            if(new Date(report.time).getHours() > $( "#slider-range" ).slider( "values", 1 ) /60) continue;
+            
             var report_txt;
             if (report.activity) {
                 report_txt = [report.activity, SPEED_MSG[parseInt(report.speed) - 1]].join(", ");
@@ -557,10 +456,12 @@ function init_internet_comments() {
             '<a class="dropdown-toggle" data-toggle="dropdown" href="#">시간 검색' +
             '<span class="caret"></span></a>' +
             '<ul class="dropdown-menu time-list-ul">' +
-            '<li date="99"><a>전체</a></li>' +
-            '<li date="0"><a>오늘</a></li>' +
-            '<li date="1"><a>어제</a></li>' +
-            '<li date="2"><a>최근 일주일</a></li>' +
+            '<li date="99"><div id="time-range">'+
+            '<p>Time Range: <span class="slider-time">12:01 AM</span> - <span class="slider-time2">11:59 PM</span></p>' +
+            '<div class="sliders_step1"><div id="slider-range"></div></div></div></li>' +
+            // '<li date="0"><a>오늘</a></li>' +
+            // '<li date="1"><a>어제</a></li>' +
+            // '<li date="2"><a>최근 일주일</a></li>' +
             '</ul>' +
             '</li>' +
             '<li class="dropdown">' +
@@ -594,6 +495,71 @@ function init_internet_comments() {
         // add current loader container
         recent_report.append("<div class='locaiton-loader' style='left:50%;'></div>");
 
+
+        $("#slider-range").slider({
+            range: true,
+            min: 0,
+            max: 1440,
+            step: 60,
+            values: [0, 1440],
+            slide: function (e, ui) {
+                var hours1 = Math.floor(ui.values[0] / 60);
+                var minutes1 = ui.values[0] - (hours1 * 60);
+        
+                if (hours1.length == 1) hours1 = '0' + hours1;
+                if (minutes1.length == 1) minutes1 = '0' + minutes1;
+                if (minutes1 == 0) minutes1 = '00';
+                if (hours1 >= 12) {
+                    if (hours1 == 12) {
+                        hours1 = hours1;
+                        minutes1 = minutes1 + " PM";
+                    } else {
+                        hours1 = hours1 - 12;
+                        minutes1 = minutes1 + " PM";
+                    }
+                } else {
+                    hours1 = hours1;
+                    minutes1 = minutes1 + " AM";
+                }
+                if (hours1 == 0) {
+                    hours1 = 12;
+                    minutes1 = minutes1;
+                }
+        
+        
+        
+                $('.slider-time').html(hours1 + ':' + minutes1);
+        
+                var hours2 = Math.floor(ui.values[1] / 60);
+                var minutes2 = ui.values[1] - (hours2 * 60);
+        
+                if (hours2.length == 1) hours2 = '0' + hours2;
+                if (minutes2.length == 1) minutes2 = '0' + minutes2;
+                if (minutes2 == 0) minutes2 = '00';
+                if (hours2 >= 12) {
+                    if (hours2 == 12) {
+                        hours2 = hours2;
+                        minutes2 = minutes2 + " PM";
+                    } else if (hours2 == 24) {
+                        hours2 = 11;
+                        minutes2 = "59 PM";
+                    } else {
+                        hours2 = hours2 - 12;
+                        minutes2 = minutes2 + " PM";
+                    }
+                } else {
+                    hours2 = hours2;
+                    minutes2 = minutes2 + " AM";
+                }
+        
+                $('.slider-time2').html(hours2 + ':' + minutes2);
+
+                updateProgressbar();
+                
+                            // show corresponding reports.
+                            fetchReport();
+            }
+        });
         // add building list table
         // recent_report.append('<div class="building-list-container"><table class="building-list table table-hover"><tbody></tbody></table></div>');
 
@@ -650,6 +616,7 @@ function postCommentCallback(inElement) {
 
     // clean textbox
     $(".status-box").val("")
+    destoryReportWindow();
 
     /* Append at front */
     // var root_id = "nested-comment"

@@ -749,7 +749,7 @@ function append_comment_html(parent_id, cid, news_json, visible, trigger) {
 
     $("#" + new_id).addClass("new-comment-highlight");
 
-    destoryReportWindow();
+    
 
 }
 
